@@ -4,6 +4,8 @@
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
+    <string name="registration_fragment_label">Registration Fragment</string>
+    <string name="registration">Register</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
@@ -43,4 +45,12 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+
+    <!-- REGISTRATION FORM -->
+    <string name="first_name_hint">First Name</string>
+    <string name="last_name_hint">Last Name</string>
+    <string name="email_hint">Email</string>
+    <string name="country_hint">Country</string>
+    <string name="pw_hint">Password</string>
+    <string name="confirm_pw_hint">Confirm Password</string>
 </resources>
