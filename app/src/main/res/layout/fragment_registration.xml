@@ -6,79 +6,105 @@
     android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <EditText
             android:id="@+id/editTextFirstName"
-            android:importantForAutofill="no"
-            android:hint="@string/first_name_hint"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:ems="10"
-            android:inputType="textCapWords"/>
+            android:hint="@string/first_name_hint"
+            android:importantForAutofill="no"
+            android:inputType="textCapWords" />
 
         <EditText
             android:id="@+id/editTextLastName"
-            android:importantForAutofill="no"
-            android:hint="@string/last_name_hint"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:ems="10"
+            android:hint="@string/last_name_hint"
+            android:importantForAutofill="no"
             android:inputType="textCapWords" />
 
         <EditText
             android:id="@+id/editTextEmail"
-            android:importantForAutofill="no"
-            android:hint="@string/email_hint"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:ems="10"
+            android:hint="@string/email_hint"
+            android:importantForAutofill="no"
             android:inputType="textEmailAddress" />
 
         <EditText
             android:id="@+id/editTextCountry"
-            android:importantForAutofill="no"
-            android:hint="@string/country_hint"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:ems="10"
+            android:hint="@string/country_hint"
+            android:importantForAutofill="no"
             android:inputType="text" />
 
         <EditText
             android:id="@+id/editTextPassword"
-            android:importantForAutofill="no"
-            android:hint="@string/pw_hint"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:ems="10"
+            android:hint="@string/pw_hint"
+            android:importantForAutofill="no"
             android:inputType="textPassword" />
 
         <EditText
             android:id="@+id/editTextConfirmPassword"
-            android:importantForAutofill="no"
-            android:hint="@string/confirm_pw_hint"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:ems="10"
+            android:hint="@string/confirm_pw_hint"
+            android:importantForAutofill="no"
             android:inputType="textPassword" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+        <Button
+            android:id="@+id/buttonRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/registration"
+            android:layout_margin="10dp"/>
+
+        <TextView
+            android:id="@+id/textViewRegistrationInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
