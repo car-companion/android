@@ -53,4 +53,6 @@
     <string name="country_hint">Country</string>
     <string name="pw_hint">Password</string>
     <string name="confirm_pw_hint">Confirm Password</string>
+    <string name="already_registered">Already have an account?\t</string>
+    <string name="go_to_login">Log in here</string>
 </resources>

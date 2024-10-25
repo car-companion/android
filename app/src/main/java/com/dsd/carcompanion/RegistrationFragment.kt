@@ -77,6 +77,10 @@ class RegistrationFragment : Fragment() {
                 binding.textViewRegistrationInfo.setText("$firstName $lastName\n$email\n$country\n$password\n$confirmPassword")
             }
         }
+
+        binding.textViewToLogin.setOnClickListener {
+            Toast.makeText(this.context, "Going to Login Fragment", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onDestroyView() {
