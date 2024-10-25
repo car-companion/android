@@ -1,11 +1,13 @@
 package com.dsd.carcompanion
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -36,15 +38,21 @@ class MainActivity : AppCompatActivity() {
 
         // Setup FAB action
         binding.fab.setOnClickListener {
-//        view ->
-//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                .setAction("Action", null)
-//                .setAnchorView(R.id.fab)
-//                .show()
+        view ->
+            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null)
+                .setAnchorView(R.id.fab)
+                .show()
 
-            // Show the Forgot Password modal dialog when FAB is clicked
-            showForgotPasswordDialog()
         }
+        // Set up hyperlink-like behavior for "Forgot Password?" text
+        val forgotPasswordTextView = findViewById<TextView>(R.id.textViewForgotPassword)
+        forgotPasswordTextView.setOnClickListener {
+            // Open ForgotPasswordActivity when clicked
+            val intent = Intent(this, ForgotPasswordActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -69,33 +77,5 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Function to show the Forgot Password dialog
-    private fun showForgotPasswordDialog() {
-        // Inflate the custom layout for the dialog
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_forgot_password, null)
 
-        // Create an AlertDialog and set the custom layout
-        val dialogBuilder = AlertDialog.Builder(this).setView(dialogView)
-
-        // Create the dialog instance
-        val alertDialog = dialogBuilder.create()
-
-        // Find the views from the custom layout
-        val emailEditText = dialogView.findViewById<EditText>(R.id.etEmail)
-        val submitButton = dialogView.findViewById<Button>(R.id.btnSubmitEmail)
-
-        // Handle the submit button click
-        submitButton.setOnClickListener {
-            val email = emailEditText.text.toString()
-            if (email.isNotEmpty()) {
-                // Perform forgot password logic (e.g., send a reset email)
-                alertDialog.dismiss()  // Dismiss the dialog
-            } else {
-                // Show an error if the email field is empty
-                emailEditText.error = "Please enter your email"
-            }
-        }
-
-        // Show the dialog
-        alertDialog.show()
-    }
 }
