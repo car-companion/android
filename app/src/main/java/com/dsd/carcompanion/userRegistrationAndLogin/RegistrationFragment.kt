@@ -1,4 +1,4 @@
-package com.dsd.carcompanion
+package com.dsd.carcompanion.userRegistrationAndLogin
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.dsd.carcompanion.R
 import com.dsd.carcompanion.databinding.FragmentRegistrationBinding
 
 class RegistrationFragment : Fragment() {
@@ -79,8 +81,7 @@ class RegistrationFragment : Fragment() {
         }
 
         binding.textViewToLogin.setOnClickListener {
-            Toast.makeText(this.context, "Going to Login Fragment", Toast.LENGTH_SHORT).show()
-        }
+            findNavController().navigate(R.id.action_RegistrationFragment_to_LoginFragment)       }
     }
 
     override fun onDestroyView() {

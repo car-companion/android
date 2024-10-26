@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CarCompanion"
         tools:targetApi="31">
-        <activity android:name=".LoginActivity" />
+        <activity android:name=".userRegistrationAndLogin.UserStartActivity"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -23,8 +23,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ForgotPasswordActivity" />
-
     </application>
 
 </manifest>
