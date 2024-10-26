@@ -1,7 +1,14 @@
 package com.dsd.carcompanion
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
+import android.view.LayoutInflater
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -19,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Inflate and set the layout
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -28,11 +36,23 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        binding.fab.setOnClickListener { view ->
+        // Setup FAB action
+        binding.fab.setOnClickListener {
+        view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null)
-                .setAnchorView(R.id.fab).show()
+                .setAnchorView(R.id.fab)
+                .show()
+
         }
+        // Set up hyperlink-like behavior for "Forgot Password?" text
+        val forgotPasswordTextView = findViewById<TextView>(R.id.textViewForgotPassword)
+        forgotPasswordTextView.setOnClickListener {
+            // Open ForgotPasswordActivity when clicked
+            val intent = Intent(this, ForgotPasswordActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -53,7 +73,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
+
+    // Function to show the Forgot Password dialog
+
 }
