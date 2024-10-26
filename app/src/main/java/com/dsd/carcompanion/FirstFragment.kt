@@ -1,10 +1,12 @@
 package com.dsd.carcompanion
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.navigation.fragment.findNavController
 import com.dsd.carcompanion.databinding.FragmentFirstBinding
 
@@ -34,6 +36,10 @@ class FirstFragment : Fragment() {
 
         binding.buttonRegistration.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_RegistrationFragment)
+        }
+        binding.loginButton.setOnClickListener {
+            val intent = Intent(requireContext(), LoginActivity::class.java)
+            startActivity(intent)
         }
 
         binding.buttonFirst.setOnClickListener {
