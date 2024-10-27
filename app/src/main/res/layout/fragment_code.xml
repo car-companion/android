@@ -14,7 +14,7 @@
     <EditText
         android:id="@+id/et_forgot_password_enter_code"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:hint="@string/forgot_pass_fragment_hint_code"
         android:inputType="number"
         tools:ignore="TextFields" />
