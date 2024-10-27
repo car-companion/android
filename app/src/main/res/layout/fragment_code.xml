@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -8,18 +9,19 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enter the 6-digit code sent to your email" />
+        android:text="@string/forgot_pass_fragment_title_code" />
 
     <EditText
-        android:id="@+id/etCode"
+        android:id="@+id/et_forgot_password_enter_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="6-digit code"
-        android:inputType="number" />
+        android:hint="@string/forgot_pass_fragment_hint_code"
+        android:inputType="number"
+        tools:ignore="TextFields" />
 
     <Button
-        android:id="@+id/btnSubmitCode"
+        android:id="@+id/btn_forgot_password_verify"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Verify" />
+        android:text="@string/forgot_pass_fragment_button_verify" />
 </LinearLayout>

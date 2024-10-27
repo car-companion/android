@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -8,18 +9,19 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enter your email to reset your password" />
+        android:text="@string/forgot_pass_fragment_title_email" />
 
     <EditText
-        android:id="@+id/etEmail"
+        android:id="@+id/et_forgot_password_enter_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"
-        android:inputType="textEmailAddress" />
+        android:hint="@string/forgot_pass_fragment_hint_email"
+        android:inputType="textEmailAddress"
+        tools:ignore="TextFields" />
 
     <Button
-        android:id="@+id/btnSubmitEmail"
+        android:id="@+id/btn_forgot_password_submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Submit" />
+        android:text="@string/button_submit" />
 </LinearLayout>

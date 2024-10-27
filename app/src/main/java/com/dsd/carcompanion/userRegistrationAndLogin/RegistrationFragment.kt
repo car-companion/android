@@ -41,14 +41,15 @@ class RegistrationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.buttonRegister.setOnClickListener {
-            val firstName: String = binding.editTextFirstName.text.toString()
-            val lastName: String = binding.editTextLastName.text.toString()
-            val email: String = binding.editTextEmail.text.toString()
-            val country: String = binding.editTextCountry.text.toString()
-            val password: String = binding.editTextPassword.text.toString()
-            val confirmPassword: String = binding.editTextConfirmPassword.text.toString()
+        binding.btnRegistrationFragmentSubmit.setOnClickListener {
+            val firstName: String = binding.etRegistrationFragmentFirstName.text.toString()
+            val lastName: String = binding.etRegistrationFragmentLastName.text.toString()
+            val email: String = binding.etRegistrationFragmentEmail.text.toString()
+            val country: String = binding.etRegistrationFragmentCountry.text.toString()
+            val password: String = binding.etRegistrationFragmentPassword.text.toString()
+            val confirmPassword: String = binding.etRegistrationFragmentConfirmPassword.text.toString()
 
+            //Need change in the next sprint!!!
             if(firstName.isEmpty()) {
                 displayFormError("First name is required!")
             }

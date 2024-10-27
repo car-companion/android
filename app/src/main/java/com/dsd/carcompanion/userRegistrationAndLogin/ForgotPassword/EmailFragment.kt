@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
 import androidx.fragment.app.Fragment
 import com.dsd.carcompanion.R
 import com.dsd.carcompanion.databinding.FragmentEmailBinding
@@ -28,15 +26,15 @@ class EmailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnSubmitEmail.setOnClickListener {
-            val emailEditText = binding.etEmail
+        binding.btnForgotPasswordSubmit.setOnClickListener {
+            val emailEditText = binding.etForgotPasswordEnterEmail
 
-            val email: String = binding.etEmail.text.toString()
+            val email: String = binding.etForgotPasswordEnterEmail.text.toString()
 
             if (isValidEmail(email)) {
                 findNavController().navigate(R.id.action_ForgotPassword_to_CodeForgotPassword)
             } else {
-                emailEditText.error = "Enter a valid email"
+                emailEditText.error = getString(R.string.forgot_pass_fragment_message_email_error)
             }
         }
     }
@@ -48,6 +46,6 @@ class EmailFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null // Avoid memory leaks
+        _binding = null
     }
 }
