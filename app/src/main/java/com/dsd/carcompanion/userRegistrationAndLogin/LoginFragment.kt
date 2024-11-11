@@ -75,7 +75,7 @@ class LoginFragment : Fragment() {
                         } else if (response is ResultOf.Error) {
                             Log.e("LoginFragment", "Login failed: ${response.message}")
                         } else {
-                            Log.e("Login Fragment", "Nekaj drugo")
+                            Log.e("Login Fragment", "Something else")
                         }
                     }
                 } catch (e: Exception) {
