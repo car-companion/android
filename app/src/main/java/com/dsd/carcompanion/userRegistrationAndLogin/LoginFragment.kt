@@ -1,29 +1,25 @@
 package com.dsd.carcompanion.userRegistrationAndLogin
 
-import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.dsd.carcompanion.MainActivity
 import com.dsd.carcompanion.R
 import com.dsd.carcompanion.api.datastore.JwtTokenDataStore
 import com.dsd.carcompanion.api.instance.UserClient
 import com.dsd.carcompanion.api.models.LoginRequest
-import com.dsd.carcompanion.api.models.TokenModel
 import com.dsd.carcompanion.api.repository.AuthRepository
 import com.dsd.carcompanion.api.utils.ResultOf
 import com.dsd.carcompanion.databinding.FragmentLoginBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Response
 
 class LoginFragment : Fragment() {
 
@@ -69,9 +65,11 @@ class LoginFragment : Fragment() {
 
                     withContext(Dispatchers.Main) {
                         if (response is ResultOf.Success) {
-                            Log.d("Login Fragment", "Bravoo")
-                            binding.resultTextView.append("\n")
-                            binding.resultTextView.append(jwtTokenDataStore.getAccessJwt())
+                            Log.d("Login Fragment", "Well done, you registred")
+                            val intent = Intent(requireActivity(), MainActivity::class.java)
+                            startActivity(intent)
+
+                            requireActivity().finish()
                         } else if (response is ResultOf.Error) {
                             Log.e("LoginFragment", "Login failed: ${response.message}")
                         } else {
