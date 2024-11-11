@@ -1,14 +1,24 @@
 package com.dsd.carcompanion.userRegistrationAndLogin
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dsd.carcompanion.R
+import com.dsd.carcompanion.api.datastore.JwtTokenDataStore
+import com.dsd.carcompanion.api.instance.UserClient
+import com.dsd.carcompanion.api.models.CreateUserRequest
+import com.dsd.carcompanion.api.repository.AuthRepository
+import com.dsd.carcompanion.api.utils.ResultOf
 import com.dsd.carcompanion.databinding.FragmentRegistrationBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class RegistrationFragment : Fragment() {
 
@@ -28,10 +38,13 @@ class RegistrationFragment : Fragment() {
     private var _binding: FragmentRegistrationBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var jwtTokenDataStore: JwtTokenDataStore
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        jwtTokenDataStore = JwtTokenDataStore(requireContext())
 
         _binding = FragmentRegistrationBinding.inflate(inflater, container, false)
         return binding.root
@@ -45,7 +58,7 @@ class RegistrationFragment : Fragment() {
             val firstName: String = binding.etRegistrationFragmentFirstName.text.toString()
             val lastName: String = binding.etRegistrationFragmentLastName.text.toString()
             val email: String = binding.etRegistrationFragmentEmail.text.toString()
-            val country: String = binding.etRegistrationFragmentCountry.text.toString()
+            val username: String = binding.etRegistrationFragmentUsername.text.toString()
             val password: String = binding.etRegistrationFragmentPassword.text.toString()
             val confirmPassword: String = binding.etRegistrationFragmentConfirmPassword.text.toString()
 
@@ -62,8 +75,8 @@ class RegistrationFragment : Fragment() {
             else if(!isValidEmail(email)) {
                 displayFormError("Email is not valid...")
             }
-            else if(country.isEmpty()) {
-                displayFormError("Country is required!")
+            else if(username.isEmpty()) {
+                displayFormError("Username is required!")
             }
             else if(password.isEmpty()) {
                 displayFormError("Password is required!")
@@ -77,7 +90,39 @@ class RegistrationFragment : Fragment() {
             else if(password != confirmPassword) {
                 displayFormError("Passwords must be the same!")
             } else {
-                binding.textViewRegistrationInfo.setText("$firstName $lastName\n$email\n$country\n$password\n$confirmPassword")
+                binding.textViewRegistrationInfo.setText("$firstName $lastName\n$email\n$username\n$password\n$confirmPassword")
+                val createUserRequest = CreateUserRequest(
+                    Email = email,
+                    Username = username,
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Password = password)
+
+                Log.d("Tester", createUserRequest.Password)
+
+                Log.d("Tester", createUserRequest.toString())
+
+                val userService = UserClient.apiService
+                val authRepository = AuthRepository(userService, jwtTokenDataStore)
+
+                viewLifecycleOwner.lifecycleScope.launch {
+                    try {
+                        val response = authRepository.register(createUserRequest)
+
+                        withContext(Dispatchers.Main) {
+                            if (response is ResultOf.Success) {
+                                Log.d("Register Fragment", "Bravoo")
+                            } else if (response is ResultOf.Error) {
+                                Log.e("Register Fragment", "Register failed: ${response.message}")
+                            } else {
+                                Log.e("Register Fragment", "Nekaj drugo")
+                            }
+                        }
+
+                    } catch (e: Exception) {
+                        Log.e("Register Fragment", "Error during login: ${e.message}")
+                    }
+                }
             }
         }
 
