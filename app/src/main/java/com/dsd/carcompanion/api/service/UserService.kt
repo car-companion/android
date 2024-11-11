@@ -16,6 +16,6 @@ interface UserService {
     @POST("api/auth/jwt/create")
     suspend fun loginUser(@Body loginRequest: LoginRequest): Response<TokenModel>
 
-    @POST("api/auth/users")
+    @POST("api/auth/users/")
     suspend fun registerUser(@Body createUserRequest: CreateUserRequest): Response<TokenModel>
 }

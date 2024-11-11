@@ -58,7 +58,7 @@ class RegistrationFragment : Fragment() {
             val firstName: String = binding.etRegistrationFragmentFirstName.text.toString()
             val lastName: String = binding.etRegistrationFragmentLastName.text.toString()
             val email: String = binding.etRegistrationFragmentEmail.text.toString()
-            val country: String = binding.etRegistrationFragmentCountry.text.toString()
+            val username: String = binding.etRegistrationFragmentUsername.text.toString()
             val password: String = binding.etRegistrationFragmentPassword.text.toString()
             val confirmPassword: String = binding.etRegistrationFragmentConfirmPassword.text.toString()
 
@@ -75,8 +75,8 @@ class RegistrationFragment : Fragment() {
             else if(!isValidEmail(email)) {
                 displayFormError("Email is not valid...")
             }
-            else if(country.isEmpty()) {
-                displayFormError("Country is required!")
+            else if(username.isEmpty()) {
+                displayFormError("Username is required!")
             }
             else if(password.isEmpty()) {
                 displayFormError("Password is required!")
@@ -90,28 +90,29 @@ class RegistrationFragment : Fragment() {
             else if(password != confirmPassword) {
                 displayFormError("Passwords must be the same!")
             } else {
-                binding.textViewRegistrationInfo.setText("$firstName $lastName\n$email\n$country\n$password\n$confirmPassword")
+                binding.textViewRegistrationInfo.setText("$firstName $lastName\n$email\n$username\n$password\n$confirmPassword")
                 val createUserRequest = CreateUserRequest(
                     Email = email,
-                    Username = firstName,
+                    Username = username,
                     FirstName = firstName,
                     LastName = lastName,
                     Password = password)
+
+                Log.d("Tester", createUserRequest.Password)
+
+                Log.d("Tester", createUserRequest.toString())
 
                 val userService = UserClient.apiService
                 val authRepository = AuthRepository(userService, jwtTokenDataStore)
 
                 viewLifecycleOwner.lifecycleScope.launch {
                     try {
-                        // Perform the login
-                        val response = authRepository.reqister(createUserRequest)
+                        val response = authRepository.register(createUserRequest)
 
                         withContext(Dispatchers.Main) {
                             if (response is ResultOf.Success) {
-                                // Handle successful login (e.g., navigate to next screen)
                                 Log.d("Register Fragment", "Bravoo")
                             } else if (response is ResultOf.Error) {
-                                // Handle error (e.g., show a Toast or an error message)
                                 Log.e("Register Fragment", "Register failed: ${response.message}")
                             } else {
                                 Log.e("Register Fragment", "Nekaj drugo")
@@ -119,7 +120,6 @@ class RegistrationFragment : Fragment() {
                         }
 
                     } catch (e: Exception) {
-                        // Handle any exceptions that might occur
                         Log.e("Register Fragment", "Error during login: ${e.message}")
                     }
                 }

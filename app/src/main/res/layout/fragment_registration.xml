@@ -49,13 +49,13 @@
             android:inputType="textEmailAddress" />
 
         <EditText
-            android:id="@+id/et_registration_fragment_country"
+            android:id="@+id/et_registration_fragment_username"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:ems="10"
-            android:hint="@string/registration_fragment_hint_country"
+            android:hint="@string/registration_fragment_hint_username"
             android:importantForAutofill="no"
             android:inputType="text" />
 

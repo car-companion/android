@@ -39,14 +39,14 @@ class LoginFragment : Fragment() {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         jwtTokenDataStore = JwtTokenDataStore(requireContext())
 
-        viewLifecycleOwner.lifecycleScope.launch {
+        /*viewLifecycleOwner.lifecycleScope.launch {
             try {
                 binding.resultTextView.append(jwtTokenDataStore.getAccessJwt())
             } catch (e: Exception) {
                 // Handle any exceptions that might occur
                 Log.e("LoginFragment", "Error during login: ${e.message}")
             }
-        }
+        }*/
         return binding.root
     }
 
@@ -65,23 +65,20 @@ class LoginFragment : Fragment() {
 
             viewLifecycleOwner.lifecycleScope.launch {
                 try {
-                    // Perform the login
                     val response = authRepository.login(loginRequest)
 
                     withContext(Dispatchers.Main) {
                         if (response is ResultOf.Success) {
-                            // Handle successful login (e.g., navigate to next screen)
                             Log.d("Login Fragment", "Bravoo")
+                            binding.resultTextView.append("\n")
+                            binding.resultTextView.append(jwtTokenDataStore.getAccessJwt())
                         } else if (response is ResultOf.Error) {
-                            // Handle error (e.g., show a Toast or an error message)
                             Log.e("LoginFragment", "Login failed: ${response.message}")
                         } else {
                             Log.e("Login Fragment", "Nekaj drugo")
                         }
                     }
-
                 } catch (e: Exception) {
-                    // Handle any exceptions that might occur
                     Log.e("LoginFragment", "Error during login: ${e.message}")
                 }
             }

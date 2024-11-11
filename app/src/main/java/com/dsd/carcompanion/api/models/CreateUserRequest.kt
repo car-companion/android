@@ -4,17 +4,17 @@ import com.google.gson.annotations.SerializedName
 
 data class CreateUserRequest (
     @SerializedName("email")
-    val Email: String,
+    var Email: String,
 
     @SerializedName("username")
-    val Username: String,
+    var Username: String,
 
     @SerializedName("first_name")
-    val FirstName: String,
+    var FirstName: String,
 
     @SerializedName("last_name")
-    val LastName: String,
+    var LastName: String,
 
     @SerializedName("password")
-    val Password: String,
+    var Password: String,
 )

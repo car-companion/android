@@ -17,7 +17,7 @@
     <string name="registration_fragment_hint_first_name">First Name</string>
     <string name="registration_fragment_hint_last_name">Last Name</string>
     <string name="registration_fragment_hint_email">Email</string>
-    <string name="registration_fragment_hint_country">Country</string>
+    <string name="registration_fragment_hint_username">Username</string>
     <string name="registration_fragment_hint_password">Password</string>
     <string name="registration_fragment_hint_confirm_password">Confirm Password</string>
     <string name="registration_fragment_textview_already_registered">Already have an account?\t</string>
