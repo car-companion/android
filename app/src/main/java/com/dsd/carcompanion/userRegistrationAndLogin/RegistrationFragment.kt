@@ -93,7 +93,7 @@ class RegistrationFragment : Fragment() {
                 binding.textViewRegistrationInfo.setText("$firstName $lastName\n$email\n$country\n$password\n$confirmPassword")
                 val createUserRequest = CreateUserRequest(
                     Email = email,
-                    Username = firstName + lastName,
+                    Username = firstName,
                     FirstName = firstName,
                     LastName = lastName,
                     Password = password)
@@ -109,18 +109,18 @@ class RegistrationFragment : Fragment() {
                         withContext(Dispatchers.Main) {
                             if (response is ResultOf.Success) {
                                 // Handle successful login (e.g., navigate to next screen)
-                                Log.d("Login Fragment", "Bravoo")
+                                Log.d("Register Fragment", "Bravoo")
                             } else if (response is ResultOf.Error) {
                                 // Handle error (e.g., show a Toast or an error message)
-                                Log.e("LoginFragment", "Login failed: ${response.message}")
+                                Log.e("Register Fragment", "Register failed: ${response.message}")
                             } else {
-                                Log.e("Login Fragment", "Nekaj drugo")
+                                Log.e("Register Fragment", "Nekaj drugo")
                             }
                         }
 
                     } catch (e: Exception) {
                         // Handle any exceptions that might occur
-                        Log.e("LoginFragment", "Error during login: ${e.message}")
+                        Log.e("Register Fragment", "Error during login: ${e.message}")
                     }
                 }
             }
