@@ -1,14 +1,24 @@
 package com.dsd.carcompanion.userRegistrationAndLogin
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dsd.carcompanion.R
+import com.dsd.carcompanion.api.datastore.JwtTokenDataStore
+import com.dsd.carcompanion.api.instance.UserClient
+import com.dsd.carcompanion.api.models.CreateUserRequest
+import com.dsd.carcompanion.api.repository.AuthRepository
+import com.dsd.carcompanion.api.utils.ResultOf
 import com.dsd.carcompanion.databinding.FragmentRegistrationBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class RegistrationFragment : Fragment() {
 
@@ -28,10 +38,13 @@ class RegistrationFragment : Fragment() {
     private var _binding: FragmentRegistrationBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var jwtTokenDataStore: JwtTokenDataStore
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        jwtTokenDataStore = JwtTokenDataStore(requireContext())
 
         _binding = FragmentRegistrationBinding.inflate(inflater, container, false)
         return binding.root
@@ -78,6 +91,38 @@ class RegistrationFragment : Fragment() {
                 displayFormError("Passwords must be the same!")
             } else {
                 binding.textViewRegistrationInfo.setText("$firstName $lastName\n$email\n$country\n$password\n$confirmPassword")
+                val createUserRequest = CreateUserRequest(
+                    Email = email,
+                    Username = firstName + lastName,
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Password = password)
+
+                val userService = UserClient.apiService
+                val authRepository = AuthRepository(userService, jwtTokenDataStore)
+
+                viewLifecycleOwner.lifecycleScope.launch {
+                    try {
+                        // Perform the login
+                        val response = authRepository.reqister(createUserRequest)
+
+                        withContext(Dispatchers.Main) {
+                            if (response is ResultOf.Success) {
+                                // Handle successful login (e.g., navigate to next screen)
+                                Log.d("Login Fragment", "Bravoo")
+                            } else if (response is ResultOf.Error) {
+                                // Handle error (e.g., show a Toast or an error message)
+                                Log.e("LoginFragment", "Login failed: ${response.message}")
+                            } else {
+                                Log.e("Login Fragment", "Nekaj drugo")
+                            }
+                        }
+
+                    } catch (e: Exception) {
+                        // Handle any exceptions that might occur
+                        Log.e("LoginFragment", "Error during login: ${e.message}")
+                    }
+                }
             }
         }
 

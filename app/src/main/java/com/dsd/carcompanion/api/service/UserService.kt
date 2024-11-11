@@ -1,5 +1,6 @@
 package com.dsd.carcompanion.api.service
 
+import com.dsd.carcompanion.api.models.CreateUserRequest
 import com.dsd.carcompanion.api.models.LoginRequest
 import com.dsd.carcompanion.api.models.TokenModel
 import com.dsd.carcompanion.api.models.Users
@@ -14,4 +15,7 @@ interface UserService {
 
     @POST("api/auth/jwt/create")
     suspend fun loginUser(@Body loginRequest: LoginRequest): Response<TokenModel>
+
+    @POST("api/auth/users")
+    suspend fun registerUser(@Body createUserRequest: CreateUserRequest): Response<TokenModel>
 }

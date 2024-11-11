@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.preferencesDataStore
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -18,8 +17,12 @@ import com.dsd.carcompanion.api.datastore.JwtTokenDataStore
 import com.dsd.carcompanion.api.instance.UserClient
 import com.dsd.carcompanion.api.models.LoginRequest
 import com.dsd.carcompanion.api.models.TokenModel
+import com.dsd.carcompanion.api.repository.AuthRepository
+import com.dsd.carcompanion.api.utils.ResultOf
 import com.dsd.carcompanion.databinding.FragmentLoginBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Response
 
 class LoginFragment : Fragment() {
@@ -27,15 +30,23 @@ class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
 
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "jwt_tokens")
-
+    private lateinit var jwtTokenDataStore: JwtTokenDataStore
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
+        jwtTokenDataStore = JwtTokenDataStore(requireContext())
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                binding.resultTextView.append(jwtTokenDataStore.getAccessJwt())
+            } catch (e: Exception) {
+                // Handle any exceptions that might occur
+                Log.e("LoginFragment", "Error during login: ${e.message}")
+            }
+        }
         return binding.root
     }
 
@@ -49,23 +60,29 @@ class LoginFragment : Fragment() {
 
             val loginRequest = LoginRequest(username = usernameEditText, password = passwordEditText)
 
+            val userService = UserClient.apiService
+            val authRepository = AuthRepository(userService, jwtTokenDataStore)
+
             viewLifecycleOwner.lifecycleScope.launch {
                 try {
-                    // Make the suspend API call here
-                    val response: Response<TokenModel> =
-                        UserClient.apiService.loginUser(loginRequest)
+                    // Perform the login
+                    val response = authRepository.login(loginRequest)
 
-                    if (response.isSuccessful) {
-                        val resp = response.body()
-                        // Handle the retrieved users data
-                        Log.d("LoginFragment", "Login successfully: $resp")
-                    } else {
-                        // Handle error (e.g., response not successful)
-                        Log.e("LoginFragment", "Error: ${response.code()}")
+                    withContext(Dispatchers.Main) {
+                        if (response is ResultOf.Success) {
+                            // Handle successful login (e.g., navigate to next screen)
+                            Log.d("Login Fragment", "Bravoo")
+                        } else if (response is ResultOf.Error) {
+                            // Handle error (e.g., show a Toast or an error message)
+                            Log.e("LoginFragment", "Login failed: ${response.message}")
+                        } else {
+                            Log.e("Login Fragment", "Nekaj drugo")
+                        }
                     }
+
                 } catch (e: Exception) {
-                    // Handle network or API call failure
-                    Log.e("LoginFragment", "Failure: ${e.message}")
+                    // Handle any exceptions that might occur
+                    Log.e("LoginFragment", "Error during login: ${e.message}")
                 }
             }
         }

@@ -1,14 +1,16 @@
 package com.dsd.carcompanion.api.datastore
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
+import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.dsd.carcompanion.DataStoreManager
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import com.dsd.carcompanion.api.utils.JwtTokenManager
 
-class JwtTokenDataStore(private val dataStore: DataStore<Preferences>) : JwtTokenManager {
+class JwtTokenDataStore(context: Context) : JwtTokenManager {
+
+    private val dataStore = DataStoreManager.getInstance()
 
     companion object {
         val ACCESS_JWT_KEY = stringPreferencesKey("access_jwt")

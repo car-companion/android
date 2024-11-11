@@ -1,5 +1,6 @@
 package com.dsd.carcompanion.api.repository
 
+import com.dsd.carcompanion.api.models.CreateUserRequest
 import com.dsd.carcompanion.api.models.LoginRequest
 import com.dsd.carcompanion.api.models.TokenModel
 import com.dsd.carcompanion.api.utils.JwtTokenManager
@@ -31,6 +32,14 @@ class AuthRepository(
     // Function to handle login
     suspend fun login(loginRequest: LoginRequest): ResultOf<Unit> {
         return fetchDataFromApi(call = { authService.loginUser(loginRequest) },
+            transform = { response: TokenModel ->
+                jwtTokenManager.saveAccessJwt(response.Access)
+                jwtTokenManager.saveRefreshJwt(response.Refresh)
+            })
+    }
+
+    suspend fun reqister(createUserRequest: CreateUserRequest): ResultOf<Unit> {
+        return fetchDataFromApi(call = { authService.registerUser(createUserRequest) },
             transform = { response: TokenModel ->
                 jwtTokenManager.saveAccessJwt(response.Access)
                 jwtTokenManager.saveRefreshJwt(response.Refresh)
