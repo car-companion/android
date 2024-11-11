@@ -66,8 +66,14 @@ class RegistrationFragment : Fragment() {
             if(firstName.isEmpty()) {
                 displayFormError("First name is required!")
             }
+            else if(!Character.isUpperCase(firstName.get(0))){
+                displayFormError("First name should start with a capital letter!")
+            }
             else if(lastName.isEmpty()) {
                 displayFormError("Last name is required!")
+            }
+            else if(!Character.isUpperCase(lastName.get(0))){
+                displayFormError("Last name should start with a capital letter!")
             }
             else if(email.isEmpty()) {
                 displayFormError("Email is required!")
@@ -82,7 +88,12 @@ class RegistrationFragment : Fragment() {
                 displayFormError("Password is required!")
             }
             else if(!isValidPassword(password)) {
-                displayFormError("Password is not valid...")
+                displayFormError("Password is not valid...\n" +
+                        "Password should contain minimum of 8 characters\n" +
+                        "Atleast 1 uppercase letter\n" +
+                        "Atleast 1 lowercase letter\n" +
+                        "Atleast 1 number\n" +
+                        "Atleast 1 special character: @#\$%^&+=")
             }
             else if(confirmPassword.isEmpty()) {
                 displayFormError("Confirm password is required!")
@@ -115,7 +126,7 @@ class RegistrationFragment : Fragment() {
                             } else if (response is ResultOf.Error) {
                                 Log.e("Register Fragment", "Register failed: ${response.message}")
                             } else {
-                                Log.e("Register Fragment", "Nekaj drugo")
+                                Log.e("Register Fragment", "Something else")
                             }
                         }
 
