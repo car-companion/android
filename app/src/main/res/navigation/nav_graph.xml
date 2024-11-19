@@ -11,5 +11,15 @@
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_first">
 
+        <action
+            android:id="@+id/action_FirstFragment_to_VehicleOwnershipFragment"
+            app:destination="@id/VehicleOwnershipFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/VehicleOwnershipFragment"
+        android:name="com.dsd.carcompanion.vehicleOwnership.VehicleOwnershipFragment"
+        android:label="@string/vehicle_ownership_fragment_label"
+        tools:layout="@layout/fragment_vehicle_ownership">
     </fragment>
 </navigation>
