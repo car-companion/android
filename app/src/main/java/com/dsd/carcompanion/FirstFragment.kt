@@ -51,6 +51,10 @@ class FirstFragment : Fragment() {
         binding.logoutButton.setOnClickListener{
             logoutUser()
         }
+
+        binding.homescreenButton.setOnClickListener{
+            findNavController().navigate(R.id.action_FirstFragment_to_HomeFragment)
+        }
     }
 
     fun logoutUser(){
