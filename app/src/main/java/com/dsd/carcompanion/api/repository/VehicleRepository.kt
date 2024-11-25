@@ -9,7 +9,7 @@ class VehicleRepository(
     private val vehicleService: VehicleService
 ) {
 
-    private suspend fun <T> fetchDataFromApi(call: suspend () -> Response<T>, transform: suspend (T) -> Unit): ResultOf<Unit> {
+    private suspend fun <T> fetchVehicleDataFromApi(call: suspend () -> Response<T>, transform: suspend (T) -> Unit): ResultOf<Unit> {
         return try {
             val response = call()
             Log.d("Testing", response.toString())
