@@ -60,5 +60,6 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.androidx.lifecycle.livedata.ktx)
 
+    implementation(libs.colorpicker)
     implementation(libs.flexbox)
 }

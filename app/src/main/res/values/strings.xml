@@ -63,6 +63,7 @@
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="registration_fragment_label">Registration Fragment</string>
+    <string name="vehicle_ownership_fragment_label">Vehicle Ownership Fragment</string>
     <string name="registration">Register</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
