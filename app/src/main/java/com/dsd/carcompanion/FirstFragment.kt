@@ -52,6 +52,14 @@ class FirstFragment : Fragment() {
             logoutUser()
         }
 
+        binding.settingsButton.setOnClickListener{
+            findNavController().navigate(R.id.action_FirstFragment_to_SettingsFragment)
+        }
+
+        binding.accessButton.setOnClickListener{
+            findNavController().navigate(R.id.action_FirstFragment_to_GrantPermissionsFragment)
+        }
+
         binding.vehicleOwnershipButton.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_VehicleOwnershipFragment)
         }
