@@ -1,0 +1,82 @@
+<vehicle_info>
+    <item>
+        <label>Current interior temperature:</label>
+        <state>25°C</state>
+    </item>
+    <item>
+        <label>Target AC interior temperature:</label>
+        <state>25°C</state>
+    </item>
+    <item>
+        <label>Left front door:</label>
+        <state>Closed</state>
+    </item>
+    <item>
+        <label>Right front door:</label>
+        <state>Closed</state>
+    </item>
+    <item>
+        <label>Left back door:</label>
+        <state>Closed</state>
+    </item>
+    <item>
+        <label>Right back door:</label>
+        <state>Closed</state>
+    </item>
+    <item>
+        <label>Trunk:</label>
+        <state>Closed</state>
+    </item>
+    <item>
+        <label>Left front window:</label>
+        <state>Closed</state>
+    </item>
+    <item>
+        <label>Right front window:</label>
+        <state>Closed</state>
+    </item>
+    <item>
+        <label>Left back window:</label>
+        <state>Closed</state>
+    </item>
+    <item>
+        <label>Right back window:</label>
+        <state>Closed</state>
+    </item>
+    <item>
+        <label>Lights:</label>
+        <state>Off</state>
+    </item>
+    <item>
+        <label>Current range:</label>
+        <state>?</state>
+    </item>
+    <item>
+        <label>Charging state:</label>
+        <state>Connected</state>
+    </item>
+    <item>
+        <label>Charging power:</label>
+        <state>?</state>
+    </item>
+    <item>
+        <label>Time to full charge:</label>
+        <state>30min</state>
+    </item>
+    <item>
+        <label>Location:</label>
+        <state>?</state>
+    </item>
+    <item>
+        <label>Ignition:</label>
+        <state>Locked</state>
+    </item>
+    <item>
+        <label>Accumulator:</label>
+        <state>Off</state>
+    </item>
+    <item>
+        <label>Engine:</label>
+        <state>Off</state>
+    </item>
+</vehicle_info>

@@ -3,6 +3,8 @@ agp = "8.7.1"
 colorpicker = "1.2.0"
 colorsheet = "1.0.1"
 converterGson = "2.9.0"
+databindingCompiler = "8.7.2"
+flexbox = "3.0.0"
 javaxInjec = "1"
 kotlin = "1.9.24"
 coreKtx = "1.13.1"
@@ -21,12 +23,14 @@ datastorePreferencesCoreJvm = "1.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-databinding-compiler = { module = "androidx.databinding:databinding-compiler", version.ref = "databindingCompiler" }
 androidx-datastore-core = { module = "androidx.datastore:datastore-core", version.ref = "datastoreCoreAndroid" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastoreCoreAndroid" }
 androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 colorpicker = { module = "com.github.mrudultora:Colorpicker", version.ref = "colorpicker" }
 colorsheet = { module = "dev.sasikanth:colorsheet", version.ref = "colorsheet" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
 javax-injec = { module = "javax.inject:javax.injec", version.ref = "javaxInjec" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

@@ -54,6 +54,9 @@ class FirstFragment : Fragment() {
 
         binding.vehicleOwnershipButton.setOnClickListener{
             findNavController().navigate(R.id.action_FirstFragment_to_VehicleOwnershipFragment)
+
+        binding.homescreenButton.setOnClickListener{
+            findNavController().navigate(R.id.action_FirstFragment_to_HomeFragment)
         }
     }
 

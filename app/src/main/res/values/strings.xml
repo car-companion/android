@@ -38,6 +38,25 @@
     <string name="forgot_pass_fragment_button_reset_password">Reset password</string>
     <string name="forgot_pass_fragment_button_verify">Verify</string>
 
+    <!-- VEHICLE VIEW STRINGS -->
+    <string name="home_fragment_2d_mode_fab_dimension">2D</string>
+    <string name="home_fragment_3d_mode_fab_dimension">3D</string>
+
+    <!-- VEHICLE COMPONENTS STRINGS -->
+    <string name="bottom_sheet_title_parameters">Parameters</string>
+    <string name="bottom_sheet_title_information">Information</string>
+    <string name="bottom_sheet_vehicle_tv_label">Vehicle</string>
+    <string name="bottom_sheet_windows_tv_label">Windows</string>
+    <string name="bottom_sheet_lights_tv_label">Lights</string>
+    <string name="bottom_sheet_temperature_tv_label">Temperature</string>
+    <string name="bottom_sheet_vehicle_locked_tv_state">Locked</string>
+    <string name="bottom_sheet_vehicle_unlocked_tv_state">Unlocked</string>
+    <string name="bottom_sheet_windows_closed_tv_state">Closed</string>
+    <string name="bottom_sheet_windows_opened_tv_state">Opened</string>
+    <string name="bottom_sheet_lights_off_tv_state">Off</string>
+    <string name="bottom_sheet_lights_on_tv_state">On</string>
+    <string name="bottom_sheet_temperature_degrees_tv_state">°C</string>
+
     <!-- Premade values; will be deleted in the next sprint -->
 
     <!-- Strings used for fragments for navigation -->
@@ -48,4 +67,5 @@
     <string name="registration">Register</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+    <string name="home_fragment_label">Home Fragment</string>
 </resources>
