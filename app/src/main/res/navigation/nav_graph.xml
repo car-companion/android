@@ -18,6 +18,14 @@
         <action
             android:id="@+id/action_FirstFragment_to_SettingsFragment"
             app:destination="@id/SettingsFragment" />
+      
+        <action
+            android:id="@+id/action_FirstFragment_to_VehicleOwnershipFragment"
+            app:destination="@id/VehicleOwnershipFragment" />
+      
+        <action
+            android:id="@+id/action_FirstFragment_to_HomeFragment"
+            app:destination="@id/HomeFragment" />
 
     </fragment>
 
@@ -31,8 +39,6 @@
         <action
             android:id="@+id/action_SettingsFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
-
-
     </fragment>
 
     <!-- Grant Permissions Fragment -->
@@ -44,6 +50,24 @@
 
         <action
             android:id="@+id/action_GrantPermissionsFragment_to_SettingsFragment"
+            app:destination="@id/FirstFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/VehicleOwnershipFragment"
+        android:name="com.dsd.carcompanion.vehicleOwnership.VehicleOwnershipFragment"
+        android:label="@string/vehicle_ownership_fragment_label"
+        tools:layout="@layout/fragment_vehicle_ownership">
+    </fragment>
+
+    <fragment
+        android:id="@+id/HomeFragment"
+        android:name="com.dsd.carcompanion.home.HomeFragment"
+        android:label="@string/home_fragment_label"
+        tools:layout="@layout/fragment_home">
+
+        <action
+            android:id="@+id/action_HomeFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
     </fragment>
 </navigation>

@@ -45,7 +45,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="20dp" />
-
+      
         <Button
             android:id="@+id/access_button"
             android:layout_width="wrap_content"
@@ -57,11 +57,31 @@
             android:layout_marginTop="20dp" />
 
         <Button
+            android:id="@+id/vehicle_ownership_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add new vehicle"
+            app:layout_constraintTop_toBottomOf="@id/access_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp" />
+      
+        <Button
             android:id="@+id/settings_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Settings"
-            app:layout_constraintTop_toBottomOf="@id/access_button"
+            app:layout_constraintTop_toBottomOf="@id/vehicle_ownership_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp" />
+
+        <Button
+            android:id="@+id/homescreen_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Homescreen"
+            app:layout_constraintTop_toBottomOf="@id/homescreen_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="20dp" />

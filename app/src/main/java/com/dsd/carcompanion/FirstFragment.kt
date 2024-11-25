@@ -54,12 +54,18 @@ class FirstFragment : Fragment() {
 
         binding.settingsButton.setOnClickListener{
             findNavController().navigate(R.id.action_FirstFragment_to_SettingsFragment)
-
         }
 
         binding.accessButton.setOnClickListener{
             findNavController().navigate(R.id.action_FirstFragment_to_GrantPermissionsFragment)
+        }
 
+        binding.vehicleOwnershipButton.setOnClickListener {
+            findNavController().navigate(R.id.action_FirstFragment_to_VehicleOwnershipFragment)
+        }
+
+        binding.homescreenButton.setOnClickListener{
+            findNavController().navigate(R.id.action_FirstFragment_to_HomeFragment)
         }
     }
 
