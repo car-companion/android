@@ -29,8 +29,8 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setupListeners() {
-        // User Settings Button
-        binding.btnUserSettings.setOnClickListener {
+        // User Notifications Button
+        binding.switchNotification.setOnClickListener {
             //TODO: Implement User Settings functionality in the next sprint
             Toast.makeText(context, "User Settings clicked", Toast.LENGTH_SHORT).show()
         }
@@ -46,7 +46,19 @@ class SettingsFragment : Fragment() {
         }
 
         // App Configuration Button
-        binding.btnAppConfig.setOnClickListener {
+        binding.btnPrivacyPolicy.setOnClickListener {
+            //TODO: Implement App Configuration functionality in the next sprint
+            Toast.makeText(context, "App Configurations clicked", Toast.LENGTH_SHORT).show()
+        }
+
+        // App Configuration Button
+        binding.btnTermsAndConditions.setOnClickListener {
+            //TODO: Implement App Configuration functionality in the next sprint
+            Toast.makeText(context, "App Configurations clicked", Toast.LENGTH_SHORT).show()
+        }
+
+        // App Configuration Button
+        binding.btnAboutApp.setOnClickListener {
             //TODO: Implement App Configuration functionality in the next sprint
             Toast.makeText(context, "App Configurations clicked", Toast.LENGTH_SHORT).show()
         }

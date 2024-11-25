@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import com.dsd.carcompanion.R
 import com.dsd.carcompanion.databinding.FragmentGrantPermissionsBinding
 
-class UserPermissions : Fragment() {
+class UserPermissionsFragment : Fragment() {
 
     private var _binding: FragmentGrantPermissionsBinding? = null
     private val binding get() = _binding!!
@@ -31,8 +31,8 @@ class UserPermissions : Fragment() {
             val userIdentifier = binding.etUserIdentifier.text.toString()
             val selectedVehicle = binding.spinnerVehicleSelection.selectedItem?.toString()
             val selectedAccessLevel = when (binding.radioGroupAccessLevel.checkedRadioButtonId) {
-                R.id.radioFullAccess -> "Full Access"
-                R.id.radioCustomAccess -> "Custom Access"
+                R.id.radio_full_access -> "Full Access"
+                R.id.radio_custom_access -> "Custom Access"
                 else -> null
             }
 
@@ -52,8 +52,8 @@ class UserPermissions : Fragment() {
     private fun setupAccessLevelListener() {
         binding.radioGroupAccessLevel.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
-                R.id.radioFullAccess -> setPermissions(locks = true, lights = true, temperature = true, extra = true)
-                R.id.radioCustomAccess -> enableAllCheckBoxes(true) // Allow user customization
+                R.id.radio_full_access -> setPermissions(locks = true, lights = true, temperature = true, extra = true)
+                R.id.radio_custom_access -> enableAllCheckBoxes(true) // Allow user customization
             }
         }
     }

@@ -1,93 +1,89 @@
-<androidx.constraintlayout.widget.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
 
     <!-- Section 1: User Identifier -->
     <EditText
-        android:id="@+id/etUserIdentifier"
-        android:layout_width="0dp"
+        android:id="@+id/et_user_identifier"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter User Email/Phone"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:hint="Enter User Email/Phone" />
 
     <!-- Section 2: Vehicle Selection -->
     <Spinner
-        android:id="@+id/spinnerVehicleSelection"
-        android:layout_width="0dp"
+        android:id="@+id/spinner_vehicle_selection"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/et_user_identifier"
+        android:layout_marginTop="16dp" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/spinner_vehicle_selection"
         android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/etUserIdentifier"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:background="?android:attr/listDivider" />
 
-    <!-- Section 3: Permission Presets Header -->
-
-
-    <!-- Section 4: Access Levels -->
-
+    <!-- Section 3: Permission Presets -->
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tv_permission_presets"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="48dp"
+        android:layout_below="@id/divider"
+        android:layout_marginTop="16dp"
         android:text="Permission Presets"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider" />
+        android:textStyle="bold" />
 
     <RadioGroup
-        android:id="@+id/radioGroupAccessLevel"
-        android:layout_width="230dp"
-        android:layout_height="103dp"
-        android:layout_marginTop="40dp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/divider">
+        android:id="@+id/radio_group_access_level"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_permission_presets"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical">
 
         <RadioButton
-            android:id="@+id/radioFullAccess"
+            android:id="@+id/radio_full_access"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Full Access" />
 
         <RadioButton
-            android:id="@+id/radioCustomAccess"
+            android:id="@+id/radio_custom_access"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Custom Access" />
     </RadioGroup>
 
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/radio_group_access_level"
+        android:layout_marginTop="16dp"
+        android:background="?android:attr/listDivider" />
+
+    <!-- Section 4: Permissions -->
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/tv_permissions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="Permissions"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider3" />
-
-    <!-- Section 5: Permissions (Grid Style) -->
-    <LinearLayout
-        android:id="@+id/permissionsLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="2"
+        android:layout_below="@id/divider2"
         android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/textView2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:text="Permissions"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/permissions_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_permissions"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:weightSum="2">
 
         <!-- First Column -->
         <LinearLayout
@@ -97,13 +93,13 @@
             android:orientation="vertical">
 
             <CheckBox
-                android:id="@+id/checkboxTemp"
+                android:id="@+id/checkbox_temp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Manage Temperature" />
 
             <CheckBox
-                android:id="@+id/checkboxLocks"
+                android:id="@+id/checkbox_locks"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Vehicle Locks" />
@@ -117,46 +113,27 @@
             android:orientation="vertical">
 
             <CheckBox
-                android:id="@+id/checkboxLights"
+                android:id="@+id/checkbox_lights"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Manage Lights" />
 
             <CheckBox
-                android:id="@+id/checkboxExtra"
+                android:id="@+id/checkbox_extra"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Extra Feature" />
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Section 6: Grant Access Button -->
+    <!-- Section 5: Grant Access Button -->
     <Button
         android:id="@+id/btnGrantAccess"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Update Access"
-        app:layout_constraintTop_toBottomOf="@id/permissionsLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_below="@id/permissions_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Update Access" />
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="409dp"
-        android:layout_height="1dp"
-        android:layout_marginTop="40dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerVehicleSelection"
-        tools:layout_editor_absoluteX="-14dp" />
-
-    <View
-        android:id="@+id/divider3"
-        android:layout_width="409dp"
-        android:layout_height="1dp"
-        android:layout_marginTop="40dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroupAccessLevel"
-        tools:layout_editor_absoluteX="1dp" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
