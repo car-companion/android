@@ -18,7 +18,7 @@
 
     <fragment
         android:id="@+id/HomeFragment"
-        android:name="com.dsd.carcompanion.HomeFragment"
+        android:name="com.dsd.carcompanion.home.HomeFragment"
         android:label="@string/home_fragment_label"
         tools:layout="@layout/fragment_home">
 

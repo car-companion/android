@@ -1,4 +1,4 @@
-package com.dsd.carcompanion
+package com.dsd.carcompanion.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

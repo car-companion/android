@@ -39,23 +39,23 @@
     <string name="forgot_pass_fragment_button_verify">Verify</string>
 
     <!-- VEHICLE VIEW STRINGS -->
-    <string name="home_fragment_2d_mode">2D</string>
-    <string name="home_fragment_3d_mode">3D</string>
+    <string name="home_fragment_2d_mode_fab_dimension">2D</string>
+    <string name="home_fragment_3d_mode_fab_dimension">3D</string>
 
     <!-- VEHICLE COMPONENTS STRINGS -->
-    <string name="bottom_sheet_title">Parameters</string>
-    <string name="bottom_sheet_title_2">Information</string>
-    <string name="bottom_sheet_vehicle">Vehicle</string>
-    <string name="bottom_sheet_windows">Windows</string>
-    <string name="bottom_sheet_lights">Lights</string>
-    <string name="bottom_sheet_temperature">Temperature</string>
-    <string name="bottom_sheet_vehicle_locked">Locked</string>
-    <string name="bottom_sheet_vehicle_unlocked">Unlocked</string>
-    <string name="bottom_sheet_windows_closed">Closed</string>
-    <string name="bottom_sheet_windows_opened">Opened</string>
-    <string name="bottom_sheet_lights_off">Off</string>
-    <string name="bottom_sheet_lights_on">On</string>
-    <string name="bottom_sheet_temperature_degrees">°C</string>
+    <string name="bottom_sheet_title_parameters">Parameters</string>
+    <string name="bottom_sheet_title_information">Information</string>
+    <string name="bottom_sheet_vehicle_tv_label">Vehicle</string>
+    <string name="bottom_sheet_windows_tv_label">Windows</string>
+    <string name="bottom_sheet_lights_tv_label">Lights</string>
+    <string name="bottom_sheet_temperature_tv_label">Temperature</string>
+    <string name="bottom_sheet_vehicle_locked_tv_state">Locked</string>
+    <string name="bottom_sheet_vehicle_unlocked_tv_state">Unlocked</string>
+    <string name="bottom_sheet_windows_closed_tv_state">Closed</string>
+    <string name="bottom_sheet_windows_opened_tv_state">Opened</string>
+    <string name="bottom_sheet_lights_off_tv_state">Off</string>
+    <string name="bottom_sheet_lights_on_tv_state">On</string>
+    <string name="bottom_sheet_temperature_degrees_tv_state">°C</string>
 
     <!-- Premade values; will be deleted in the next sprint -->
 

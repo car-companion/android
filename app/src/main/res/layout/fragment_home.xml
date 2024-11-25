@@ -3,10 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-    </data>
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -21,7 +17,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:text="@string/home_fragment_2d_mode"
+                android:text="@string/home_fragment_2d_mode_fab_dimension"
                 app:cornerRadius="100dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginTop="10dp" />
@@ -54,7 +50,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/bottom_sheet_title"
+                android:text="@string/bottom_sheet_title_parameters"
                 android:textAppearance="?attr/textAppearanceHeadline6"
                 android:textAlignment="center" />
 
@@ -74,7 +70,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/bottom_sheet_vehicle"
+                    android:text="@string/bottom_sheet_vehicle_tv_label"
                     android:textSize="20sp"
                     android:textAlignment="center" />
 
@@ -95,7 +91,7 @@
                     android:id="@+id/tv_home_fragment_vehicle_state"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/bottom_sheet_vehicle_locked"
+                    android:text="@string/bottom_sheet_vehicle_locked_tv_state"
                     android:textSize="20sp"
                     android:textAlignment="center" />
             </com.google.android.flexbox.FlexboxLayout>
@@ -109,7 +105,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/bottom_sheet_windows"
+                    android:text="@string/bottom_sheet_windows_tv_label"
                     android:textSize="20sp"
                     android:textAlignment="center" />
 
@@ -130,7 +126,7 @@
                     android:id="@+id/tv_home_fragment_windows_state"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/bottom_sheet_windows_closed"
+                    android:text="@string/bottom_sheet_windows_closed_tv_state"
                     android:textSize="20sp"
                     android:textAlignment="center" />
             </com.google.android.flexbox.FlexboxLayout>
@@ -144,7 +140,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/bottom_sheet_lights"
+                    android:text="@string/bottom_sheet_lights_tv_label"
                     android:textSize="20sp"
                     android:textAlignment="center" />
 
@@ -165,7 +161,7 @@
                     android:id="@+id/tv_home_fragment_lights_state"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/bottom_sheet_lights_off"
+                    android:text="@string/bottom_sheet_lights_off_tv_state"
                     android:textSize="20sp"
                     android:textAlignment="center" />
             </com.google.android.flexbox.FlexboxLayout>
@@ -179,7 +175,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/bottom_sheet_temperature"
+                    android:text="@string/bottom_sheet_temperature_tv_label"
                     android:textSize="20sp"
                     android:textAlignment="center" />
 
@@ -210,7 +206,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/bottom_sheet_title_2"
+                android:text="@string/bottom_sheet_title_information"
                 android:textAppearance="?attr/textAppearanceHeadline6"
                 android:textAlignment="center" />
 

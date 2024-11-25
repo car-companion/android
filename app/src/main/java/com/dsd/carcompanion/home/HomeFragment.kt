@@ -1,12 +1,13 @@
-package com.dsd.carcompanion
+package com.dsd.carcompanion.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import com.dsd.carcompanion.R
+import com.dsd.carcompanion.adapters.VehicleInfoAdapter
 import com.dsd.carcompanion.api.models.VehicleInfo
 import com.dsd.carcompanion.databinding.FragmentHomeBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -45,45 +46,44 @@ class HomeFragment : Fragment() {
         _bottomSheetBehavior?.peekHeight = 150
 
         binding.fabHomeFragmentDimension.setOnClickListener {
-            if(binding.fabHomeFragmentDimension.text == getString(R.string.home_fragment_3d_mode)) {
-                binding.fabHomeFragmentDimension.text = getString(R.string.home_fragment_2d_mode)
-            } else {
-                binding.fabHomeFragmentDimension.text = getString(R.string.home_fragment_3d_mode)
-            }
+            val is3DMode = binding.fabHomeFragmentDimension.text == getString(R.string.home_fragment_3d_mode_fab_dimension)
+            binding.fabHomeFragmentDimension.text = getString(
+                if (is3DMode) R.string.home_fragment_2d_mode_fab_dimension else R.string.home_fragment_3d_mode_fab_dimension
+            )
         }
 
         binding.swHomeFragmentVehicle.setOnCheckedChangeListener { _, isChecked ->
             if(isChecked) {
-               binding.tvHomeFragmentVehicleState.text = getString(R.string.bottom_sheet_vehicle_unlocked)
+               binding.tvHomeFragmentVehicleState.text = getString(R.string.bottom_sheet_vehicle_unlocked_tv_state)
             } else {
-                binding.tvHomeFragmentVehicleState.text = getString(R.string.bottom_sheet_vehicle_locked)
+                binding.tvHomeFragmentVehicleState.text = getString(R.string.bottom_sheet_vehicle_locked_tv_state)
             }
         }
 
         binding.swHomeFragmentWindows.setOnCheckedChangeListener { _, isChecked ->
             if(isChecked) {
-                binding.tvHomeFragmentWindowsState.text = getString(R.string.bottom_sheet_windows_opened)
+                binding.tvHomeFragmentWindowsState.text = getString(R.string.bottom_sheet_windows_opened_tv_state)
             } else {
-                binding.tvHomeFragmentWindowsState.text = getString(R.string.bottom_sheet_windows_closed)
+                binding.tvHomeFragmentWindowsState.text = getString(R.string.bottom_sheet_windows_closed_tv_state)
             }
         }
 
         binding.swHomeFragmentLights.setOnCheckedChangeListener { _, isChecked ->
             if(isChecked) {
-                binding.tvHomeFragmentLightsState.text = getString(R.string.bottom_sheet_lights_on)
+                binding.tvHomeFragmentLightsState.text = getString(R.string.bottom_sheet_lights_on_tv_state)
             } else {
-                binding.tvHomeFragmentLightsState.text = getString(R.string.bottom_sheet_lights_off)
+                binding.tvHomeFragmentLightsState.text = getString(R.string.bottom_sheet_lights_off_tv_state)
             }
         }
 
         binding.tvHomeFragmentTemperature.text = buildString {
             append(binding.sliderHomeFragmentTemperature.value.toString())
-            append(getString(R.string.bottom_sheet_temperature_degrees))
+            append(getString(R.string.bottom_sheet_temperature_degrees_tv_state))
         }
         binding.sliderHomeFragmentTemperature.addOnChangeListener { _, value, _ ->
             binding.tvHomeFragmentTemperature.text = buildString {
                 append(value.toString())
-                append(getString(R.string.bottom_sheet_temperature_degrees))
+                append(getString(R.string.bottom_sheet_temperature_degrees_tv_state))
             }
         }
     }
