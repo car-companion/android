@@ -38,6 +38,25 @@
     <string name="forgot_pass_fragment_button_reset_password">Reset password</string>
     <string name="forgot_pass_fragment_button_verify">Verify</string>
 
+    <!-- VEHICLE VIEW STRINGS -->
+    <string name="home_fragment_2d_mode">2D</string>
+    <string name="home_fragment_3d_mode">3D</string>
+
+    <!-- VEHICLE COMPONENTS STRINGS -->
+    <string name="bottom_sheet_title">Parameters</string>
+    <string name="bottom_sheet_title_2">Information</string>
+    <string name="bottom_sheet_vehicle">Vehicle</string>
+    <string name="bottom_sheet_windows">Windows</string>
+    <string name="bottom_sheet_lights">Lights</string>
+    <string name="bottom_sheet_temperature">Temperature</string>
+    <string name="bottom_sheet_vehicle_locked">Locked</string>
+    <string name="bottom_sheet_vehicle_unlocked">Unlocked</string>
+    <string name="bottom_sheet_windows_closed">Closed</string>
+    <string name="bottom_sheet_windows_opened">Opened</string>
+    <string name="bottom_sheet_lights_off">Off</string>
+    <string name="bottom_sheet_lights_on">On</string>
+    <string name="bottom_sheet_temperature_degrees">°C</string>
+
     <!-- Premade values; will be deleted in the next sprint -->
 
     <!-- Strings used for fragments for navigation -->
