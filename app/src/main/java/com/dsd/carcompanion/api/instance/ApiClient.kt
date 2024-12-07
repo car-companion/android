@@ -56,7 +56,7 @@ object UserClient {
 // Update VehicleClient to support token-based configuration
 object VehicleClient {
     fun apiService(token: String): VehicleService {
-        val formattedToken = "Bearer $token" // Add a space after "JWT"
+        val formattedToken = "JWT$token"
         return RetrofitClient.createRetrofitWithToken(formattedToken).create(VehicleService::class.java)
     }
 }

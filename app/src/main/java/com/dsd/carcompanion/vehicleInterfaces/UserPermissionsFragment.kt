@@ -97,6 +97,7 @@ class UserPermissionsFragment : Fragment() {
                 android.R.layout.simple_spinner_item,
                 vehicleNames
             )
+            binding.tvShowVehicles.text = vehicles.toString()
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             binding.spinnerVehicleSelection.adapter = adapter
         } catch (e: Exception) {
