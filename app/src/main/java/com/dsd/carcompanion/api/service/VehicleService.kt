@@ -7,5 +7,5 @@ import retrofit2.http.Header
 
 interface VehicleService {
     @GET("api/vehicle/vehicles/my_vehicles/")
-    suspend fun getMyVehicles(@Header("Authorization") token: String): List<VehicleResponse>
+    suspend fun getMyVehicles(): List<VehicleResponse>
 }

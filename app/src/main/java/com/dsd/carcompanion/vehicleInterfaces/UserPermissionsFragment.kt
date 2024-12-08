@@ -69,16 +69,26 @@ class UserPermissionsFragment : Fragment() {
 
     private suspend fun fetchVehicles(accessToken: String) {
         try {
-            val vehicles = VehicleClient.apiService.getMyVehicles("JWT $accessToken")
+            // Get the API service with the token
+            val vehicleService = VehicleClient.getApiServiceWithToken(accessToken)
+
+            // Fetch the list of vehicles
+            val vehicles = vehicleService.getMyVehicles()
+
+            // Format the vehicle details for display
             val vehicleInfo = vehicles.joinToString("\n") { vehicle ->
-                "Nickname: ${vehicle.nickname}, VIN: ${vehicle.vin}, Model: ${vehicle.model.name}, " +
-                        "Year: ${vehicle.year_built}, Interior Color: ${vehicle.interior_color.name}, " +
+                "Nickname: ${vehicle.nickname ?: "N/A"}, VIN: ${vehicle.vin}, " +
+                        "Model: ${vehicle.model.name} (${vehicle.model.manufacturer}), " +
+                        "Year: ${vehicle.year_built}, " +
+                        "Interior Color: ${vehicle.interior_color.name}, " +
                         "Outer Color: ${vehicle.outer_color.name}"
             }
-            binding.tvShowVehicles.text = vehicleInfo // Display the vehicle information in TextView
+
+            binding.tvShowVehicles.text = vehicleInfo
         } catch (e: Exception) {
+
             binding.tvShowVehicles.text = "Error fetching vehicles: ${e.message}"
-            Log.d("FetchVehicles","Error fetching vehicles: ${e.message}")
+            Log.e("FetchVehicles", "Error fetching vehicles: ${e.message}")
             Toast.makeText(context, "Error fetching vehicles: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }

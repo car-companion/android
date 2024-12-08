@@ -1,5 +1,6 @@
 package com.dsd.carcompanion.api.instance
 
+import android.util.Log
 import com.dsd.carcompanion.api.service.UserService
 import com.dsd.carcompanion.api.service.VehicleService
 import okhttp3.OkHttpClient
@@ -26,6 +27,7 @@ object RetrofitClient {
                     .header("accept", "application/json")
                     .header("Authorization", "JWT $authToken")
                     .build()
+                Log.d("RetrofitClient", "Request with Token: ${modifiedRequest}")
                 chain.proceed(modifiedRequest)
             }
             .build()
@@ -35,23 +37,5 @@ object RetrofitClient {
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-    }
-}
-object UserClient {
-    val apiService: UserService by lazy {
-        RetrofitClient.retrofit.create(UserService::class.java)
-    }
-}
-
-object VehicleClient {
-    // Default API service (unauthenticated)
-    val apiService: VehicleService by lazy {
-        RetrofitClient.retrofit.create(VehicleService::class.java)
-    }
-
-    // Token-based API service
-    fun getApiServiceWithToken(authToken: String): VehicleService {
-        val retrofitWithToken = RetrofitClient.createRetrofitWithToken(authToken)
-        return retrofitWithToken.create(VehicleService::class.java)
     }
 }
