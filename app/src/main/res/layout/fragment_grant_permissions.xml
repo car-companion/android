@@ -128,12 +128,33 @@
 
     <!-- Section 5: Grant Access Button -->
     <Button
-        android:id="@+id/btnGrantAccess"
+        android:id="@+id/btn_grant_access"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/permissions_layout"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:text="Update Access" />
+
+    <TextView
+        android:id="@+id/tv_show_api"
+        android:layout_width="354dp"
+        android:layout_height="81dp"
+        android:layout_below="@+id/btn_grant_access"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="20dp"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/tv_show_vehicles"
+        android:layout_width="354dp"
+        android:layout_height="81dp"
+        android:layout_below="@+id/tv_show_api"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="20dp"
+        android:text="TextView" />
+
 
 </RelativeLayout>
