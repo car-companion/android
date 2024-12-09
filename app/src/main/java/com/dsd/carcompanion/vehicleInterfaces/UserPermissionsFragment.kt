@@ -23,6 +23,7 @@ import com.dsd.carcompanion.api.models.VehicleResponse
 import com.dsd.carcompanion.api.repository.AuthRepository
 import com.dsd.carcompanion.api.repository.VehicleRepository
 import com.dsd.carcompanion.api.service.VehicleService
+import com.dsd.carcompanion.api.utils.ResultOf
 
 class UserPermissionsFragment : Fragment() {
 
@@ -75,42 +76,43 @@ class UserPermissionsFragment : Fragment() {
     private suspend fun fetchVehicles(accessToken: String) {
         try {
             val vehicleService = VehicleClient.getApiServiceWithToken(accessToken)
-            val vehicles = vehicleService.getMyVehicles()
+            val vehicleRepository = VehicleRepository(vehicleService, jwtTokenDataStore)
 
-            if (vehicles.isEmpty()) {
-                binding.tvShowApiResponse.text = "No vehicles associated with this account."
-                updateVehicleSpinner(emptyList(), accessToken)
-            } else {
-                //Test Obtained Info from Vehicles
-                val vehicleInfo = vehicles.joinToString("\n") { vehicle ->
-                    "Nickname: ${vehicle.nickname ?: "N/A"}, VIN: ${vehicle.vin}, " +
-                            "Model: ${vehicle.model.name} (${vehicle.model.manufacturer}), " +
-                            "Year: ${vehicle.year_built}, " +
-                            "Interior Color: ${vehicle.interior_color.name}, " +
-                            "Outer Color: ${vehicle.outer_color.name}"
+            val response = vehicleRepository.getOwnedVehicles()
+
+            when (response) {
+                is ResultOf.Success -> {
+                    val vehicles = response.data
+                    val vehicleInfo = vehicles.joinToString("\n") { vehicle ->
+                        "Nickname: ${vehicle.nickname ?: "N/A"}, VIN: ${vehicle.vin}"
+                    }
+                    binding.tvShowApiResponse.text = vehicleInfo
+                    updateVehicleSpinner(vehicles,accessToken)
                 }
-                binding.tvShowApiResponse.text = vehicleInfo
+                is ResultOf.Error -> {
+                    binding.tvShowApiResponse.text = "Error: ${response.message}"
+                }
 
-                // Populate the spinner with VINs
-                updateVehicleSpinner(vehicles, accessToken)
+                ResultOf.Idle -> TODO()
+                ResultOf.Loading -> TODO()
             }
         } catch (e: Exception) {
-//            binding.tvShowApiResponse.text = "Error fetching vehicles: ${e.message}"
-            Log.e("FetchVehicles", "Error fetching vehicles: ${e.message}")
+            Log.e("FetchVehicles", "Error: ${e.message}", e)
             Toast.makeText(context, "Error fetching vehicles: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun updateVehicleSpinner(vehicles: List<VehicleResponse>, accessToken: String) {
-        val spinnerItems: List<String>
-        val vinMapping: List<String>
+        val defaultOption = "Select a vehicle"
+        val spinnerItems: MutableList<String> = mutableListOf(defaultOption)
+        val vinMapping: MutableList<String> = mutableListOf("") // Default option has no VIN
 
-        if (vehicles.isEmpty()) {
-            spinnerItems = listOf("No vehicles available")
-            vinMapping = listOf("")
+        if (vehicles.isNotEmpty()) {
+            spinnerItems.addAll(vehicles.map { it.nickname ?: "Unnamed Vehicle (${it.vin})" })
+            vinMapping.addAll(vehicles.map { it.vin })
         } else {
-            spinnerItems = vehicles.map { it.nickname ?: "Unnamed Vehicle (${it.vin})" }
-            vinMapping = vehicles.map { it.vin }
+            spinnerItems.add("No vehicles available")
+            vinMapping.add("") // Keep mapping consistent
         }
 
         val adapter = ArrayAdapter(
@@ -123,7 +125,10 @@ class UserPermissionsFragment : Fragment() {
 
         binding.spinnerVehicleSelection.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if (vehicles.isNotEmpty() && position in vinMapping.indices) {
+                if (position == 0) {
+                    // Default option selected
+                    binding.tvShowApiResponse.text = getString(R.string.no_vehicle_selected)
+                } else if (vehicles.isNotEmpty() && position in 1 until vinMapping.size) {
                     val selectedVIN = vinMapping[position]
                     fetchPermissionsForVIN(selectedVIN, accessToken)
                 } else {
@@ -132,23 +137,40 @@ class UserPermissionsFragment : Fragment() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                binding.tvShowApiResponse.text = getString(R.string.no_permissions_selected)
+                binding.tvShowApiResponse.text = getString(R.string.no_vehicle_selected)
             }
         }
     }
 
-    private fun fetchPermissionsForVIN(vin: String, accessToken: String) {
 
+    private fun fetchPermissionsForVIN(vin: String, accessToken: String) {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val vehicleService = VehicleClient.getApiServiceWithToken(accessToken)
                 val vehicleRepository = VehicleRepository(vehicleService, jwtTokenDataStore)
-//                val vehicleService = VehicleClient.getApiServiceWithToken(accessToken)
+
+                // Fetch permissions for the selected VIN
                 val response = vehicleRepository.getComponentsForVehicle(vin)
 
-                val permissions = response
-                binding.tvShowApiResponse.text = response.toString()
-//                updatePermissionsTextView(permissions.toString())
+                when (response) {
+                    is ResultOf.Success -> {
+                        val permissions = response.data as? List<PermissionResponse>
+                        if (permissions != null) {
+                            updatePermissionsTextView(permissions)
+                        } else {
+//                            binding.tvShowApiResponse.text = getString(R.string.unexpected_response_format)
+                        }
+                    }
+                    is ResultOf.Error -> {
+                        binding.tvShowApiResponse.text = "Error: ${response.message}"
+                    }
+                    ResultOf.Idle -> {
+//                        binding.tvShowApiResponse.text = getString(R.string.fetching_idle_state)
+                    }
+                    ResultOf.Loading -> {
+//                        binding.tvShowApiResponse.text = getString(R.string.fetching_loading_state)
+                    }
+                }
             } catch (e: Exception) {
                 binding.tvShowApiResponse.text = "Error fetching permissions: ${e.message}"
                 Log.e("FetchPermissions", "Error fetching permissions: ${e.message}", e)
@@ -156,6 +178,7 @@ class UserPermissionsFragment : Fragment() {
             }
         }
     }
+
 
     private fun updatePermissionsTextView(permissions: List<PermissionResponse>) {
         if (permissions.isEmpty()) {
@@ -167,6 +190,7 @@ class UserPermissionsFragment : Fragment() {
             binding.tvShowApiResponse.text = permissionsText
         }
     }
+
 
     private fun handleGrantAccessClick() {
         val userIdentifier = binding.etUserIdentifier.text.toString()

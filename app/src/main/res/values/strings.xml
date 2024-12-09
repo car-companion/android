@@ -75,9 +75,11 @@
     <string name="extra_features">Extra Features</string>
     <string name="update_access_button">Update Access</string>
     <string name="no_vehicles_available">No vehicles available</string>
-    <string name="no_permissions_selected">No vehicle selected.</string>
     <string name="error_fetching_permissions">Error fetching permissions: %1$s</string>
     <string name="no_permissions_available">No permissions available for this vehicle.</string>
+    <string name="no_vehicle_selected">Please select a vehicle from the list.</string>
+    <string name="no_permissions_selected">No permissions available for the selected vehicle.</string>
+
 
 
     <!-- Strings used for fragments for navigation -->

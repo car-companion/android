@@ -13,11 +13,11 @@ import retrofit2.http.Path
 
 interface VehicleService {
     @GET("api/vehicle/vehicles/my_vehicles/")
-    suspend fun getMyVehicles(): List<VehicleResponse>
+    suspend fun getMyVehicles(): Response<List<VehicleResponse>>
 
     @GET("/api/vehicle/vehicles/{vin}/components/")
     suspend fun getPermissionsForVehicle(
         @Path(value = "vin", encoded = false) vin: String,
-    ): Response<TokenModel>
+    ): Response<List<PermissionResponse>>
 
 }
