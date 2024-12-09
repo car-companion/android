@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:id="@+id/fab_home_fragment_dimension"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="@string/home_fragment_2d_mode_fab_dimension"
+                app:cornerRadius="100dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="10dp" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fgt_2D_3D_model"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:navGraph="@navigation/nav_graph_2d_3d" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Bottom Sheet -->
+        <LinearLayout
+            android:id="@+id/ll_home_fragment_bottom_sheet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@color/white"
+            android:elevation="16dp"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+            android:gravity="center"
+            android:maxHeight="600dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/bottom_sheet_title_parameters"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:textAlignment="center" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#D3D3D3"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp" />
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:justifyContent="center"
+                app:alignItems="center">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bottom_sheet_vehicle_tv_label"
+                    android:textSize="20sp"
+                    android:textAlignment="center" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/sw_home_fragment_vehicle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_home_fragment_vehicle_state"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bottom_sheet_vehicle_locked_tv_state"
+                    android:textSize="20sp"
+                    android:textAlignment="center" />
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:justifyContent="center"
+                app:alignItems="center">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bottom_sheet_windows_tv_label"
+                    android:textSize="20sp"
+                    android:textAlignment="center" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/sw_home_fragment_windows"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_home_fragment_windows_state"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bottom_sheet_windows_closed_tv_state"
+                    android:textSize="20sp"
+                    android:textAlignment="center" />
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:justifyContent="space_around"
+                app:alignItems="center">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bottom_sheet_lights_tv_label"
+                    android:textSize="20sp"
+                    android:textAlignment="center" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/sw_home_fragment_lights"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_home_fragment_lights_state"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bottom_sheet_lights_off_tv_state"
+                    android:textSize="20sp"
+                    android:textAlignment="center" />
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:justifyContent="space_around"
+                app:alignItems="center">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bottom_sheet_temperature_tv_label"
+                    android:textSize="20sp"
+                    android:textAlignment="center" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/slider_home_fragment_temperature"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:value="25"
+                    android:valueFrom="15"
+                    android:valueTo="40"
+                    android:stepSize="1" />
+
+                <TextView
+                    android:id="@+id/tv_home_fragment_temperature"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:textAlignment="center" />
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#D3D3D3"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/bottom_sheet_title_information"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:textAlignment="center" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#D3D3D3"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_home_fragment_vehicle_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                tools:listitem="@layout/item_vehicle_info"
+                tools:listdata="@array/vehicle_info" />
+        </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

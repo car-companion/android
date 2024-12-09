@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/LoginFragment">
+
+    <fragment
+        android:id="@+id/LoginFragment"
+        android:name="com.dsd.carcompanion.userRegistrationAndLogin.LoginFragment"
+        android:label="@string/first_fragment_label"
+        tools:layout="@layout/fragment_login">
+
+        <action
+            android:id="@+id/action_LoginFragment_to_RegistrationFragment"
+            app:destination="@id/RegistrationFragment" />
+
+        <action
+            android:id="@+id/action_LoginFragment_to_ForgotPasswordFragment"
+            app:destination="@id/ForgotPasswordFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/RegistrationFragment"
+        android:name="com.dsd.carcompanion.userRegistrationAndLogin.RegistrationFragment"
+        android:label="@string/first_fragment_label"
+        tools:layout="@layout/fragment_registration">
+
+        <action
+            android:id="@+id/action_RegistrationFragment_to_LoginFragment"
+            app:destination="@id/LoginFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/ForgotPasswordFragment"
+        android:name="com.dsd.carcompanion.userRegistrationAndLogin.ForgotPassword.EmailFragment"
+        android:label="@string/first_fragment_label"
+        tools:layout="@layout/fragment_email">
+
+        <action
+            android:id="@+id/action_ForgotPassword_to_CodeForgotPassword"
+            app:destination="@id/CodeForgotPasswordFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/CodeForgotPasswordFragment"
+        android:name="com.dsd.carcompanion.userRegistrationAndLogin.ForgotPassword.CodeFragment"
+        android:label="@string/first_fragment_label"
+        tools:layout="@layout/fragment_code">
+
+        <action
+            android:id="@+id/action_CodeForgotPassword_to_NewPassword"
+            app:destination="@id/NewPasswordFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/NewPasswordFragment"
+        android:name="com.dsd.carcompanion.userRegistrationAndLogin.ForgotPassword.NewPasswordFragment"
+        android:label="@string/first_fragment_label"
+        tools:layout="@layout/fragment_new_password">
+
+        <action
+            android:id="@+id/action_NewPassword_to_LoginFragment"
+            app:destination="@id/LoginFragment" />
+    </fragment>
+
+</navigation>

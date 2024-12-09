@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".userRegistrationAndLogin.LoginFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:gravity="center_horizontal">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_login_fragment_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/et_login_fragment_enter_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:hint="@string/login_fragment_hint_username"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:maxLines="1"
+                android:lines="1"
+                app:errorEnabled="true"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_login_fragment_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/et_login_fragment_enter_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:hint="@string/login_fragment_hint_password"
+                android:inputType="textPassword"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:ems="10"
+                android:maxLines="1"
+                android:lines="1"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Forgotten Password Link -->
+        <TextView
+            android:id="@+id/link_login_fragment_forgot_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:text="@string/login_fragment_link_forgot_password"
+            android:textColor="@color/link_color"
+            android:layout_marginBottom="8dp"
+            android:textStyle="bold"
+            android:autoLink="none"
+            android:clickable="true"
+            android:layout_gravity="center_horizontal"/>
+
+        <!-- Sign Up Link -->
+        <TextView
+            android:id="@+id/link_login_fragment_dont_have_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:text="@string/login_fragment_link_dont_have_account"
+            android:textColor="@color/link_color"
+            android:textStyle="bold"
+            android:autoLink="none"
+            android:clickable="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/btn_login_fragment_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_submit"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/link_login_fragment_dont_have_account"
+            app:layout_constraintBottom_toTopOf="@id/resultTextView"
+            android:layout_marginTop="16dp" />
+
+        <!-- TextView to Display Result -->
+        <TextView
+            android:id="@+id/resultTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Result will be shown here"
+            android:textSize="18sp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_login_fragment_submit"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </LinearLayout>
+
+</RelativeLayout>
