@@ -9,7 +9,7 @@
         android:id="@+id/et_user_identifier"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Username" />
+        android:hint="@string/user_identifier_hint" />
 
     <!-- Section 2: Vehicle Selection -->
     <Spinner
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/divider"
         android:layout_marginTop="16dp"
-        android:text="Permission Presets"
+        android:text="@string/permission_presets_title"
         android:textStyle="bold" />
 
     <RadioGroup
@@ -49,13 +49,13 @@
             android:id="@+id/radio_full_access"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Full Access" />
+            android:text="@string/full_access_option" />
 
         <RadioButton
             android:id="@+id/radio_custom_access"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Custom Access" />
+            android:text="@string/custom_access_option" />
     </RadioGroup>
 
     <View
@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/divider2"
         android:layout_marginTop="16dp"
-        android:text="Permissions"
+        android:text="@string/permissions_title"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -88,7 +88,7 @@
         <!-- First Column -->
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -96,19 +96,31 @@
                 android:id="@+id/checkbox_temp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Manage Temperature" />
+                android:text="@string/manage_temperature" />
 
             <CheckBox
                 android:id="@+id/checkbox_locks"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Vehicle Locks" />
+                android:text="@string/manage_vehicle_locks" />
+
+            <CheckBox
+                android:id="@+id/checkbox_battery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/access_vehicle_battery" />
+
+            <CheckBox
+                android:id="@+id/checkbox_rooftop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/manage_rooftop" />
         </LinearLayout>
 
         <!-- Second Column -->
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -116,13 +128,25 @@
                 android:id="@+id/checkbox_lights"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Manage Lights" />
+                android:text="@string/manage_lights" />
+
+            <CheckBox
+                android:id="@+id/checkbox_trunk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/manage_trunk" />
+
+            <CheckBox
+                android:id="@+id/checkbox_systems"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/access_vehicle_systems" />
 
             <CheckBox
                 android:id="@+id/checkbox_extra"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Extra Feature" />
+                android:text="@string/extra_features" />
         </LinearLayout>
     </LinearLayout>
 
@@ -132,29 +156,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/permissions_layout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:text="Update Access" />
-
-    <TextView
-        android:id="@+id/tv_show_api"
-        android:layout_width="354dp"
-        android:layout_height="81dp"
-        android:layout_below="@+id/btn_grant_access"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="20dp"
-        android:text="TextView" />
+        android:layout_marginTop="24dp"
+        android:text="@string/update_access_button" />
 
     <TextView
         android:id="@+id/tv_show_vehicles"
-        android:layout_width="354dp"
-        android:layout_height="81dp"
-        android:layout_below="@+id/tv_show_api"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="13dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_grant_access"
         android:layout_marginTop="20dp"
-        android:text="TextView" />
-
-
+        android:text="@string/no_vehicles_available" />
 </RelativeLayout>
