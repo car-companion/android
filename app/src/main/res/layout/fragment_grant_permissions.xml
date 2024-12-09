@@ -160,10 +160,9 @@
         android:text="@string/update_access_button" />
 
     <TextView
-        android:id="@+id/tv_show_vehicles"
+        android:id="@+id/tv_show_api_response"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/btn_grant_access"
-        android:layout_marginTop="20dp"
-        android:text="@string/no_vehicles_available" />
+        android:layout_marginTop="20dp"/>
 </RelativeLayout>
