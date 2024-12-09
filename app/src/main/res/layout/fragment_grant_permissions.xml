@@ -9,7 +9,7 @@
         android:id="@+id/et_user_identifier"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter User Email/Phone" />
+        android:hint="Enter Username" />
 
     <!-- Section 2: Vehicle Selection -->
     <Spinner

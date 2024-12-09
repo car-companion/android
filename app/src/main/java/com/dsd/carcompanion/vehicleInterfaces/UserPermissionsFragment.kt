@@ -75,34 +75,53 @@ class UserPermissionsFragment : Fragment() {
             // Fetch the list of vehicles
             val vehicles = vehicleService.getMyVehicles()
 
-            // Format the vehicle details for display
-            val vehicleInfo = vehicles.joinToString("\n") { vehicle ->
-                "Nickname: ${vehicle.nickname ?: "N/A"}, VIN: ${vehicle.vin}, " +
-                        "Model: ${vehicle.model.name} (${vehicle.model.manufacturer}), " +
-                        "Year: ${vehicle.year_built}, " +
-                        "Interior Color: ${vehicle.interior_color.name}, " +
-                        "Outer Color: ${vehicle.outer_color.name}"
+            if (vehicles.isEmpty()) {
+                // No vehicles available
+                binding.tvShowVehicles.text = "No vehicles associated with this account."
+                updateVehicleSpinner(emptyList())
+            } else {
+                // Format the vehicle details for display (optional)
+                val vehicleInfo = vehicles.joinToString("\n") { vehicle ->
+                    "Nickname: ${vehicle.nickname ?: "N/A"}, VIN: ${vehicle.vin}, " +
+                            "Model: ${vehicle.model.name} (${vehicle.model.manufacturer}), " +
+                            "Year: ${vehicle.year_built}, " +
+                            "Interior Color: ${vehicle.interior_color.name}, " +
+                            "Outer Color: ${vehicle.outer_color.name}"
+                }
+                binding.tvShowVehicles.text = vehicleInfo
+
+                // Populate the spinner with VINs
+                updateVehicleSpinner(vehicles)
             }
-
-            binding.tvShowVehicles.text = vehicleInfo
         } catch (e: Exception) {
-
             binding.tvShowVehicles.text = "Error fetching vehicles: ${e.message}"
             Log.e("FetchVehicles", "Error fetching vehicles: ${e.message}")
             Toast.makeText(context, "Error fetching vehicles: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
+
     private fun updateVehicleSpinner(vehicles: List<VehicleResponse>) {
-        val vehicleNames = vehicles.map { it.nickname ?: "Unnamed (${it.vin})" }
+        val spinnerItems = if (vehicles.isEmpty()) {
+            // Show "No vehicles available" if the list is empty
+            listOf("No vehicles available")
+        } else {
+            // Show VINs of the vehicles
+            vehicles.map { it.nickname }
+        }
+
+        // Create an ArrayAdapter for the spinner
         val adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
-            vehicleNames
+            spinnerItems
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        // Attach the adapter to the spinner
         binding.spinnerVehicleSelection.adapter = adapter
     }
+
 
     private fun handleGrantAccessClick() {
         val userIdentifier = binding.etUserIdentifier.text.toString()
