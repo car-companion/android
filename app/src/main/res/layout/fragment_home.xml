@@ -11,6 +11,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <FrameLayout
+                android:id="@+id/qt_container"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:background="@color/white" />
+
             <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:id="@+id/fab_home_fragment_dimension"
                 android:layout_width="wrap_content"
@@ -217,13 +227,13 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp" />
 
-            <androidx.recyclerview.widget.RecyclerView
+            <!--<androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_home_fragment_vehicle_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 tools:listitem="@layout/item_vehicle_info"
-                tools:listdata="@array/vehicle_info" />
+                tools:listdata="@array/vehicle_info" />-->
         </LinearLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

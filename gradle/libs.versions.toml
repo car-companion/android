@@ -1,5 +1,5 @@
 [versions]
-agp = "8.7.1"
+agp = "8.6.1"
 colorpicker = "1.2.0"
 colorsheet = "1.0.1"
 converterGson = "2.9.0"

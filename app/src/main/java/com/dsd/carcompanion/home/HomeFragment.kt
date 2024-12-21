@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.dsd.carcompanion.R
@@ -11,12 +12,15 @@ import com.dsd.carcompanion.adapters.VehicleInfoAdapter
 import com.dsd.carcompanion.api.models.VehicleInfo
 import com.dsd.carcompanion.databinding.FragmentHomeBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import org.qtproject.qt.android.QtQuickView
 
 
 class HomeFragment : Fragment() {
-    private lateinit var recyclerView: RecyclerView
+    //private lateinit var recyclerView: RecyclerView
     private lateinit var vehicleInfoAdapter: VehicleInfoAdapter
     private var vehicleInfoList: MutableList<VehicleInfo> = mutableListOf()
+
+    private lateinit var m_qmlView: QtQuickView
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -31,9 +35,15 @@ class HomeFragment : Fragment() {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         _bottomSheetBehavior = BottomSheetBehavior.from(binding.llHomeFragmentBottomSheet)
-        recyclerView = binding.rvHomeFragmentVehicleInfo
+        //recyclerView = binding.rvHomeFragmentVehicleInfo
         vehicleInfoAdapter = VehicleInfoAdapter(vehicleInfoList)
-        recyclerView.adapter = vehicleInfoAdapter
+        //recyclerView.adapter = vehicleInfoAdapter
+
+        m_qmlView = QtQuickView(requireContext())
+
+        val qtContainer = binding.qtContainer
+        qtContainer.addView(m_qmlView)
+
         return binding.root
     }
 
