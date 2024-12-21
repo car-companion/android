@@ -2,8 +2,9 @@
     <string name="app_name">CarCompanion</string>
     <string name="action_settings">Settings</string>
 
-    <!-- Frequently used -->
+    <!-- BUTTONS-->
     <string name="button_submit">Submit</string>
+    <string name="button_login">Log In</string>
 
     <!-- LOGIN SCREEN STRINGS -->
     <string name="login_fragment_hint_username">Username</string>

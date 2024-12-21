@@ -2,6 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="cream">#C8C5C5</color>
+    <color name="main_green">#3F7D20</color>
+    <color name="main_gray">#454955</color>
     <color name="link">#0067EF</color>
     <color name="link_color">#1E90FF</color>
 </resources>

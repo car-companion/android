@@ -1,111 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".userRegistrationAndLogin.LoginFragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:gravity="center_horizontal">
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_background">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_login_fragment_username"
+
+        <!-- Bottom Sheet -->
+        <LinearLayout
+            android:id="@+id/ll_login_fragment_bottom_sheet"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="403dp"
+            android:background="@drawable/bottom_sheet_background"
+            android:elevation="16dp"
+            android:gravity="center"
+            android:maxHeight="600dp"
+            android:orientation="vertical"
+            android:padding="16dp"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-            <EditText
-                android:id="@+id/et_login_fragment_enter_username"
+            <TextView
+                android:id="@+id/tv_login_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:hint="@string/login_fragment_hint_username"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:ems="10"
-                android:inputType="textPersonName"
-                android:maxLines="1"
-                android:lines="1"
-                app:errorEnabled="true"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="14sp"
+                android:text="@string/login_fragment_hint_username" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_login_fragment_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/et_login_fragment_enter_password"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_login_fragment_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:hint="@string/login_fragment_hint_password"
-                android:inputType="textPassword"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:ems="10"
-                android:maxLines="1"
-                android:lines="1"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginTop="2dp">
 
-        <!-- Forgotten Password Link -->
-        <TextView
-            android:id="@+id/link_login_fragment_forgot_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:focusable="true"
-            android:text="@string/login_fragment_link_forgot_password"
-            android:textColor="@color/link_color"
-            android:layout_marginBottom="8dp"
-            android:textStyle="bold"
-            android:autoLink="none"
-            android:clickable="true"
-            android:layout_gravity="center_horizontal"/>
+                <EditText
+                    android:id="@+id/et_login_fragment_enter_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:background="@drawable/rounded_edittext"
+                    android:inputType="textPersonName"
+                    android:lines="1"
+                    android:maxLines="1"
+                    app:errorEnabled="true" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Sign Up Link -->
-        <TextView
-            android:id="@+id/link_login_fragment_dont_have_account"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:focusable="true"
-            android:text="@string/login_fragment_link_dont_have_account"
-            android:textColor="@color/link_color"
-            android:textStyle="bold"
-            android:autoLink="none"
-            android:clickable="true"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="8dp"/>
+            <TextView
+                android:id="@+id/tv_login_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="14sp"
+                android:text="@string/login_fragment_hint_password" />
 
-        <!-- Submit Button -->
-        <Button
-            android:id="@+id/btn_login_fragment_submit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_submit"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/link_login_fragment_dont_have_account"
-            app:layout_constraintBottom_toTopOf="@id/resultTextView"
-            android:layout_marginTop="16dp" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_login_fragment_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <!-- TextView to Display Result -->
-        <TextView
-            android:id="@+id/resultTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Result will be shown here"
-            android:textSize="18sp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_login_fragment_submit"
-            app:layout_constraintBottom_toBottomOf="parent" />
-    </LinearLayout>
+                <EditText
+                    android:id="@+id/et_login_fragment_enter_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:background="@drawable/rounded_edittext"
+                    android:inputType="textPassword"
+                    android:lines="1"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-</RelativeLayout>
+            <!-- Forgotten Password Link -->
+            <TextView
+                android:id="@+id/link_login_fragment_forgot_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/login_fragment_link_forgot_password"
+                android:textAlignment="viewEnd"
+                android:textColor="@color/link_color"
+                android:textStyle="bold" />
+
+            <!-- Login Button -->
+            <Button
+                android:id="@+id/btn_login_fragment_submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/custom_button"
+                android:fontFamily="@font/roboto_bold"
+                android:text="@string/button_login"
+                android:textSize="16sp" />
+
+            <!-- Create Account Link -->
+            <TextView
+                android:id="@+id/link_login_fragment_dont_have_account"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/login_fragment_link_dont_have_account"
+                android:textAlignment="center"
+                android:textColor="@color/link_color"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

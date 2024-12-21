@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -17,6 +18,7 @@ import com.dsd.carcompanion.api.models.LoginRequest
 import com.dsd.carcompanion.api.repository.AuthRepository
 import com.dsd.carcompanion.api.utils.ResultOf
 import com.dsd.carcompanion.databinding.FragmentLoginBinding
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -27,6 +29,7 @@ class LoginFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var jwtTokenDataStore: JwtTokenDataStore
+    private var _bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,27 +38,22 @@ class LoginFragment : Fragment() {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         jwtTokenDataStore = JwtTokenDataStore(requireContext())
 
-        /*viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                binding.resultTextView.append(jwtTokenDataStore.getAccessJwt())
-            } catch (e: Exception) {
-                // Handle any exceptions that might occur
-                Log.e("LoginFragment", "Error during login: ${e.message}")
-            }
-        }*/
+        // Initialize BottomSheetBehavior
+        _bottomSheetBehavior = BottomSheetBehavior.from(binding.llLoginFragmentBottomSheet)
+        _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Handle button click for login
         binding.btnLoginFragmentSubmit.setOnClickListener {
-
-            val usernameEditText: String = binding.tilLoginFragmentUsername.editText?.text.toString()
-            val passwordEditText: String = binding.tilLoginFragmentPassword.editText?.text.toString()
+            val usernameEditText = binding.tilLoginFragmentUsername.editText?.text.toString()
+            val passwordEditText = binding.tilLoginFragmentPassword.editText?.text.toString()
 
             val loginRequest = LoginRequest(username = usernameEditText, password = passwordEditText)
-
             val userService = UserClient.apiService
             val authRepository = AuthRepository(userService, jwtTokenDataStore)
 
@@ -65,15 +63,12 @@ class LoginFragment : Fragment() {
 
                     withContext(Dispatchers.Main) {
                         if (response is ResultOf.Success) {
-                            Log.d("Login Fragment", "Well done, you registred")
+                            Log.d("Login Fragment", "Well done, you logged in")
                             val intent = Intent(requireActivity(), MainActivity::class.java)
                             startActivity(intent)
-
                             requireActivity().finish()
                         } else if (response is ResultOf.Error) {
                             Log.e("LoginFragment", "Login failed: ${response.message}")
-                        } else {
-                            Log.e("Login Fragment", "Something else")
                         }
                     }
                 } catch (e: Exception) {
