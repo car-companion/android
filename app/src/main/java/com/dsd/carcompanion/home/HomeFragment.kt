@@ -1,6 +1,7 @@
 package com.dsd.carcompanion.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,15 +13,19 @@ import com.dsd.carcompanion.adapters.VehicleInfoAdapter
 import com.dsd.carcompanion.api.models.VehicleInfo
 import com.dsd.carcompanion.databinding.FragmentHomeBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import org.qtproject.qt.android.QtQuickView
 
+import org.qtproject.qt.android.QtQuickView
+import org.qtproject.example.my_car_companionApp.QmlModule
+import org.qtproject.qt.android.QtQmlStatus
+import org.qtproject.qt.android.QtQmlStatusChangeListener
 
 class HomeFragment : Fragment() {
     //private lateinit var recyclerView: RecyclerView
     private lateinit var vehicleInfoAdapter: VehicleInfoAdapter
     private var vehicleInfoList: MutableList<VehicleInfo> = mutableListOf()
 
-    private lateinit var m_qmlView: QtQuickView
+    private var m_qmlView: QtQuickView? = null
+    private var m_mainQmlContent: QmlModule.Main = QmlModule.Main()
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -37,18 +42,37 @@ class HomeFragment : Fragment() {
         _bottomSheetBehavior = BottomSheetBehavior.from(binding.llHomeFragmentBottomSheet)
         //recyclerView = binding.rvHomeFragmentVehicleInfo
         vehicleInfoAdapter = VehicleInfoAdapter(vehicleInfoList)
+
+        /*val qtContainer = binding.qtContainer
+        val params: ViewGroup.LayoutParams = FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
         //recyclerView.adapter = vehicleInfoAdapter
 
         m_qmlView = QtQuickView(requireContext())
 
-        val qtContainer = binding.qtContainer
-        qtContainer.addView(m_qmlView)
+        //m_mainQmlContent.setStatusChangeListener(requireContext())
+
+        qtContainer.addView(m_qmlView, params)
+        m_qmlView!!.loadContent(m_mainQmlContent)*/
 
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val qtContainer = binding.qtContainer
+        val params: ViewGroup.LayoutParams = FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+
+        m_qmlView = QtQuickView(requireContext())
+
+        qtContainer.addView(m_qmlView, params)
+        m_qmlView!!.loadContent(m_mainQmlContent)
 
         _bottomSheetBehavior?.setState(BottomSheetBehavior.STATE_COLLAPSED)
         _bottomSheetBehavior?.isDraggable = true
@@ -102,4 +126,10 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    /*override fun onStatusChanged(status: QtQmlStatus?) {
+        Log.v("Qt", "Status of QtQuickView: $status")
+        if (status == QtQmlStatus.READY)
+            m_mainQmlContent.setQuickForAndroid(true)
+    }*/
 }

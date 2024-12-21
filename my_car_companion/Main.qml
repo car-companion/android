@@ -3,9 +3,9 @@
 
 import QtQuick
 
-Rectangle {
-    width: parent.width
-    height: parent.height
+Item {
+    width: 1080
+    height: 1920
     visible: true
     color: "black"
 
@@ -14,6 +14,10 @@ Rectangle {
         color: "white"
         text: qsTr("Hello World from QML")
         anchors.centerIn: parent
+    }
+
+    Component.onCompleted: {
+        console.log("QML reporting")
     }
 }
 

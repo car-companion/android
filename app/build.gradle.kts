@@ -8,6 +8,7 @@ plugins {
 QtBuild {
     qtPath = file("C:\\QtAndroid\\6.8.1")
     projectPath = file("C:\\QtApplication\\android\\my_car_companion")
+    //qtKitDir = file("C:\\Qt\\6.8.1\\android_x86_64")
 }
 
 android {
