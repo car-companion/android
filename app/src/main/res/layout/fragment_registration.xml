@@ -34,10 +34,14 @@
             <View
                 android:id="@+id/bs_handle"
                 android:layout_width="36dp"
-                android:layout_height="4dp"
+                android:layout_height="5dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="15dp"
                 android:background="@drawable/bs_handle_background" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp"/>
 
             <TextView
                 android:id="@+id/tv_registration_username"
