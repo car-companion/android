@@ -1,38 +1,319 @@
 package com.dsd.carcompanion.vehicleOwnership
 
-import android.R
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.NumberPicker
-import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.dsd.carcompanion.api.datastore.JwtTokenDataStore
+import com.dsd.carcompanion.api.instance.VehicleClient
+import com.dsd.carcompanion.api.models.ColorResponse
+import com.dsd.carcompanion.api.models.PreferencesResponse
+import com.dsd.carcompanion.api.models.VehicleResponse
+import com.dsd.carcompanion.api.repository.VehicleRepository
+import com.dsd.carcompanion.api.utils.ResultOf
 import com.dsd.carcompanion.databinding.FragmentVehicleOwnershipBinding
 import com.mrudultora.colorpicker.ColorPickerBottomSheetDialog
 import com.mrudultora.colorpicker.listeners.OnSelectColorListener
 import com.mrudultora.colorpicker.util.ColorItemShape
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class VehicleOwnershipFragment : Fragment() {
 
-    fun displayFormError(text: String) {
+    private fun displayFormError(text: String) {
         Toast.makeText(this.context, text, Toast.LENGTH_SHORT).show()
+    }
+
+    fun findCurrentColorPosition(
+        colorResponses: List<ColorResponse>,
+        currentColor: ColorResponse
+    ): Int {
+        return colorResponses.indexOfFirst {
+            it.name == currentColor.name &&
+                    it.hex_code == currentColor.hex_code &&
+                    it.is_metallic == currentColor.is_metallic
+        }
     }
 
     private var _binding: FragmentVehicleOwnershipBinding? = null
     private val binding get() = _binding!!
+    private lateinit var jwtTokenDataStore: JwtTokenDataStore
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentVehicleOwnershipBinding.inflate(inflater, container, false)
+        jwtTokenDataStore = JwtTokenDataStore(requireContext())
         return binding.root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.btnVehicleOwnershipFragmentTake.setOnClickListener{
+            val vin = binding.etVehicleOwnershipFragmentModelNumber.text.toString().trim()
+
+            if (vin.isNotEmpty()) {
+                takeVehicleOwnership(vin)
+            } else {
+                displayFormError("VIN cannot be empty")
+            }
+        }
+    }
+
+    private fun takeVehicleOwnership(vin: String) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val accessToken = withContext(Dispatchers.IO) { jwtTokenDataStore.getAccessJwt() }
+
+                if(accessToken.isNullOrEmpty()) {
+                    displayFormError("Access token not found")
+                    return@launch
+                }
+
+                val vehicleService = VehicleClient.getApiServiceWithToken(accessToken)
+                val vehicleRepository = VehicleRepository(vehicleService, jwtTokenDataStore)
+
+                when (val response = vehicleRepository.takeVehicleOwnership(vin)) {
+                    is ResultOf.Success -> {
+                        binding.tvVehicleOwnershipFragmentResult.text =
+                            "Ownership successfully claimed for VIN: $vin\nDetails: ${response.data}"
+                        if(response.code == 208) {
+                            getAndShowPreferences(vin)
+                        }
+                        if(response.code == 200) {
+                            showPreferences(vin, response.data)
+                        }
+                    }
+                    is ResultOf.Error -> {
+                        val errorMessage = when (response.code) {
+                            400 -> "Invalid request. Check the VIN."
+                            403 -> "Unauthorized access."
+                            404 -> "Vehicle not found."
+                            else -> "Unexpected error: ${response.message}"
+                        }
+                        displayFormError(errorMessage)
+                        Log.e("VehicleOwnership", errorMessage)
+                    }
+                    ResultOf.Idle -> displayFormError("Idle state")
+                    ResultOf.Loading -> displayFormError("Processing...")
+                }
+            } catch (e: Exception) {
+                Log.e("VehicleOwnership", "Error: ${e.message}", e)
+                displayFormError("Error processing request: ${e.message}")
+            }
+        }
+    }
+
+    private fun getAndShowPreferences(vin: String) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val accessToken = withContext(Dispatchers.IO) { jwtTokenDataStore.getAccessJwt() }
+
+                if(accessToken.isNullOrEmpty()) {
+                    displayFormError("Access token not found")
+                    return@launch
+                }
+
+                val vehicleService = VehicleClient.getApiServiceWithToken(accessToken)
+                val vehicleRepository = VehicleRepository(vehicleService, jwtTokenDataStore)
+
+                when (val response = vehicleRepository.getVehiclePreferences(vin)) {
+                    is ResultOf.Success -> {
+                        binding.tvVehicleOwnershipFragmentResult.text =
+                            "Preferences successfully get for VIN: $vin\nDetails: ${response.data}"
+                        showPreferences(vin, response.data)
+                    }
+                    is ResultOf.Error -> {
+                        val errorMessage = when (response.code) {
+                            403 -> "Unauthorized access."
+                            404 -> "Vehicle not found."
+                            else -> "Unexpected error: ${response.message}"
+                        }
+                        displayFormError(errorMessage)
+                        Log.e("VehicleOwnership", errorMessage)
+                    }
+                    ResultOf.Idle -> displayFormError("Idle state")
+                    ResultOf.Loading -> displayFormError("Processing...")
+                }
+            } catch (e: Exception) {
+                Log.e("VehicleOwnership", "Error: ${e.message}", e)
+                displayFormError("Error processing request: ${e.message}")
+            }
+        }
+    }
+
+    private suspend fun getAvailableColors(): List<ColorResponse> {
+        val accessToken = withContext(Dispatchers.IO) { jwtTokenDataStore.getAccessJwt() }
+
+        if(accessToken.isNullOrEmpty()) {
+            displayFormError("Access token not found")
+            return emptyList()
+        }
+
+        val vehicleService = VehicleClient.getApiServiceWithToken(accessToken)
+        val vehicleRepository = VehicleRepository(vehicleService, jwtTokenDataStore)
+
+        return try {
+            when (val response = vehicleRepository.getVehicleColors()) {
+                is ResultOf.Success -> response.data
+                is ResultOf.Error -> {
+                    val errorMessage = "Unexpected error: ${response.message}"
+                    displayFormError(errorMessage)
+                    Log.e("VehicleOwnership", errorMessage)
+                    emptyList()
+                }
+                ResultOf.Idle -> {
+                    displayFormError("Idle state")
+                    emptyList()
+                }
+                ResultOf.Loading -> {
+                    displayFormError("Processing...")
+                    emptyList()
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("VehicleOwnership", "Error: ${e.message}", e)
+            displayFormError("Error processing request: ${e.message}")
+            emptyList()
+        }
+    }
+
+    private suspend fun showPreferences(vin: String, vehicleData: VehicleResponse) {
+        binding.tvVehicleOwnershipFragmentModel.text = vehicleData.model.name
+        binding.tvVehicleOwnershipFragmentManufacturer.text = vehicleData.model.manufacturer
+        binding.tvVehicleOwnershipFragmentYearBuilt.text = vehicleData.year_built.toString()
+
+        binding.etVehicleOwnershipFragmentNickname.setText(vehicleData.nickname)
+
+        val colorResponses: List<ColorResponse> = getAvailableColors()
+        val colors: List<String> = colorResponses.map { color -> color.hex_code }
+        var selectedInteriorColorIndex: Int = findCurrentColorPosition(colorResponses, vehicleData.interior_color)
+        binding.btnVehicleOwnershipFragmentShowInteriorColor.setBackgroundColor(Color.parseColor(colors[selectedInteriorColorIndex]))
+        var selectedExteriorColorIndex: Int = findCurrentColorPosition(colorResponses, vehicleData.outer_color)
+        binding.btnVehicleOwnershipFragmentShowExteriorColor.setBackgroundColor(Color.parseColor(colors[selectedExteriorColorIndex]))
+
+        binding.btnVehicleOwnershipFragmentInteriorColor.setOnClickListener{
+            val bottomSheetDialog = ColorPickerBottomSheetDialog(context)
+            bottomSheetDialog.setColumns(6)
+                .setColors(ArrayList(colors))
+                .setDefaultSelectedColor(selectedInteriorColorIndex)
+                .setColorItemShape(ColorItemShape.CIRCLE)
+                .setOnSelectColorListener(object : OnSelectColorListener {
+                    override fun onColorSelected(color: Int, position: Int) {
+                        binding.btnVehicleOwnershipFragmentShowInteriorColor.setBackgroundColor(color)
+                        selectedInteriorColorIndex = position
+                    }
+
+                    override fun cancel() {
+                        bottomSheetDialog.dismissDialog()
+                    }
+                })
+                .show()
+        }
+
+        binding.btnVehicleOwnershipFragmentExteriorColor.setOnClickListener{
+            val bottomSheetDialog = ColorPickerBottomSheetDialog(context)
+            bottomSheetDialog.setColumns(6)
+                .setColors(ArrayList(colors))
+                .setDefaultSelectedColor(selectedExteriorColorIndex)
+                .setColorItemShape(ColorItemShape.CIRCLE)
+                .setOnSelectColorListener(object : OnSelectColorListener {
+                    override fun onColorSelected(color: Int, position: Int) {
+                        binding.btnVehicleOwnershipFragmentShowExteriorColor.setBackgroundColor(color)
+                        selectedExteriorColorIndex = position
+                    }
+
+                    override fun cancel() {
+                        bottomSheetDialog.dismissDialog()
+                    }
+                })
+                .show()
+        }
+
+        binding.btnVehicleOwnershipFragmentSavePrefs.setOnClickListener {
+            val prefsData = PreferencesResponse(
+                nickname = binding.etVehicleOwnershipFragmentNickname.text.toString(),
+                interior_color = colorResponses[selectedInteriorColorIndex],
+                outer_color = colorResponses[selectedExteriorColorIndex])
+            updatePreferences(vin, prefsData)
+        }
+
+        binding.viewVehicleOwnershipFragmentDivider.visibility = VISIBLE
+        binding.llVehicleOwnershipFragmentPreferences.visibility = VISIBLE
+    }
+
+    private fun updatePreferences(vin: String, prefsData: PreferencesResponse) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val accessToken = withContext(Dispatchers.IO) { jwtTokenDataStore.getAccessJwt() }
+
+                if(accessToken.isNullOrEmpty()) {
+                    displayFormError("Access token not found")
+                    return@launch
+                }
+
+                val vehicleService = VehicleClient.getApiServiceWithToken(accessToken)
+                val vehicleRepository = VehicleRepository(vehicleService, jwtTokenDataStore)
+
+                when (val response = vehicleRepository.updateVehiclePreferences(vin, prefsData)) {
+                    is ResultOf.Success -> {
+                        cleanView()
+                    }
+                    is ResultOf.Error -> {
+                        val errorMessage = when (response.code) {
+                            400 -> "Invalid preferences data."
+                            403 -> "Unauthorized access."
+                            404 -> "Vehicle not found."
+                            else -> "Unexpected error: ${response.message}"
+                        }
+                        displayFormError(errorMessage)
+                        Log.e("VehicleOwnership", errorMessage)
+                    }
+                    ResultOf.Idle -> displayFormError("Idle state")
+                    ResultOf.Loading -> displayFormError("Processing...")
+                }
+            } catch (e: Exception) {
+                Log.e("VehicleOwnership", "Error: ${e.message}", e)
+                displayFormError("Error processing request: ${e.message}")
+            }
+        }
+    }
+
+    private fun cleanView() {
+        binding.tvVehicleOwnershipFragmentResult.text = ""
+        binding.tvVehicleOwnershipFragmentModel.text = ""
+        binding.tvVehicleOwnershipFragmentManufacturer.text = ""
+        binding.tvVehicleOwnershipFragmentYearBuilt.text = ""
+        binding.etVehicleOwnershipFragmentNickname.setText("")
+        binding.viewVehicleOwnershipFragmentDivider.visibility = GONE
+        binding.llVehicleOwnershipFragmentPreferences.visibility = GONE
+
+        displayFormError("Preferences saved!")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+}
+
+/*package com.dsd.carcompanion.vehicleOwnership
+
+class VehicleOwnershipFragment : Fragment() {
+
+    private var _binding: FragmentVehicleOwnershipBinding? = null
+    private val binding get() = _binding!!
 
     @OptIn(ExperimentalStdlibApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -98,4 +379,4 @@ class VehicleOwnershipFragment : Fragment() {
             }
         }
     }
-}
+}*/

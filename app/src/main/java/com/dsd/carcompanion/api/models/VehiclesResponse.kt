@@ -5,15 +5,11 @@ data class VehicleResponse(
     val nickname: String?,
     val model: VehicleModels,
     val year_built: Int,
-    val interior_color: Color,
-    val outer_color: Color
+    val interior_color: ColorResponse,
+    val outer_color: ColorResponse
 )
 
 data class VehicleModels(
     val name: String,
     val manufacturer: String
-)
-
-data class Color(
-    val name: String
 )

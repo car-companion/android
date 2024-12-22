@@ -180,6 +180,7 @@ class UserPermissionsFragment : Fragment() {
     }
 
 
+    // TODO : show permissions checkboxes dynamically depending on the vehicle
     private fun updatePermissionsTextView(permissions: List<PermissionResponse>) {
         if (permissions.isEmpty()) {
             binding.tvShowApiResponse.text = getString(R.string.no_permissions_available)
