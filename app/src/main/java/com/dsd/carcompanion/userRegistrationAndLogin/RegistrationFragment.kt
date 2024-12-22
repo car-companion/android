@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.dsd.carcompanion.MainActivity
@@ -17,6 +18,8 @@ import com.dsd.carcompanion.api.models.LoginRequest
 import com.dsd.carcompanion.api.repository.AuthRepository
 import com.dsd.carcompanion.api.utils.ResultOf
 import com.dsd.carcompanion.databinding.FragmentRegistrationBinding
+import com.dsd.carcompanion.utility.ImageHelper
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,6 +45,7 @@ class RegistrationFragment : BottomSheetDialogFragment() {
     private val binding get() = _binding!!
 
     private lateinit var jwtTokenDataStore: JwtTokenDataStore
+    private var _bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,11 +53,29 @@ class RegistrationFragment : BottomSheetDialogFragment() {
     ): View {
         jwtTokenDataStore = JwtTokenDataStore(requireContext())
         _binding = FragmentRegistrationBinding.inflate(inflater, container, false)
+
+        // Initialize BottomSheetBehavior
+        _bottomSheetBehavior = BottomSheetBehavior.from(binding.llRegistrationFragmentBottomSheet)
+        _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val imageView = binding.imgBackground
+        ImageHelper.applyBlurAndColorFilterToImageView(
+            imageView,
+            context,
+            R.drawable.background_colors
+        )
+
+        // Bottom sheet settings
+        _bottomSheetBehavior?.setState(BottomSheetBehavior.STATE_EXPANDED)
+        _bottomSheetBehavior?.isDraggable = true
+        _bottomSheetBehavior?.isHideable = false
+        _bottomSheetBehavior?.peekHeight = 150
 
         // Registration submit button logic
         binding.btnRegistrationFragmentSubmit.setOnClickListener {

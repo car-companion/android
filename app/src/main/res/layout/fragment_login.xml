@@ -8,19 +8,35 @@
         android:layout_height="match_parent"
         android:background="@drawable/gradient_background">
 
+        <ImageView
+            android:id="@+id/img_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/background_colors" />
 
         <!-- Bottom Sheet -->
         <LinearLayout
             android:id="@+id/ll_login_fragment_bottom_sheet"
             android:layout_width="match_parent"
-            android:layout_height="403dp"
-            android:background="@drawable/bottom_sheet_background"
-            android:elevation="16dp"
-            android:gravity="center"
-            android:maxHeight="600dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp"
-            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+            android:elevation="16dp"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+            app:behavior_peekHeight="30dp"
+            app:behavior_hideable="true"
+            android:gravity="center"
+            android:background="@drawable/bottom_sheet_background"
+            android:maxHeight="600dp">
+            <!-- Guide Indicator -->
+            <View
+                android:id="@+id/bs_handle"
+                android:layout_width="36dp"
+                android:layout_height="4dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/bs_handle_background" />
 
             <TextView
                 android:id="@+id/tv_login_username"

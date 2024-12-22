@@ -1,5 +1,7 @@
 package com.dsd.carcompanion.home
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +13,12 @@ import com.dsd.carcompanion.adapters.VehicleInfoAdapter
 import com.dsd.carcompanion.api.models.VehicleInfo
 import com.dsd.carcompanion.databinding.FragmentHomeBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import android.graphics.RenderEffect
+import android.graphics.Shader
+import android.graphics.drawable.VectorDrawable
+import android.os.Build
+import androidx.core.content.ContextCompat
+import com.dsd.carcompanion.utility.ImageHelper
 
 
 class HomeFragment : Fragment() {
@@ -40,11 +48,21 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val imageView = binding.imgBackground
+        ImageHelper.applyBlurAndColorFilterToImageView(
+            imageView,
+            context,
+            R.drawable.background_colors
+        )
+
+
+        // Bottom sheet settings
         _bottomSheetBehavior?.setState(BottomSheetBehavior.STATE_COLLAPSED)
         _bottomSheetBehavior?.isDraggable = true
         _bottomSheetBehavior?.isHideable = false
         _bottomSheetBehavior?.peekHeight = 150
 
+        // Toggle 2D/3D mode
         binding.fabHomeFragmentDimension.setOnClickListener {
             val is3DMode = binding.fabHomeFragmentDimension.text == getString(R.string.home_fragment_3d_mode_fab_dimension)
             binding.fabHomeFragmentDimension.text = getString(
@@ -52,30 +70,34 @@ class HomeFragment : Fragment() {
             )
         }
 
+        // Vehicle Switch
         binding.swHomeFragmentVehicle.setOnCheckedChangeListener { _, isChecked ->
-            if(isChecked) {
-               binding.tvHomeFragmentVehicleState.text = getString(R.string.bottom_sheet_vehicle_unlocked_tv_state)
+            if (isChecked) {
+                binding.tvHomeFragmentVehicleState.text = getString(R.string.bottom_sheet_vehicle_unlocked_tv_state)
             } else {
                 binding.tvHomeFragmentVehicleState.text = getString(R.string.bottom_sheet_vehicle_locked_tv_state)
             }
         }
 
+        // Windows Switch
         binding.swHomeFragmentWindows.setOnCheckedChangeListener { _, isChecked ->
-            if(isChecked) {
+            if (isChecked) {
                 binding.tvHomeFragmentWindowsState.text = getString(R.string.bottom_sheet_windows_opened_tv_state)
             } else {
                 binding.tvHomeFragmentWindowsState.text = getString(R.string.bottom_sheet_windows_closed_tv_state)
             }
         }
 
+        // Lights Switch
         binding.swHomeFragmentLights.setOnCheckedChangeListener { _, isChecked ->
-            if(isChecked) {
+            if (isChecked) {
                 binding.tvHomeFragmentLightsState.text = getString(R.string.bottom_sheet_lights_on_tv_state)
             } else {
                 binding.tvHomeFragmentLightsState.text = getString(R.string.bottom_sheet_lights_off_tv_state)
             }
         }
 
+        // Temperature Slider
         binding.tvHomeFragmentTemperature.text = buildString {
             append(binding.sliderHomeFragmentTemperature.value.toString())
             append(getString(R.string.bottom_sheet_temperature_degrees_tv_state))
@@ -87,6 +109,7 @@ class HomeFragment : Fragment() {
             }
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

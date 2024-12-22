@@ -5,11 +5,31 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
+        <ImageView
+            android:id="@+id/img_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/background_colors" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_car_model"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="The car model goes here"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp" />
+
 
             <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:id="@+id/fab_home_fragment_dimension"
@@ -41,11 +61,21 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp"
-            android:background="@color/white"
             android:elevation="16dp"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+            app:behavior_peekHeight="30dp"
+            app:behavior_hideable="true"
             android:gravity="center"
+            android:background="@drawable/bottom_sheet_background"
             android:maxHeight="600dp">
+
+            <View
+                android:id="@+id/bs_handle"
+                android:layout_width="36dp"
+                android:layout_height="4dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/bs_handle_background" />
 
             <TextView
                 android:layout_width="match_parent"

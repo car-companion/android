@@ -18,6 +18,7 @@ import com.dsd.carcompanion.api.models.LoginRequest
 import com.dsd.carcompanion.api.repository.AuthRepository
 import com.dsd.carcompanion.api.utils.ResultOf
 import com.dsd.carcompanion.databinding.FragmentLoginBinding
+import com.dsd.carcompanion.utility.ImageHelper
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -47,6 +48,19 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val imageView = binding.imgBackground
+        ImageHelper.applyBlurAndColorFilterToImageView(
+            imageView,
+            context,
+            R.drawable.background_colors
+        )
+
+        // Bottom sheet settings
+        _bottomSheetBehavior?.setState(BottomSheetBehavior.STATE_COLLAPSED)
+        _bottomSheetBehavior?.isDraggable = true
+        _bottomSheetBehavior?.isHideable = false
+        _bottomSheetBehavior?.peekHeight = 150
 
         // Handle button click for login
         binding.btnLoginFragmentSubmit.setOnClickListener {
