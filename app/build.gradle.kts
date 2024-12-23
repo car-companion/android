@@ -6,9 +6,12 @@ plugins {
 }
 
 QtBuild {
-    qtPath = file("C:\\QtAndroid\\6.8.1")
-    projectPath = file("C:\\QtApplication\\android\\my_car_companion")
-    //qtKitDir = file("C:\\Qt\\6.8.1\\android_x86_64")
+    // qtPath = file("C:\\QtAndroid\\6.8.1")
+    // qtKitDir = file("C:\\Qt\\6.8.1\\android_x86_64")
+    projectPath = file("../my_car_companion")
+    // TODO: don't commit
+    qtPath = file( "C:/Qt/6.8.0")
+    qtKitDir = file("C:/Qt/6.8.0/android_arm64_v8a")
 }
 
 android {
@@ -37,15 +40,21 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "1.8"
     }
     buildFeatures {
         viewBinding = true
         dataBinding = true
+    }
+    sourceSets {
+        getByName("main") {
+            jniLibs.setSrcDirs(listOf("libs"))
+            assets.setSrcDirs(listOf("assets"))
+        }
     }
 }
 
@@ -72,4 +81,6 @@ dependencies {
 
     implementation(libs.colorpicker)
     implementation(libs.flexbox)
+
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
 }

@@ -19,7 +19,7 @@ import org.qtproject.example.my_car_companionApp.QmlModule
 import org.qtproject.qt.android.QtQmlStatus
 import org.qtproject.qt.android.QtQmlStatusChangeListener
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), QtQmlStatusChangeListener {
     //private lateinit var recyclerView: RecyclerView
     private lateinit var vehicleInfoAdapter: VehicleInfoAdapter
     private var vehicleInfoList: MutableList<VehicleInfo> = mutableListOf()
@@ -69,10 +69,12 @@ class HomeFragment : Fragment() {
             ViewGroup.LayoutParams.MATCH_PARENT
         )
 
-        m_qmlView = QtQuickView(requireContext())
+        Log.d("Home", "Instantiated")
+        m_qmlView = QtQuickView(requireContext(), "Main.qml", "my_car_companionApp")
 
         qtContainer.addView(m_qmlView, params)
         m_qmlView!!.loadContent(m_mainQmlContent)
+        Log.d("Home", "After loaded")
 
         _bottomSheetBehavior?.setState(BottomSheetBehavior.STATE_COLLAPSED)
         _bottomSheetBehavior?.isDraggable = true
@@ -127,9 +129,7 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
-    /*override fun onStatusChanged(status: QtQmlStatus?) {
-        Log.v("Qt", "Status of QtQuickView: $status")
-        if (status == QtQmlStatus.READY)
-            m_mainQmlContent.setQuickForAndroid(true)
-    }*/
+    override fun onStatusChanged(status: QtQmlStatus?) {
+        Log.v("CAR_COMPANION_QT", "Status of QtQuickView: $status")
+    }
 }
