@@ -18,6 +18,7 @@ import android.graphics.Shader
 import android.graphics.drawable.VectorDrawable
 import android.os.Build
 import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.findNavController
 import com.dsd.carcompanion.utility.ImageHelper
 
 
@@ -38,7 +39,9 @@ class HomeFragment : Fragment() {
         super.onCreateView(inflater, container, savedInstanceState)
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+
         _bottomSheetBehavior = BottomSheetBehavior.from(binding.llHomeFragmentBottomSheet)
+
         recyclerView = binding.rvHomeFragmentVehicleInfo
         vehicleInfoAdapter = VehicleInfoAdapter(vehicleInfoList)
         recyclerView.adapter = vehicleInfoAdapter
@@ -52,7 +55,8 @@ class HomeFragment : Fragment() {
         ImageHelper.applyBlurAndColorFilterToImageView(
             imageView,
             context,
-            R.drawable.background_colors
+            R.drawable.homescreend,
+            blurRadius = 50f
         )
 
 
@@ -67,13 +71,13 @@ class HomeFragment : Fragment() {
             _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
-        // Toggle 2D/3D mode
-        binding.fabHomeFragmentDimension.setOnClickListener {
-            val is3DMode = binding.fabHomeFragmentDimension.text == getString(R.string.home_fragment_3d_mode_fab_dimension)
-            binding.fabHomeFragmentDimension.text = getString(
-                if (is3DMode) R.string.home_fragment_2d_mode_fab_dimension else R.string.home_fragment_3d_mode_fab_dimension
-            )
-        }
+//        // Toggle 2D/3D mode
+//        binding.fabHomeFragmentDimension.setOnClickListener {
+//            val is3DMode = binding.fabHomeFragmentDimension.text == getString(R.string.home_fragment_3d_mode_fab_dimension)
+//            binding.fabHomeFragmentDimension.text = getString(
+//                if (is3DMode) R.string.home_fragment_2d_mode_fab_dimension else R.string.home_fragment_3d_mode_fab_dimension
+//            )
+//        }
 
         // Vehicle Switch
         binding.swHomeFragmentVehicle.setOnCheckedChangeListener { _, isChecked ->
@@ -112,6 +116,10 @@ class HomeFragment : Fragment() {
                 append(value.toString())
                 append(getString(R.string.bottom_sheet_temperature_degrees_tv_state))
             }
+        }
+
+        binding.menuIcon.setOnClickListener {
+            findNavController().navigate(R.id.action_HomeFragment_to_FirstFragment)
         }
     }
 

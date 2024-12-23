@@ -12,46 +12,38 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitXY"
-            android:src="@drawable/background_colors" />
+            android:src="@drawable/homescreend" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/tv_car_model"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="The car model goes here"
-                android:textSize="20sp"
-                android:textColor="@color/black"
+            <ImageView
+                android:id="@+id/menu_icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/menu_icon"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="20dp"
-                android:layout_marginStart="20dp" />
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="20dp" />
 
-
-            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-                android:id="@+id/fab_home_fragment_dimension"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:text="@string/home_fragment_2d_mode_fab_dimension"
-                app:cornerRadius="100dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginTop="10dp" />
-
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/fgt_2D_3D_model"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:navGraph="@navigation/nav_graph_2d_3d" />
-
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/tv_car_model"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="The car model goes here"
+                    android:textSize="20sp"
+                    android:textColor="@color/black"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- Bottom Sheet -->
@@ -63,7 +55,7 @@
             android:padding="16dp"
             android:elevation="16dp"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-            app:behavior_peekHeight="30dp"
+            app:behavior_peekHeight="90dp"
             app:behavior_hideable="true"
             android:gravity="center"
             android:background="@drawable/bottom_sheet_background"

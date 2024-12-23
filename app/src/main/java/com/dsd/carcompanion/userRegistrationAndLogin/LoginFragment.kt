@@ -1,12 +1,17 @@
 package com.dsd.carcompanion.userRegistrationAndLogin
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -56,6 +61,16 @@ class LoginFragment : Fragment() {
             R.drawable.background_colors
         )
 
+        val textView = view.findViewById<TextView>(R.id.tv_swipe_up_hint)
+
+        val spannable = SpannableString("Swipe up to explore\nthe world of car management")
+        spannable.setSpan(
+            ForegroundColorSpan(Color.BLACK),
+            0, 8,  // Indices for "Swipe up"
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        textView.text = spannable
+
         // Bottom sheet settings
         _bottomSheetBehavior?.setState(BottomSheetBehavior.STATE_COLLAPSED)
         _bottomSheetBehavior?.isDraggable = true
@@ -104,6 +119,10 @@ class LoginFragment : Fragment() {
 
         binding.linkLoginFragmentForgotPassword.setOnClickListener {
             findNavController().navigate(R.id.action_LoginFragment_to_ForgotPasswordFragment)
+        }
+
+        binding.linkLoginFragmentDontHaveAccount.setOnClickListener {
+            findNavController().navigate(R.id.action_LoginFragment_to_RegistrationFragment)
         }
     }
 

@@ -24,6 +24,8 @@ import com.dsd.carcompanion.api.repository.AuthRepository
 import com.dsd.carcompanion.api.repository.VehicleRepository
 import com.dsd.carcompanion.api.service.VehicleService
 import com.dsd.carcompanion.api.utils.ResultOf
+import com.dsd.carcompanion.utility.ImageHelper
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 class UserPermissionsFragment : Fragment() {
 
@@ -31,17 +33,41 @@ class UserPermissionsFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var jwtTokenDataStore: JwtTokenDataStore
 
+    private var _bottomSheetBehavior: BottomSheetBehavior<View>? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentGrantPermissionsBinding.inflate(inflater, container, false)
         jwtTokenDataStore = JwtTokenDataStore(requireContext()) // Initialize the JwtTokenDataStore
+
+        _bottomSheetBehavior = BottomSheetBehavior.from(binding.llHomeFragmentBottomSheet)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val imageView = binding.imgBackground
+        ImageHelper.applyBlurAndColorFilterToImageView(
+            imageView,
+            context,
+            R.drawable.homescreend
+        )
+
+
+        // Bottom sheet settings
+        _bottomSheetBehavior?.setState(BottomSheetBehavior.STATE_EXPANDED)
+        _bottomSheetBehavior?.isDraggable = false
+        _bottomSheetBehavior?.isHideable = false
+        _bottomSheetBehavior?.peekHeight = 150
+
+        // Expand bottom sheet when draggable guide is tapped
+        binding.llHomeFragmentBottomSheet.setOnClickListener {
+            _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        }
 
         // Fetch and display vehicles
         viewLifecycleOwner.lifecycleScope.launch {
@@ -86,11 +112,11 @@ class UserPermissionsFragment : Fragment() {
                     val vehicleInfo = vehicles.joinToString("\n") { vehicle ->
                         "Nickname: ${vehicle.nickname ?: "N/A"}, VIN: ${vehicle.vin}"
                     }
-                    binding.tvShowApiResponse.text = vehicleInfo
+//                    binding.tvShowApiResponse.text = vehicleInfo
                     updateVehicleSpinner(vehicles,accessToken)
                 }
                 is ResultOf.Error -> {
-                    binding.tvShowApiResponse.text = "Error: ${response.message}"
+//                    binding.tvShowApiResponse.text = "Error: ${response.message}"
                 }
 
                 ResultOf.Idle -> TODO()
@@ -127,17 +153,17 @@ class UserPermissionsFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if (position == 0) {
                     // Default option selected
-                    binding.tvShowApiResponse.text = getString(R.string.no_vehicle_selected)
+//                    binding.tvShowApiResponse.text = getString(R.string.no_vehicle_selected)
                 } else if (vehicles.isNotEmpty() && position in 1 until vinMapping.size) {
                     val selectedVIN = vinMapping[position]
                     fetchPermissionsForVIN(selectedVIN, accessToken)
                 } else {
-                    binding.tvShowApiResponse.text = getString(R.string.no_permissions_selected)
+//                    binding.tvShowApiResponse.text = getString(R.string.no_permissions_selected)
                 }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                binding.tvShowApiResponse.text = getString(R.string.no_vehicle_selected)
+//                binding.tvShowApiResponse.text = getString(R.string.no_vehicle_selected)
             }
         }
     }
@@ -162,7 +188,7 @@ class UserPermissionsFragment : Fragment() {
                         }
                     }
                     is ResultOf.Error -> {
-                        binding.tvShowApiResponse.text = "Error: ${response.message}"
+//                        binding.tvShowApiResponse.text = "Error: ${response.message}"
                     }
                     ResultOf.Idle -> {
 //                        binding.tvShowApiResponse.text = getString(R.string.fetching_idle_state)
@@ -172,7 +198,7 @@ class UserPermissionsFragment : Fragment() {
                     }
                 }
             } catch (e: Exception) {
-                binding.tvShowApiResponse.text = "Error fetching permissions: ${e.message}"
+//                binding.tvShowApiResponse.text = "Error fetching permissions: ${e.message}"
                 Log.e("FetchPermissions", "Error fetching permissions: ${e.message}", e)
                 showToast("Error fetching permissions: ${e.message}")
             }
@@ -182,12 +208,12 @@ class UserPermissionsFragment : Fragment() {
 
     private fun updatePermissionsTextView(permissions: List<PermissionResponse>) {
         if (permissions.isEmpty()) {
-            binding.tvShowApiResponse.text = getString(R.string.no_permissions_available)
+//            binding.tvShowApiResponse.text = getString(R.string.no_permissions_available)
         } else {
             val permissionsText = permissions.joinToString("\n") { permission ->
                 "${permission.name} (${permission.type.name}): ${if (permission.status == 0) "Disabled" else "Enabled"}"
             }
-            binding.tvShowApiResponse.text = permissionsText
+//            binding.tvShowApiResponse.text = permissionsText
         }
     }
 

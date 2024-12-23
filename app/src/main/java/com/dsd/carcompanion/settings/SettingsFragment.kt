@@ -40,12 +40,13 @@ class SettingsFragment : Fragment() {
         ImageHelper.applyBlurAndColorFilterToImageView(
             imageView,
             context,
-            R.drawable.background_colors
+            R.drawable.homescreend,
+            blurRadius = 50f
         )
 
         // Bottom sheet settings
         _bottomSheetBehavior?.setState(BottomSheetBehavior.STATE_EXPANDED)
-        _bottomSheetBehavior?.isDraggable = true
+        _bottomSheetBehavior?.isDraggable = false
         _bottomSheetBehavior?.isHideable = false
         _bottomSheetBehavior?.peekHeight = 150
 
