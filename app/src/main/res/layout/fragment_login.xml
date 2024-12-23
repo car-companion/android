@@ -15,7 +15,24 @@
             android:scaleType="fitXY"
             android:src="@drawable/background_colors" />
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/img_logo"
+                android:layout_width="260dp"
+                android:layout_height="160dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/logo"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <!-- Bottom Sheet -->
+
         <LinearLayout
             android:id="@+id/ll_login_fragment_bottom_sheet"
             android:layout_width="match_parent"

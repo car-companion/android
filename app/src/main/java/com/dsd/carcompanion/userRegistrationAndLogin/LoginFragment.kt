@@ -62,6 +62,13 @@ class LoginFragment : Fragment() {
         _bottomSheetBehavior?.isHideable = false
         _bottomSheetBehavior?.peekHeight = 150
 
+        // Expand bottom sheet when draggable guide is tapped
+        binding.llLoginFragmentBottomSheet.setOnClickListener {
+            _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+
+
         // Handle button click for login
         binding.btnLoginFragmentSubmit.setOnClickListener {
             val usernameEditText = binding.tilLoginFragmentUsername.editText?.text.toString()

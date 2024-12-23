@@ -58,6 +58,14 @@
     <string name="bottom_sheet_lights_on_tv_state">On</string>
     <string name="bottom_sheet_temperature_degrees_tv_state">°C</string>
 
+    <!-- SETTINGS SCREEN -->
+    <string name="settings">Settings</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="app_configurations">App Configurations</string>
+    <string name="appearance">Appearance</string>
+
+    <string name="user_settings">User Settings</string>
+
     <!-- Premade values; will be deleted in the next sprint -->
 
     <!-- VEHICLE ACCESS PERMISSIONS -->
@@ -80,8 +88,8 @@
     <string name="no_permissions_available">No permissions available for this vehicle.</string>
     <string name="no_vehicle_selected">Please select a vehicle from the list.</string>
     <string name="no_permissions_selected">No permissions available for the selected vehicle.</string>
-
-
+    <!-- CUSTOM ELEMENTS -->
+    <string name="default_switch_label">Insert Text</string>
 
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -92,4 +100,5 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="home_fragment_label">Home Fragment</string>
+
 </resources>

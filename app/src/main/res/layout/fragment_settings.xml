@@ -1,128 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".settings.SettingsFragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:gravity="center_horizontal">
+        android:layout_height="match_parent"
+
+        android:background="@drawable/gradient_background">
+
+        <ImageView
+            android:id="@+id/img_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/background_colors" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/img_logo"
+                android:layout_width="260dp"
+                android:layout_height="160dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/logo"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- Title -->
         <TextView
             android:id="@+id/tv_settings_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Settings"
+            android:text="@string/settings"
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/ll_settings_fragment_bottom_sheet"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- User Settings Section -->
-        <TextView
-            android:id="@+id/tv_user_settings"
+        <!-- Bottom Sheet -->
+        <LinearLayout
+            android:id="@+id/ll_settings_fragment_bottom_sheet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="User Settings"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_user_settings" />
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:paddingHorizontal="20dp"
+            android:elevation="16dp"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+            app:behavior_peekHeight="30dp"
+            app:behavior_hideable="true"
+            android:gravity="center"
+            android:background="@drawable/bottom_sheet_background"
+            android:maxHeight="600dp" >
 
-        <Switch
-            android:id="@+id/switch_notification"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Enable Notifications"
-            app:layout_constraintTop_toBottomOf="@id/tv_user_settings"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginVertical="8dp" />
+            <!-- Guide Indicator -->
+            <View
+                android:id="@+id/bs_handle"
+                android:layout_width="36dp"
+                android:layout_height="5dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/bs_handle_background" />
 
-        <!-- Night Mode Section -->
-        <TextView
-            android:id="@+id/tv_night_mode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Appearance"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/switch_notification"
-            app:layout_constraintStart_toStartOf="parent" />
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp"/>
 
-        <Switch
-            android:id="@+id/switch_night_mode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Night Mode"
-            app:layout_constraintTop_toBottomOf="@id/tv_night_mode"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginVertical="8dp" />
+            <!-- User Settings Section -->
+            <TextView
+                android:id="@+id/tv_user_settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/user_settings"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_user_settings" />
 
-        <!-- App Configurations Section -->
-        <TextView
-            android:id="@+id/tv_app_configurations"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="64dp"
-            android:text="App Configurations"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/switch_night_mode" />
+            <include
+                layout="@layout/custom_switch"
+                android:id="@+id/switch_notification" />
 
-        <Button
-            android:id="@+id/btn_privacy_policy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Privacy Policy"
-            app:layout_constraintTop_toBottomOf="@id/tv_app_configurations"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginVertical="8dp" />
+            <!-- Night Mode Section -->
+            <TextView
+                android:id="@+id/tv_night_mode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/appearance"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/switch_notification"
+                app:layout_constraintStart_toStartOf="parent" />
 
-        <Button
-            android:id="@+id/btn_terms_and_conditions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Terms and Conditions"
-            app:layout_constraintTop_toBottomOf="@id/btn_privacy_policy"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginVertical="8dp" />
+            <include
+                layout="@layout/custom_switch"
+                android:id="@+id/switch_night_mode" />
 
-        <Button
-            android:id="@+id/btn_about_app"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="About App"
-            app:layout_constraintTop_toBottomOf="@id/btn_terms_and_conditions"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginVertical="8dp" />
+            <!-- App Configurations Section -->
+            <TextView
+                android:id="@+id/tv_app_configurations"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="64dp"
+                android:text="@string/app_configurations"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/switch_night_mode" />
 
-        <!-- Brand Icon at the Bottom -->
-        <ImageView
-            android:id="@+id/imgBrandIcon"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
-            android:contentDescription="Brand Icon"
-            app:layout_constraintTop_toBottomOf="@id/btn_about_app"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <Button
+                android:id="@+id/btn_privacy_policy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/privacy_policy"
+                app:layout_constraintTop_toBottomOf="@id/tv_app_configurations"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginVertical="8dp"
+                android:background="@drawable/custom_button"/>
 
-    </LinearLayout>
-</RelativeLayout>
+
+            <!-- Brand Icon at the Bottom -->
+            <ImageView
+                android:id="@+id/imgBrandIcon"
+                android:layout_width="110dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:contentDescription="Brand Icon"
+                app:layout_constraintTop_toBottomOf="@id/btn_privacy_policy"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:background="@drawable/logo"/>
+        </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

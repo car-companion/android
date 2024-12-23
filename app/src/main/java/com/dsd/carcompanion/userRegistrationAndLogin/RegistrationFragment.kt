@@ -77,6 +77,11 @@ class RegistrationFragment : BottomSheetDialogFragment() {
         _bottomSheetBehavior?.isHideable = false
         _bottomSheetBehavior?.peekHeight = 150
 
+        // Expand bottom sheet when draggable guide is tapped
+        binding.llRegistrationFragmentBottomSheet.setOnClickListener {
+            _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
         // Registration submit button logic
         binding.btnRegistrationFragmentSubmit.setOnClickListener {
 //            val firstName = binding.etRegistrationFragmentFirstName.text.toString()

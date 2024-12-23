@@ -62,6 +62,11 @@ class HomeFragment : Fragment() {
         _bottomSheetBehavior?.isHideable = false
         _bottomSheetBehavior?.peekHeight = 150
 
+        // Expand bottom sheet when draggable guide is tapped
+        binding.llHomeFragmentBottomSheet.setOnClickListener {
+            _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
         // Toggle 2D/3D mode
         binding.fabHomeFragmentDimension.setOnClickListener {
             val is3DMode = binding.fabHomeFragmentDimension.text == getString(R.string.home_fragment_3d_mode_fab_dimension)
