@@ -59,6 +59,29 @@
 
     <!-- Premade values; will be deleted in the next sprint -->
 
+    <!-- VEHICLE ACCESS PERMISSIONS -->
+    <string name="user_identifier_hint">Enter Username</string>
+    <string name="permission_presets_title">Permission Presets</string>
+    <string name="full_access_option">Full Access</string>
+    <string name="custom_access_option">Custom Access</string>
+    <string name="permissions_title">Permissions</string>
+    <string name="manage_temperature">Manage Temperature</string>
+    <string name="manage_vehicle_locks">Manage Vehicle Locks</string>
+    <string name="access_vehicle_battery">Access Vehicle Battery</string>
+    <string name="manage_rooftop">Manage Vehicle Rooftop</string>
+    <string name="manage_lights">Manage Lights</string>
+    <string name="manage_trunk">Manage Trunk</string>
+    <string name="access_vehicle_systems">Access Vehicle Systems</string>
+    <string name="extra_features">Extra Features</string>
+    <string name="update_access_button">Update Access</string>
+    <string name="no_vehicles_available">No vehicles available</string>
+    <string name="error_fetching_permissions">Error fetching permissions: %1$s</string>
+    <string name="no_permissions_available">No permissions available for this vehicle.</string>
+    <string name="no_vehicle_selected">Please select a vehicle from the list.</string>
+    <string name="no_permissions_selected">No permissions available for the selected vehicle.</string>
+
+
+
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>

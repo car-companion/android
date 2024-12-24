@@ -6,7 +6,6 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/ll_vehicle_ownership_fragment_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -17,72 +16,110 @@
         android:gravity="center"
         android:layout_margin="50dp">
 
-        <Spinner
-            android:id="@+id/spr_vehicle_ownership_fragment_model"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <View android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
         <EditText
-            android:id="@+id/et_vehicle_ownership_fragment_number"
+            android:id="@+id/et_vehicle_ownership_fragment_model_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="Model Number"
             android:importantForAutofill="no"
+            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
             android:inputType="textCapCharacters" />
 
-        <View android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+        <Button
+            android:id="@+id/btn_vehicle_ownership_fragment_take"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Take ownership" />
+
+        <View
+            android:id="@+id/view_vehicle_ownership_fragment_divider"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#D3D3D3"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone"/>
 
         <LinearLayout
+            android:id="@+id/ll_vehicle_ownership_fragment_preferences"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:visibility="gone">
 
-            <Button
-                android:id="@+id/btn_vehicle_ownership_fragment_color"
+            <TextView
+                android:id="@+id/tv_vehicle_ownership_fragment_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tv_vehicle_ownership_fragment_model"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tv_vehicle_ownership_fragment_manufacturer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tv_vehicle_ownership_fragment_year_built"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/et_vehicle_ownership_fragment_nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Choose a color" />
+                android:hint="Nickname"
+                android:importantForAutofill="no"/>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_vehicle_ownership_fragment_show_color"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                app:cornerRadius="100dp"
-                app:strokeColor="@color/black"
-                app:strokeWidth="1dp" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_vehicle_ownership_fragment_interior_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Choose an interior color" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_vehicle_ownership_fragment_show__interior_color"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    app:cornerRadius="100dp"
+                    app:strokeColor="@color/black"
+                    app:strokeWidth="1dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_vehicle_ownership_fragment_exterior_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Choose an exterior color" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_vehicle_ownership_fragment_show_exterior_color"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    app:cornerRadius="100dp"
+                    app:strokeColor="@color/black"
+                    app:strokeWidth="1dp" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_vehicle_ownership_fragment_save_prefs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Save preferences" />
         </LinearLayout>
-
-        <View android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <DatePicker
-            android:id="@+id/dp_vehicle_ownership_fragment_year"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:calendarViewShown="false"
-            android:datePickerMode="spinner" />
-
-        <View android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/btn_vehicle_ownership_fragment_submit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add your vehicle" />
-
-        <TextView
-            android:id="@+id/tv_vehicle_ownership_fragment_res"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
