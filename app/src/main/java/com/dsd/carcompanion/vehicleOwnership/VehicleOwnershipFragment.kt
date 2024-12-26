@@ -15,6 +15,7 @@ import com.dsd.carcompanion.api.datastore.JwtTokenDataStore
 import com.dsd.carcompanion.api.instance.VehicleClient
 import com.dsd.carcompanion.api.models.ColorResponse
 import com.dsd.carcompanion.api.models.PreferencesResponse
+import com.dsd.carcompanion.api.models.VehiclePreferencesResponse
 import com.dsd.carcompanion.api.models.VehicleResponse
 import com.dsd.carcompanion.api.repository.VehicleRepository
 import com.dsd.carcompanion.api.utils.ResultOf
@@ -33,15 +34,19 @@ class VehicleOwnershipFragment : Fragment() {
         Toast.makeText(this.context, text, Toast.LENGTH_SHORT).show()
     }
 
-    fun findCurrentColorPosition(
+    private fun findCurrentColorPosition(
         colorResponses: List<ColorResponse>,
         currentColor: ColorResponse
     ): Int {
-        return colorResponses.indexOfFirst {
+        Log.d("Colors", "$colorResponses")
+        Log.d("Current", "$currentColor")
+        var index = colorResponses.indexOfFirst {
             it.name == currentColor.name &&
                     it.hex_code == currentColor.hex_code &&
                     it.is_metallic == currentColor.is_metallic
         }
+        index = if (index == -1) 0 else index
+        return index
     }
 
     private var _binding: FragmentVehicleOwnershipBinding? = null
@@ -92,7 +97,15 @@ class VehicleOwnershipFragment : Fragment() {
                             getAndShowPreferences(vin)
                         }
                         if(response.code == 200) {
-                            showPreferences(vin, response.data)
+                            val vehicleData = VehiclePreferencesResponse(
+                                vin = response.data.vin,
+                                model = response.data.model,
+                                year_built = response.data.year_built,
+                                default_interior_color = response.data.default_interior_color,
+                                default_exterior_color = response.data.default_exterior_color,
+                                user_preferences = PreferencesResponse(null, null, null)
+                            )
+                            showPreferences(vin, vehicleData)
                         }
                     }
                     is ResultOf.Error -> {
@@ -189,18 +202,19 @@ class VehicleOwnershipFragment : Fragment() {
         }
     }
 
-    private suspend fun showPreferences(vin: String, vehicleData: VehicleResponse) {
+    private suspend fun showPreferences(vin: String, vehicleData: VehiclePreferencesResponse) {
         binding.tvVehicleOwnershipFragmentModel.text = vehicleData.model.name
         binding.tvVehicleOwnershipFragmentManufacturer.text = vehicleData.model.manufacturer
         binding.tvVehicleOwnershipFragmentYearBuilt.text = vehicleData.year_built.toString()
 
-        binding.etVehicleOwnershipFragmentNickname.setText(vehicleData.nickname)
+        binding.etVehicleOwnershipFragmentNickname.setText(vehicleData.user_preferences.nickname
+            ?: "")
 
         val colorResponses: List<ColorResponse> = getAvailableColors()
         val colors: List<String> = colorResponses.map { color -> color.hex_code }
-        var selectedInteriorColorIndex: Int = findCurrentColorPosition(colorResponses, vehicleData.interior_color)
+        var selectedInteriorColorIndex: Int = if(vehicleData.user_preferences.interior_color == null) findCurrentColorPosition(colorResponses, vehicleData.default_interior_color) else findCurrentColorPosition(colorResponses, vehicleData.user_preferences.interior_color)
         binding.btnVehicleOwnershipFragmentShowInteriorColor.setBackgroundColor(Color.parseColor(colors[selectedInteriorColorIndex]))
-        var selectedExteriorColorIndex: Int = findCurrentColorPosition(colorResponses, vehicleData.outer_color)
+        var selectedExteriorColorIndex: Int = if(vehicleData.user_preferences.exterior_color == null) findCurrentColorPosition(colorResponses, vehicleData.default_exterior_color) else findCurrentColorPosition(colorResponses, vehicleData.user_preferences.exterior_color)
         binding.btnVehicleOwnershipFragmentShowExteriorColor.setBackgroundColor(Color.parseColor(colors[selectedExteriorColorIndex]))
 
         binding.btnVehicleOwnershipFragmentInteriorColor.setOnClickListener{
@@ -242,11 +256,15 @@ class VehicleOwnershipFragment : Fragment() {
         }
 
         binding.btnVehicleOwnershipFragmentSavePrefs.setOnClickListener {
-            val prefsData = PreferencesResponse(
-                nickname = binding.etVehicleOwnershipFragmentNickname.text.toString(),
-                interior_color = colorResponses[selectedInteriorColorIndex],
-                outer_color = colorResponses[selectedExteriorColorIndex])
-            updatePreferences(vin, prefsData)
+            if (!binding.etVehicleOwnershipFragmentNickname.text.toString().contains("^[a-zA-Z0-9\\s\\-]+\$")) {
+                displayFormError("Nickname can only contain letters, numbers, spaces, and hyphens.")
+            } else {
+                val prefsData = PreferencesResponse(
+                    nickname = binding.etVehicleOwnershipFragmentNickname.text.toString(),
+                    interior_color = colorResponses[selectedInteriorColorIndex],
+                    exterior_color = colorResponses[selectedExteriorColorIndex])
+                updatePreferences(vin, prefsData)
+            }
         }
 
         binding.viewVehicleOwnershipFragmentDivider.visibility = VISIBLE

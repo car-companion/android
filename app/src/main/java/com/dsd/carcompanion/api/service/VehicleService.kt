@@ -7,6 +7,7 @@ import com.dsd.carcompanion.api.models.GrantedPermissions
 import com.dsd.carcompanion.api.models.PermissionsResponse
 import com.dsd.carcompanion.api.models.PreferencesResponse
 import com.dsd.carcompanion.api.models.RevokedPermissions
+import com.dsd.carcompanion.api.models.VehiclePreferencesResponse
 import com.dsd.carcompanion.api.models.VehicleResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -22,7 +23,7 @@ interface VehicleService {
     suspend fun getVehicleColors(): Response<List<ColorResponse>>
 
     @GET("api/car_companion/vehicles/my_vehicles/")
-    suspend fun getMyVehicles(): Response<List<VehicleResponse>>
+    suspend fun getMyVehicles(): Response<List<VehiclePreferencesResponse>>
 
     @GET("/api/car_companion/vehicles/{vin}/components/")
     suspend fun getPermissionsForVehicle(
@@ -37,7 +38,7 @@ interface VehicleService {
     @GET("api/car_companion/vehicles/{vin}/preferences/")
     suspend fun getVehiclePreferences(
         @Path(value = "vin", encoded = false) vin: String,
-    ): Response<VehicleResponse>
+    ): Response<VehiclePreferencesResponse>
 
     @PUT("api/car_companion/vehicles/{vin}/preferences/")
     suspend fun updateVehiclePreferences(

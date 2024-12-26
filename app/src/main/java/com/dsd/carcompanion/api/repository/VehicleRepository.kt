@@ -7,6 +7,7 @@ import com.dsd.carcompanion.api.models.GrantPermissionRequest
 import com.dsd.carcompanion.api.models.GrantedPermissions
 import com.dsd.carcompanion.api.models.PreferencesResponse
 import com.dsd.carcompanion.api.models.RevokedPermissions
+import com.dsd.carcompanion.api.models.VehiclePreferencesResponse
 import com.dsd.carcompanion.api.models.VehicleResponse
 import com.dsd.carcompanion.api.service.VehicleService
 import com.dsd.carcompanion.api.utils.JwtTokenManager
@@ -45,10 +46,10 @@ class VehicleRepository(
         )
     }
 
-    suspend fun getOwnedVehicles(): ResultOf<List<VehicleResponse>> {
+    suspend fun getOwnedVehicles(): ResultOf<List<VehiclePreferencesResponse>> {
         return fetchVehicleDataFromApi(
             call = { vehicleService.getMyVehicles() },
-            transform = { vehicles: List<VehicleResponse> -> vehicles } // No modification; directly return the list
+            transform = { vehicles: List<VehiclePreferencesResponse> -> vehicles } // No modification; directly return the list
         )
     }
 
@@ -68,10 +69,10 @@ class VehicleRepository(
         )
     }
 
-    suspend fun getVehiclePreferences(vin:String): ResultOf<VehicleResponse> {
+    suspend fun getVehiclePreferences(vin:String): ResultOf<VehiclePreferencesResponse> {
         return fetchVehicleDataFromApi(
             call = {vehicleService.getVehiclePreferences(vin) },
-            transform = { vehicle: VehicleResponse -> vehicle }
+            transform = { vehicle: VehiclePreferencesResponse -> vehicle }
         )
     }
 

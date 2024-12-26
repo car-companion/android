@@ -27,6 +27,7 @@ import com.dsd.carcompanion.api.models.GrantPermissionRequest
 import com.dsd.carcompanion.api.models.GrantedPermissions
 import com.dsd.carcompanion.api.models.PermissionResponse
 import com.dsd.carcompanion.api.models.PermissionsResponse
+import com.dsd.carcompanion.api.models.VehiclePreferencesResponse
 import com.dsd.carcompanion.api.models.VehicleResponse
 import com.dsd.carcompanion.api.repository.VehicleRepository
 import com.dsd.carcompanion.api.utils.ResultOf
@@ -89,7 +90,7 @@ class UserPermissionsFragment : Fragment() {
                 is ResultOf.Success -> {
                     val vehicles = response.data
                     val vehicleInfo = vehicles.joinToString("\n") { vehicle ->
-                        "Nickname: ${vehicle.nickname ?: "N/A"}, VIN: ${vehicle.vin}"
+                        "Nickname: ${vehicle.user_preferences ?: "N/A"}, VIN: ${vehicle.vin}"
                     }
                     binding.tvShowApiResponse.text = vehicleInfo
                     updateVehicleSpinner(vehicles,accessToken)
@@ -107,13 +108,13 @@ class UserPermissionsFragment : Fragment() {
         }
     }
 
-    private fun updateVehicleSpinner(vehicles: List<VehicleResponse>, accessToken: String) {
+    private fun updateVehicleSpinner(vehicles: List<VehiclePreferencesResponse>, accessToken: String) {
         val defaultOption = "Select a vehicle"
         val spinnerItems: MutableList<String> = mutableListOf(defaultOption)
         val vinMapping: MutableList<String> = mutableListOf("") // Default option has no VIN
 
         if (vehicles.isNotEmpty()) {
-            spinnerItems.addAll(vehicles.map { it.nickname ?: "Unnamed Vehicle (${it.vin})" })
+            spinnerItems.addAll(vehicles.map { it.user_preferences.nickname ?: "Unnamed Vehicle (${it.vin})" })
             vinMapping.addAll(vehicles.map { it.vin })
         } else {
             spinnerItems.clear()
@@ -330,7 +331,7 @@ class UserPermissionsFragment : Fragment() {
                 // TODO: Design should be refactored (grant access for the whole vehicle components / specific type / specific name)
             //} else {
                 // TODO: check on user exist and is not owner already and is vin correctly retrieved, etc.
-                grantOrRevokeAccessToUser(vin, userIdentifier, grantPermissions)
+            grantOrRevokeAccessToUser(vin, userIdentifier, grantPermissions)
             //}
             showToast(
                 "Access granted to $userIdentifier for $selectedVehicle with $selectedAccessLevel access: $grantPermissions"
