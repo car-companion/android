@@ -55,7 +55,7 @@ class VehicleRepository(
 
     suspend fun getComponentsForVehicle(vin: String): ResultOf<List<ComponentResponse>> {
         return fetchVehicleDataFromApi(
-            call = { vehicleService.getPermissionsForVehicle(vin) },
+            call = { vehicleService.getComponentsForVehicle(vin) },
             transform = { permissions: List<ComponentResponse> ->
                 permissions // Directly return the list of permissions
             }
@@ -87,6 +87,13 @@ class VehicleRepository(
         return fetchVehicleDataFromApi(
             call = { vehicleService.grantFullAccessToUserForVehicle(vin, username, grantPermissionRequest) },
             transform = { grantedPermissions: GrantedPermissions -> grantedPermissions }
+        )
+    }
+
+    suspend fun revokeFullAccessToUserForVehicle(vin: String, username: String): ResultOf<RevokedPermissions> {
+        return fetchVehicleDataFromApi(
+            call = { vehicleService.revokeFullAccessToUserForVehicle(vin, username) },
+            transform = { revokedPermissions: RevokedPermissions -> revokedPermissions }
         )
     }
 

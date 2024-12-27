@@ -26,7 +26,7 @@ interface VehicleService {
     suspend fun getMyVehicles(): Response<List<VehiclePreferencesResponse>>
 
     @GET("/api/car_companion/vehicles/{vin}/components/")
-    suspend fun getPermissionsForVehicle(
+    suspend fun getComponentsForVehicle(
         @Path(value = "vin", encoded = false) vin: String,
     ): Response<List<ComponentResponse>>
 
@@ -58,6 +58,12 @@ interface VehicleService {
         @Path(value = "username", encoded = false) username: String,
         @Body grantPermissionRequest: GrantPermissionRequest,
     ): Response<GrantedPermissions>
+
+    @DELETE("api/car_companion/vehicles/{vin}/permissions/{username}/")
+    suspend fun revokeFullAccessToUserForVehicle(
+        @Path(value = "vin", encoded = false) vin: String,
+        @Path(value = "username", encoded = false) username: String,
+    ): Response<RevokedPermissions>
 
     @POST("api/car_companion/vehicles/{vin}/permissions/{username}/component/{component_type}/{component_name}/")
     suspend fun grantAccessToUserForComponent(
