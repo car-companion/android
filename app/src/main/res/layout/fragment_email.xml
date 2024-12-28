@@ -1,82 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/forgot_pass_fragment_title_email" />
+
+    <EditText
+        android:id="@+id/et_forgot_password_enter_email"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:hint="@string/forgot_pass_fragment_hint_email"
+        android:inputType="textEmailAddress"
+        tools:ignore="TextFields" />
 
-        <ImageView
-            android:id="@+id/img_background"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:src="@drawable/background_colors" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:id="@+id/img_logo"
-                android:layout_width="260dp"
-                android:layout_height="160dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/logo"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- Bottom Sheet -->
-
-        <LinearLayout
-            android:id="@+id/ll_email_fragment_bottom_sheet"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:elevation="16dp"
-            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-            app:behavior_peekHeight="30dp"
-            app:behavior_hideable="true"
-            android:gravity="center"
-            android:background="@drawable/bottom_sheet_background"
-            android:maxHeight="600dp">
-
-            <!-- Guide Indicator -->
-            <View
-                android:id="@+id/bs_handle"
-                android:layout_width="36dp"
-                android:layout_height="5dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/bs_handle_background" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="20dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/forgot_pass_fragment_title_email" />
-
-            <EditText
-                android:id="@+id/et_forgot_password_enter_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/forgot_pass_fragment_hint_email"
-                android:inputType="textEmailAddress"
-                tools:ignore="TextFields" />
-
-            <Button
-                android:id="@+id/btn_forgot_password_submit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/button_submit" />
-        </LinearLayout>
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-</layout>
+    <Button
+        android:id="@+id/btn_forgot_password_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_submit" />
+</LinearLayout>
