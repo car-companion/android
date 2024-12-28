@@ -2,15 +2,23 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     kotlin("kapt")
+    id("org.qtproject.qt.gradleplugin") version("1.+")
+}
+
+QtBuild {
+    qtPath = file("C:\\QtAndroid\\6.8.1")
+    projectPath = file("C:\\QtApplication\\android\\my_car_companion")
 }
 
 android {
     namespace = "com.dsd.carcompanion"
     compileSdk = 34
 
+    packagingOptions.jniLibs.useLegacyPackaging = true
+
     defaultConfig {
         applicationId = "com.dsd.carcompanion"
-        minSdk = 24
+        minSdk = 28
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
