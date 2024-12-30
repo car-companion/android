@@ -6,30 +6,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import com.dsd.carcompanion.R
 import com.dsd.carcompanion.adapters.VehicleInfoAdapter
 import com.dsd.carcompanion.api.models.VehicleInfo
 import com.dsd.carcompanion.databinding.FragmentHomeBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import android.graphics.RenderEffect
-import android.graphics.Shader
-import android.graphics.drawable.VectorDrawable
-import android.os.Build
-import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.dsd.carcompanion.utility.ImageHelper
-import org.qtproject.qt.android.QtQuickView
 
 
 class HomeFragment : Fragment() {
     //private lateinit var recyclerView: RecyclerView
     private lateinit var vehicleInfoAdapter: VehicleInfoAdapter
     private var vehicleInfoList: MutableList<VehicleInfo> = mutableListOf()
-
-    private lateinit var m_qmlView: QtQuickView
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -48,11 +38,6 @@ class HomeFragment : Fragment() {
         //recyclerView = binding.rvHomeFragmentVehicleInfo
         vehicleInfoAdapter = VehicleInfoAdapter(vehicleInfoList)
         //recyclerView.adapter = vehicleInfoAdapter
-
-        m_qmlView = QtQuickView(requireContext())
-
-        val qtContainer = binding.qtContainer
-        qtContainer.addView(m_qmlView)
 
         return binding.root
     }
@@ -94,36 +79,6 @@ class HomeFragment : Fragment() {
                 binding.tvHomeFragmentVehicleState.text = getString(R.string.bottom_sheet_vehicle_unlocked_tv_state)
             } else {
                 binding.tvHomeFragmentVehicleState.text = getString(R.string.bottom_sheet_vehicle_locked_tv_state)
-            }
-        }
-
-        // Windows Switch
-        binding.swHomeFragmentWindows.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                binding.tvHomeFragmentWindowsState.text = getString(R.string.bottom_sheet_windows_opened_tv_state)
-            } else {
-                binding.tvHomeFragmentWindowsState.text = getString(R.string.bottom_sheet_windows_closed_tv_state)
-            }
-        }
-
-        // Lights Switch
-        binding.swHomeFragmentLights.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                binding.tvHomeFragmentLightsState.text = getString(R.string.bottom_sheet_lights_on_tv_state)
-            } else {
-                binding.tvHomeFragmentLightsState.text = getString(R.string.bottom_sheet_lights_off_tv_state)
-            }
-        }
-
-        // Temperature Slider
-        binding.tvHomeFragmentTemperature.text = buildString {
-            append(binding.sliderHomeFragmentTemperature.value.toString())
-            append(getString(R.string.bottom_sheet_temperature_degrees_tv_state))
-        }
-        binding.sliderHomeFragmentTemperature.addOnChangeListener { _, value, _ ->
-            binding.tvHomeFragmentTemperature.text = buildString {
-                append(value.toString())
-                append(getString(R.string.bottom_sheet_temperature_degrees_tv_state))
             }
         }
 

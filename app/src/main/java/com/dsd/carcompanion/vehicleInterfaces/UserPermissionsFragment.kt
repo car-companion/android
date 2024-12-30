@@ -49,7 +49,7 @@ class UserPermissionsFragment : Fragment() {
         _binding = FragmentGrantPermissionsBinding.inflate(inflater, container, false)
         jwtTokenDataStore = JwtTokenDataStore(requireContext()) // Initialize the JwtTokenDataStore
 
-        _bottomSheetBehavior = BottomSheetBehavior.from(binding.llHomeFragmentBottomSheet)
+        _bottomSheetBehavior = BottomSheetBehavior.from(binding.llPermissionsAccessFragmentBottomSheet)
 
         return binding.root
     }
@@ -72,7 +72,7 @@ class UserPermissionsFragment : Fragment() {
         _bottomSheetBehavior?.peekHeight = 150
 
         // Expand bottom sheet when draggable guide is tapped
-        binding.llHomeFragmentBottomSheet.setOnClickListener {
+        binding.llPermissionsAccessFragmentBottomSheet.setOnClickListener {
             _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
