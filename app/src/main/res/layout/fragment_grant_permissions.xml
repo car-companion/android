@@ -48,19 +48,20 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_permission_presets"
             android:layout_marginTop="8dp"
-            android:orientation="vertical">
-
-            <RadioButton
-                android:id="@+id/radio_full_access"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/full_access_option" />
+            android:orientation="vertical"
+            android:checkedButton="@id/radio_custom_access">
 
             <RadioButton
                 android:id="@+id/radio_custom_access"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/custom_access_option" />
+
+            <RadioButton
+                android:id="@+id/radio_full_access"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/full_access_option" />
         </RadioGroup>
 
         <View
