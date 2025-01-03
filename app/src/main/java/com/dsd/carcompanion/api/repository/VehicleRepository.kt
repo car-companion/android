@@ -3,6 +3,7 @@ package com.dsd.carcompanion.api.repository
 import android.util.Log
 import com.dsd.carcompanion.api.models.ColorResponse
 import com.dsd.carcompanion.api.models.ComponentResponse
+import com.dsd.carcompanion.api.models.ComponentStatusUpdate
 import com.dsd.carcompanion.api.models.GrantPermissionRequest
 import com.dsd.carcompanion.api.models.GrantedPermissions
 import com.dsd.carcompanion.api.models.PreferencesResponse
@@ -59,6 +60,13 @@ class VehicleRepository(
             transform = { permissions: List<ComponentResponse> ->
                 permissions // Directly return the list of permissions
             }
+        )
+    }
+
+    suspend fun updateComponentStatusForVehicle(vin: String, componentTypeName: String, componentName: String, status: ComponentStatusUpdate): ResultOf<ComponentResponse> {
+        return fetchVehicleDataFromApi(
+            call = { vehicleService.updateComponentStatusForVehicle(vin, componentTypeName, componentName, status) },
+            transform = { component: ComponentResponse -> component }
         )
     }
 

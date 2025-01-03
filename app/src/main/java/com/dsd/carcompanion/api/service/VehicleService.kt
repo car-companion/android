@@ -2,6 +2,7 @@ package com.dsd.carcompanion.api.service
 
 import com.dsd.carcompanion.api.models.ColorResponse
 import com.dsd.carcompanion.api.models.ComponentResponse
+import com.dsd.carcompanion.api.models.ComponentStatusUpdate
 import com.dsd.carcompanion.api.models.GrantPermissionRequest
 import com.dsd.carcompanion.api.models.GrantedPermissions
 import com.dsd.carcompanion.api.models.PermissionsResponse
@@ -14,6 +15,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -29,6 +31,14 @@ interface VehicleService {
     suspend fun getComponentsForVehicle(
         @Path(value = "vin", encoded = false) vin: String,
     ): Response<List<ComponentResponse>>
+
+    @PATCH("/api/car_companion/vehicles/{vin}/components/{type_name}/{name}")
+    suspend fun updateComponentStatusForVehicle(
+        @Path(value = "vin", encoded = false) vin: String,
+        @Path(value = "type_name", encoded = false) typeName: String,
+        @Path(value = "name", encoded = false) name: String,
+        @Body status: ComponentStatusUpdate,
+    ): Response<ComponentResponse>
 
     @POST("/api/car_companion/vehicles/{vin}/take_ownership/")
     suspend fun takeVehicleOwnership(

@@ -9,7 +9,7 @@ data class ComponentResponse(
     @SerializedName("type")
     val type: ComponentType,
     @SerializedName("status")
-    val status: Int
+    val status: Double
 )
 
 data class ComponentType(
@@ -17,3 +17,7 @@ data class ComponentType(
     val name: String
 )
 
+data class ComponentStatusUpdate(
+    @SerializedName("status")
+    val status: Double
+)
