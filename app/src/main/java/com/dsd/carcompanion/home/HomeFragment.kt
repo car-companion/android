@@ -35,6 +35,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 
 class HomeFragment : Fragment() {
@@ -126,7 +128,9 @@ class HomeFragment : Fragment() {
             val vehicleService = VehicleClient.getApiServiceWithToken(accessToken)
             val vehicleRepository = VehicleRepository(vehicleService, jwtTokenDataStore)
 
-            when (val response = vehicleRepository.getComponentsForVehicle(vin)) {
+            val response = vehicleRepository.getComponentsForVehicle(vin)
+
+            when (response) {
                 is ResultOf.Success -> response.data
                 is ResultOf.Error -> {
                     Log.e("HomeFragment", "Error fetching components: ${response.message}")
@@ -154,7 +158,7 @@ class HomeFragment : Fragment() {
 
             if (textView != null) {
                 val isTemperatureComponent = component.type.name == resources.getString(R.string.bottom_sheet_temperature_tv_label)
-                textView.text = if (isTemperatureComponent) slider?.value.toString()
+                textView.text = if (isTemperatureComponent) (slider?.value?.times(100f)).toString()
                 else if ((slider?.value ?: 0f) > 0.5f)
                     getString(R.string.bottom_sheet_vehicle_unlocked_tv_state)
                 else getString(R.string.bottom_sheet_vehicle_locked_tv_state)
@@ -162,7 +166,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    // TODO: where do we get the vin from here?
     private suspend fun fetchComponents(accessToken: String) {
         try {
             val vehicleService = VehicleClient.getApiServiceWithToken(accessToken)
@@ -264,7 +267,7 @@ class HomeFragment : Fragment() {
                     FlexboxLayout.LayoutParams.WRAP_CONTENT
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
-                text = if (isTemperatureComponent) sliderComponent.value.toString() else if (sliderComponent.value > 0.5f) getString(R.string.bottom_sheet_vehicle_unlocked_tv_state) else getString(R.string.bottom_sheet_vehicle_locked_tv_state)
+                text = if (isTemperatureComponent) (sliderComponent.value * 100f).toString() else if (sliderComponent.value > 0.5f) getString(R.string.bottom_sheet_vehicle_unlocked_tv_state) else getString(R.string.bottom_sheet_vehicle_locked_tv_state)
             }
             flexboxLayout.addView(tvStatusComponent)
 
@@ -274,7 +277,7 @@ class HomeFragment : Fragment() {
                 override fun onStopTrackingTouch(slider: Slider) {
                     val value = slider.value
                     tvStatusComponent.text = if (isTemperatureComponent) (value * 100f).toString() else if (value > 0.5f) getString(R.string.bottom_sheet_vehicle_unlocked_tv_state) else getString(R.string.bottom_sheet_vehicle_locked_tv_state)
-                    updateComponentStatus(component, value.toDouble())
+                    updateComponentStatus(component, value)
                 }
             })
 
@@ -304,7 +307,11 @@ class HomeFragment : Fragment() {
         return idString.hashCode()
     }
 
-    private fun updateComponentStatus(component: ComponentResponse, newStatus: Double) {
+    private fun updateComponentStatus(component: ComponentResponse, newStatus: Float) {
+        val newStatusDouble = BigDecimal(newStatus.toDouble())
+            .setScale(2, RoundingMode.HALF_UP) // Round to 2 decimal places to keep the slider value intact
+            .toDouble()
+
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val accessToken = withContext(Dispatchers.IO) { jwtTokenDataStore.getAccessJwt() }
@@ -317,7 +324,7 @@ class HomeFragment : Fragment() {
                 val vehicleService = VehicleClient.getApiServiceWithToken(accessToken)
                 val vehicleRepository = VehicleRepository(vehicleService, jwtTokenDataStore)
 
-                val response = vehicleRepository.updateComponentStatusForVehicle(vin, component.type.name, component.name, ComponentStatusUpdate(status = newStatus))
+                val response = vehicleRepository.updateComponentStatusForVehicle(vin, component.type.name, component.name, ComponentStatusUpdate(status = newStatusDouble))
                 when (response) {
                     is ResultOf.Success -> {
                         if(response.code == 200) {

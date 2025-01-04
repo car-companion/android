@@ -32,7 +32,7 @@ interface VehicleService {
         @Path(value = "vin", encoded = false) vin: String,
     ): Response<List<ComponentResponse>>
 
-    @PATCH("/api/car_companion/vehicles/{vin}/components/{type_name}/{name}")
+    @PATCH("/api/car_companion/vehicles/{vin}/components/{type_name}/{name}/")
     suspend fun updateComponentStatusForVehicle(
         @Path(value = "vin", encoded = false) vin: String,
         @Path(value = "type_name", encoded = false) typeName: String,
