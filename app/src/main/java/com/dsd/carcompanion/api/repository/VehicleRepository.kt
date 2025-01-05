@@ -3,10 +3,12 @@ package com.dsd.carcompanion.api.repository
 import android.util.Log
 import com.dsd.carcompanion.api.models.ColorResponse
 import com.dsd.carcompanion.api.models.ComponentResponse
+import com.dsd.carcompanion.api.models.ComponentStatusUpdate
 import com.dsd.carcompanion.api.models.GrantPermissionRequest
 import com.dsd.carcompanion.api.models.GrantedPermissions
 import com.dsd.carcompanion.api.models.PreferencesResponse
 import com.dsd.carcompanion.api.models.RevokedPermissions
+import com.dsd.carcompanion.api.models.VehiclePreferencesResponse
 import com.dsd.carcompanion.api.models.VehicleResponse
 import com.dsd.carcompanion.api.service.VehicleService
 import com.dsd.carcompanion.api.utils.JwtTokenManager
@@ -45,19 +47,26 @@ class VehicleRepository(
         )
     }
 
-    suspend fun getOwnedVehicles(): ResultOf<List<VehicleResponse>> {
+    suspend fun getOwnedVehicles(): ResultOf<List<VehiclePreferencesResponse>> {
         return fetchVehicleDataFromApi(
             call = { vehicleService.getMyVehicles() },
-            transform = { vehicles: List<VehicleResponse> -> vehicles } // No modification; directly return the list
+            transform = { vehicles: List<VehiclePreferencesResponse> -> vehicles } // No modification; directly return the list
         )
     }
 
     suspend fun getComponentsForVehicle(vin: String): ResultOf<List<ComponentResponse>> {
         return fetchVehicleDataFromApi(
-            call = { vehicleService.getPermissionsForVehicle(vin) },
+            call = { vehicleService.getComponentsForVehicle(vin) },
             transform = { permissions: List<ComponentResponse> ->
                 permissions // Directly return the list of permissions
             }
+        )
+    }
+
+    suspend fun updateComponentStatusForVehicle(vin: String, componentTypeName: String, componentName: String, status: ComponentStatusUpdate): ResultOf<ComponentResponse> {
+        return fetchVehicleDataFromApi(
+            call = { vehicleService.updateComponentStatusForVehicle(vin, componentTypeName, componentName, status) },
+            transform = { component: ComponentResponse -> component }
         )
     }
 
@@ -68,10 +77,10 @@ class VehicleRepository(
         )
     }
 
-    suspend fun getVehiclePreferences(vin:String): ResultOf<VehicleResponse> {
+    suspend fun getVehiclePreferences(vin:String): ResultOf<VehiclePreferencesResponse> {
         return fetchVehicleDataFromApi(
             call = {vehicleService.getVehiclePreferences(vin) },
-            transform = { vehicle: VehicleResponse -> vehicle }
+            transform = { vehicle: VehiclePreferencesResponse -> vehicle }
         )
     }
 
@@ -86,6 +95,13 @@ class VehicleRepository(
         return fetchVehicleDataFromApi(
             call = { vehicleService.grantFullAccessToUserForVehicle(vin, username, grantPermissionRequest) },
             transform = { grantedPermissions: GrantedPermissions -> grantedPermissions }
+        )
+    }
+
+    suspend fun revokeFullAccessToUserForVehicle(vin: String, username: String): ResultOf<RevokedPermissions> {
+        return fetchVehicleDataFromApi(
+            call = { vehicleService.revokeFullAccessToUserForVehicle(vin, username) },
+            transform = { revokedPermissions: RevokedPermissions -> revokedPermissions }
         )
     }
 
