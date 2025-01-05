@@ -4,23 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import com.dsd.carcompanion.R
 import com.dsd.carcompanion.adapters.VehicleInfoAdapter
 import com.dsd.carcompanion.api.models.VehicleInfo
 import com.dsd.carcompanion.databinding.FragmentHomeBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import org.qtproject.qt.android.QtQuickView
-
+import androidx.navigation.fragment.findNavController
+import com.dsd.carcompanion.utility.ImageHelper
 
 class HomeFragment : Fragment() {
     //private lateinit var recyclerView: RecyclerView
     private lateinit var vehicleInfoAdapter: VehicleInfoAdapter
     private var vehicleInfoList: MutableList<VehicleInfo> = mutableListOf()
-
-    private lateinit var m_qmlView: QtQuickView
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -38,11 +34,6 @@ class HomeFragment : Fragment() {
         //recyclerView = binding.rvHomeFragmentVehicleInfo
         vehicleInfoAdapter = VehicleInfoAdapter(vehicleInfoList)
         //recyclerView.adapter = vehicleInfoAdapter
-
-        m_qmlView = QtQuickView(requireContext())
-
-        val qtContainer = binding.qtContainer
-        qtContainer.addView(m_qmlView)
 
         return binding.root
     }
@@ -70,7 +61,10 @@ class HomeFragment : Fragment() {
             }
         }
 
-        binding.swHomeFragmentWindows.setOnCheckedChangeListener { _, isChecked ->
+        binding.menuIcon.setOnClickListener {
+            findNavController().navigate(R.id.action_HomeFragment_to_FirstFragment)
+
+        /*binding.swHomeFragmentWindows.setOnCheckedChangeListener { _, isChecked ->
             if(isChecked) {
                 binding.tvHomeFragmentWindowsState.text = getString(R.string.bottom_sheet_windows_opened_tv_state)
             } else {
@@ -95,7 +89,7 @@ class HomeFragment : Fragment() {
                 append(value.toString())
                 append(getString(R.string.bottom_sheet_temperature_degrees_tv_state))
             }
-        }
+        }*/
     }
 
     override fun onDestroyView() {

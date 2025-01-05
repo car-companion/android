@@ -2,12 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     kotlin("kapt")
-    id("org.qtproject.qt.gradleplugin") version("1.+")
-}
-
-QtBuild {
-    qtPath = file("C:\\QtAndroid\\6.8.1")
-    projectPath = file("C:\\QtApplication\\android\\my_car_companion")
 }
 
 android {
