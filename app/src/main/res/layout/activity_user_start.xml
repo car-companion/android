@@ -6,7 +6,6 @@
     android:fitsSystemWindows="true"
     tools:context=".userRegistrationAndLogin.UserStartActivity">
 
-
-    <include layout="@layout/content_user_start"/>
+    <include layout="@layout/content_user_start" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

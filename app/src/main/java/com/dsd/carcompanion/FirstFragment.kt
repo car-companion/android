@@ -41,7 +41,7 @@ class FirstFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-//                binding.textviewToken.text = jwtTokenDataStore.getAccessJwt()
+                binding.textviewToken.text = jwtTokenDataStore.getAccessJwt()
             } catch (e: Exception) {
                 // Handle any exceptions that might occur
                 Log.e("First Fragmentt", "Error during loading of Token: ${e.message}")
@@ -74,7 +74,7 @@ class FirstFragment : Fragment() {
             try {
                 jwtTokenDataStore.clearAllTokens()
 
-//                binding.textviewToken.text = "Logged out, token was removed"
+                binding.textviewToken.text = "Logged out, token was removed"
 
                 val intent = Intent(requireContext(), UserStartActivity::class.java)
                 startActivity(intent)
