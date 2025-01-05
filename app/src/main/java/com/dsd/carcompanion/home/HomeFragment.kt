@@ -38,8 +38,10 @@ import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-
 class HomeFragment : Fragment() {
+    //private lateinit var recyclerView: RecyclerView
+    private lateinit var vehicleInfoAdapter: VehicleInfoAdapter
+    private var vehicleInfoList: MutableList<VehicleInfo> = mutableListOf()
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private lateinit var jwtTokenDataStore: JwtTokenDataStore
@@ -57,6 +59,10 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         _bottomSheetBehavior = BottomSheetBehavior.from(binding.llHomeFragmentBottomSheet)
         jwtTokenDataStore = JwtTokenDataStore(requireContext()) // Initialize the JwtTokenDataStore
+        //recyclerView = binding.rvHomeFragmentVehicleInfo
+        vehicleInfoAdapter = VehicleInfoAdapter(vehicleInfoList)
+        //recyclerView.adapter = vehicleInfoAdapter
+
         return binding.root
     }
 
@@ -162,8 +168,17 @@ class HomeFragment : Fragment() {
                 else if ((slider?.value ?: 0f) > 0.5f)
                     getString(R.string.bottom_sheet_vehicle_unlocked_tv_state)
                 else getString(R.string.bottom_sheet_vehicle_locked_tv_state)
+                
+        binding.menuIcon.setOnClickListener {
+            findNavController().navigate(R.id.action_HomeFragment_to_FirstFragment)
+
+        /*binding.swHomeFragmentWindows.setOnCheckedChangeListener { _, isChecked ->
+            if(isChecked) {
+                binding.tvHomeFragmentWindowsState.text = getString(R.string.bottom_sheet_windows_opened_tv_state)
+            } else {
+                binding.tvHomeFragmentWindowsState.text = getString(R.string.bottom_sheet_windows_closed_tv_state)
             }
-        }
+        }*/
     }
 
     private suspend fun fetchComponents(accessToken: String) {
@@ -348,7 +363,7 @@ class HomeFragment : Fragment() {
                 Log.e("VehicleOwnership", "Error: ${e.message}", e)
                 showToast("Error processing request: ${e.message}")
             }
-        }
+        }*/
     }
 
     override fun onDestroyView() {

@@ -8,9 +8,11 @@ android {
     namespace = "com.dsd.carcompanion"
     compileSdk = 34
 
+    packagingOptions.jniLibs.useLegacyPackaging = true
+
     defaultConfig {
         applicationId = "com.dsd.carcompanion"
-        minSdk = 24
+        minSdk = 28
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"

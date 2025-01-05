@@ -51,11 +51,33 @@ class UserPermissionsFragment : Fragment() {
     ): View {
         _binding = FragmentGrantPermissionsBinding.inflate(inflater, container, false)
         jwtTokenDataStore = JwtTokenDataStore(requireContext()) // Initialize the JwtTokenDataStore
+
+        _bottomSheetBehavior = BottomSheetBehavior.from(binding.llPermissionsAccessFragmentBottomSheet)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val imageView = binding.imgBackground
+        ImageHelper.applyBlurAndColorFilterToImageView(
+            imageView,
+            context,
+            R.drawable.homescreend
+        )
+
+
+        // Bottom sheet settings
+        _bottomSheetBehavior?.setState(BottomSheetBehavior.STATE_EXPANDED)
+        _bottomSheetBehavior?.isDraggable = false
+        _bottomSheetBehavior?.isHideable = false
+        _bottomSheetBehavior?.peekHeight = 150
+
+        // Expand bottom sheet when draggable guide is tapped
+        binding.llPermissionsAccessFragmentBottomSheet.setOnClickListener {
+            _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        }
 
         // Fetch and display vehicles
         viewLifecycleOwner.lifecycleScope.launch {
