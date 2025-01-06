@@ -77,9 +77,11 @@
                     <Spinner
                         android:id="@+id/spinner_vehicle_selection"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="56dp"
                         android:layout_below="@id/til_accesses_username"
                         android:theme="@style/CustomSpinnerStyle"
+                        android:background="@drawable/spinner_background"
+                        android:paddingHorizontal="10dp"
                         android:layout_marginTop="16dp" />
 
                     <View

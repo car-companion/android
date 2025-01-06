@@ -3,5 +3,15 @@
     <style name="Base.Theme.CarCompanion" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimary">#0D0A0B</item>
+        <item name="colorSecondary">#454955</item>
+        <item name="colorAccent">#3F7D20</item>
+        <item name="colorSurface">#454955</item>
+        <item name="colorOnPrimary">#E6E6E6</item>
+        <item name="colorOnSecondary">#E6E6E6</item>
+        <item name="colorOnSurface">#E6E6E6</item>
+        <item name="colorOnBackground">#E6E6E6</item>
+        <item name="android:statusBarColor">#3F7D20</item>
+        <item name="android:navigationBarColor">#0D0A0B</item>
     </style>
 </resources>

@@ -33,31 +33,13 @@ class SettingsFragment : Fragment() {
         val nightModeFlags = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         isNightMode =  nightModeFlags == Configuration.UI_MODE_NIGHT_YES
 
-        binding.switchNightMode.isChecked = isNightMode;
+        binding.switchNightMode.customSwitch.isChecked = isNightMode;
 
         // Connect the UI components to functions
         setupListeners()
     }
 
     private fun setupListeners() {
-        // User Notifications Button
-        binding.switchNotification.setOnClickListener {
-            //TODO: Implement User Settings functionality in the next sprint
-            //Toast.makeText(context, "User Settings clicked", Toast.LENGTH_SHORT).show()
-        }
-
-        // Night Mode Switch
-        binding.switchNightMode.setOnCheckedChangeListener { _, isChecked ->
-            //TODO: Implement Night Mode functionality in the next sprint
-            if (isChecked) {
-                Toast.makeText(context, "Night Mode Enabled", Toast.LENGTH_SHORT).show()
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            } else {
-                Toast.makeText(context, "Night Mode Disabled", Toast.LENGTH_SHORT).show()
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            }
-        }
-
         // App Configuration Button
         binding.btnPrivacyPolicy.setOnClickListener {
             val dialogView = layoutInflater.inflate(R.layout.dialog_privacy_policy, null)
@@ -73,6 +55,45 @@ class SettingsFragment : Fragment() {
         // App Configuration Button
         binding.btnAboutApp.setOnClickListener {
             Toast.makeText(context, "This is it :). Enjoy the app", Toast.LENGTH_SHORT).show()
+        }
+
+        // Setup switch functionality
+        setupCustomSwitchNotifications()
+        setupCustomSwitchNightMode()
+    }
+
+    // Custom switch handler
+    private fun setupCustomSwitchNotifications() {
+        val customSwitchNotification = binding.switchNotification.customSwitch
+        val switchLabelNotification = binding.switchNotification.tvSwitchLabel
+
+        // Set initial text
+        switchLabelNotification.text = "Enable Notifications"
+
+        customSwitchNotification.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                switchLabelNotification.text = "Notifications Enabled"
+            } else {
+                switchLabelNotification.text = "Notifications Disabled"
+            }
+        }
+    }
+
+    private fun setupCustomSwitchNightMode() {
+        val customSwitchNightMode = binding.switchNightMode.customSwitch
+        val switchLabelNightMode = binding.switchNightMode.tvSwitchLabel
+
+        // Set initial text
+        switchLabelNightMode.text = "Night Mode"
+
+        customSwitchNightMode.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                switchLabelNightMode.text = "Night Mode Enabled"
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                switchLabelNightMode.text = "Night Mode Disabled"
+            }
         }
     }
 
