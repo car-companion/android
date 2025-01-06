@@ -36,7 +36,7 @@ class CodeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val imageView = binding.imgBackground
-        ImageHelper.applyBlurAndColorFilterToImageView(
+        ImageHelper.applyBlurToImageView(
             imageView,
             context,
             R.drawable.background_colors

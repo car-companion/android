@@ -8,7 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    private const val BASE_URL = "https://car-companion-dev.azurewebsites.net/"
+    private const val BASE_URL = "https://car-companion.azurewebsites.net/"
 
     // Default Retrofit instance (unauthenticated)
     val retrofit: Retrofit by lazy {

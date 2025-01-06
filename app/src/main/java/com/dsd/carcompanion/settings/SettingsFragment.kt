@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.dsd.carcompanion.R
@@ -37,7 +38,7 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val imageView = binding.imgBackground
-        ImageHelper.applyBlurAndColorFilterToImageView(
+        ImageHelper.applyBlurToImageView(
             imageView,
             context,
             R.drawable.homescreend,
@@ -63,37 +64,51 @@ class SettingsFragment : Fragment() {
         setupListeners()
     }
 
-    // Custom switch handler
+    // Custom switch handlers
     private fun setupCustomSwitchNotifications() {
-        val customSwitch = binding.switchNotification.customSwitch
         val switchLabel = binding.switchNotification.tvSwitchLabel
+        val customSwitch = binding.switchNotification.customSwitch
+        val switchLabelAction = binding.switchNotification.tvSwitchLabelAction
+
+        val titleTextView: TextView = binding.switchNotification.tvSwitchTitle
+        val titleText: String? = getString(R.string.user_settings) // Replace this with dynamic title or null if no title is needed
+
+        if (!titleText.isNullOrEmpty()) {
+            titleTextView.text = titleText
+            titleTextView.visibility = View.VISIBLE
+        } else {
+            titleTextView.visibility = View.GONE
+        }
 
         // Set initial text
-        switchLabel.text = "Enable Notifications"
+        switchLabel.text = getString(R.string.notifications)
+        switchLabelAction.text = "Disabled"  //This will depend on the user profile
 
         customSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                switchLabel.text = "Notifications Enabled"
+                switchLabelAction.text = "Enabled"
             } else {
-                switchLabel.text = "Notifications Disabled"
+                switchLabelAction.text = "Disabled"
             }
         }
     }
 
     private fun setupCustomSwitchNightMode() {
-        val customSwitch = binding.switchNightMode.customSwitch
         val switchLabel = binding.switchNightMode.tvSwitchLabel
+        val customSwitch = binding.switchNightMode.customSwitch
+        val switchLabelAction = binding.switchNightMode.tvSwitchLabelAction
 
         // Set initial text
         switchLabel.text = "Night Mode"
+        //switchLabelAction.text = "Disabled"  //This will depend on the user profile
 
-        customSwitch.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                switchLabel.text = "Night Mode Enabled"
-            } else {
-                switchLabel.text = "Night Mode Disabled"
-            }
-        }
+//        customSwitch.setOnCheckedChangeListener { _, isChecked ->
+//            if (isChecked) {
+//                switchLabelAction.text = "Enabled"
+//            } else {
+//                switchLabelAction.text = "Disabled"
+//            }
+//        }
     }
 
     private fun setupListeners() {

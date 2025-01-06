@@ -7,14 +7,19 @@
 
     <style name="Theme.CarCompanion" parent="Base.Theme.CarCompanion" />
 
-    <!-- Custom Spinner Style -->
+    <!-- Custom SpinnerElements Style -->
     <style name="CustomSpinnerStyle">
-        <item name="android:background">@drawable/spinner_background</item>
+        <item name="android:background">@drawable/spinner_element</item>
         <item name="android:dropDownSelector">@android:color/transparent</item>
     </style>
 
     <!-- Custom App Button -->
     <style name="CustomAppButton">
+        <item name="android:background">@drawable/custom_button</item>
+    </style>
+
+    <!-- Custom Component Button -->
+    <style name="CustomComponentButton">
         <item name="android:background">@drawable/custom_button</item>
     </style>
 

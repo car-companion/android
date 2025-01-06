@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -55,7 +56,7 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val imageView = binding.imgBackground
-        ImageHelper.applyBlurAndColorFilterToImageView(
+        ImageHelper.applyBlurToImageView(
             imageView,
             context,
             R.drawable.background_colors
@@ -86,12 +87,20 @@ class LoginFragment : Fragment() {
 
         // Handle button click for login
         binding.btnLoginFragmentSubmit.setOnClickListener {
-            val usernameEditText = binding.tilLoginFragmentUsername.editText?.text.toString()
-            val passwordEditText = binding.tilLoginFragmentPassword.editText?.text.toString()
+            val username = binding.tilLoginFragmentUsername.editText?.text.toString().trim()
+            val password = binding.tilLoginFragmentPassword.editText?.text.toString().trim()
 
-            val loginRequest = LoginRequest(username = usernameEditText, password = passwordEditText)
+            // Validate input fields
+            if (username.isEmpty() || password.isEmpty()) {
+                return@setOnClickListener
+            }
+
+            val loginRequest = LoginRequest(username = username, password = password)
             val userService = UserClient.apiService
             val authRepository = AuthRepository(userService, jwtTokenDataStore)
+
+            binding.btnLoginFragmentSubmit.isEnabled = false
+            binding.btnLoginFragmentSubmit.text = getString(R.string.logging_in)
 
             viewLifecycleOwner.lifecycleScope.launch {
                 try {
@@ -99,7 +108,7 @@ class LoginFragment : Fragment() {
 
                     withContext(Dispatchers.Main) {
                         if (response is ResultOf.Success) {
-                            Log.d("Login Fragment", "Well done, you logged in")
+                            Log.d("LoginFragment", "Login successful")
                             val intent = Intent(requireActivity(), MainActivity::class.java)
                             startActivity(intent)
                             requireActivity().finish()
@@ -109,18 +118,27 @@ class LoginFragment : Fragment() {
                     }
                 } catch (e: Exception) {
                     Log.e("LoginFragment", "Error during login: ${e.message}")
+                    withContext(Dispatchers.Main) {
+                    }
+                } finally {
+                    withContext(Dispatchers.Main) {
+                        binding.btnLoginFragmentSubmit.isEnabled = true
+                        binding.btnLoginFragmentSubmit.text = getString(R.string.button_login)
+                    }
                 }
             }
         }
 
-        binding.linkLoginFragmentDontHaveAccount.setOnClickListener {
-            findNavController().navigate(R.id.action_LoginFragment_to_RegistrationFragment)
-        }
-
+        binding.linkLoginFragmentForgotPassword.setTextColor(
+            ContextCompat.getColor(requireContext(), R.color.link)
+        )
         binding.linkLoginFragmentForgotPassword.setOnClickListener {
             findNavController().navigate(R.id.action_LoginFragment_to_ForgotPasswordFragment)
         }
 
+        binding.linkLoginFragmentDontHaveAccount.setTextColor(
+            ContextCompat.getColor(requireContext(), R.color.link)
+        )
         binding.linkLoginFragmentDontHaveAccount.setOnClickListener {
             findNavController().navigate(R.id.action_LoginFragment_to_RegistrationFragment)
         }

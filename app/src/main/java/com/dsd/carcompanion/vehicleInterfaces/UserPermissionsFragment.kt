@@ -58,12 +58,11 @@ class UserPermissionsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val imageView = binding.imgBackground
-        ImageHelper.applyBlurAndColorFilterToImageView(
+        ImageHelper.applyBlurToImageView(
             imageView,
             context,
             R.drawable.homescreend
         )
-
 
         // Bottom sheet settings
         _bottomSheetBehavior?.setState(BottomSheetBehavior.STATE_EXPANDED)

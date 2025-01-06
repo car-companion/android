@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.dsd.carcompanion.R
 import com.dsd.carcompanion.api.datastore.JwtTokenDataStore
 import com.dsd.carcompanion.api.instance.VehicleClient
 import com.dsd.carcompanion.api.models.ColorResponse
@@ -19,6 +20,8 @@ import com.dsd.carcompanion.api.models.VehicleResponse
 import com.dsd.carcompanion.api.repository.VehicleRepository
 import com.dsd.carcompanion.api.utils.ResultOf
 import com.dsd.carcompanion.databinding.FragmentVehicleOwnershipBinding
+import com.dsd.carcompanion.utility.ImageHelper
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mrudultora.colorpicker.ColorPickerBottomSheetDialog
 import com.mrudultora.colorpicker.listeners.OnSelectColorListener
 import com.mrudultora.colorpicker.util.ColorItemShape
@@ -47,6 +50,7 @@ class VehicleOwnershipFragment : Fragment() {
     private var _binding: FragmentVehicleOwnershipBinding? = null
     private val binding get() = _binding!!
     private lateinit var jwtTokenDataStore: JwtTokenDataStore
+    private var _bottomSheetBehavior: BottomSheetBehavior<View>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,11 +58,31 @@ class VehicleOwnershipFragment : Fragment() {
     ): View {
         _binding = FragmentVehicleOwnershipBinding.inflate(inflater, container, false)
         jwtTokenDataStore = JwtTokenDataStore(requireContext())
+        _bottomSheetBehavior = BottomSheetBehavior.from(binding.llVehicleOwnershipFragmentBottomSheet)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val imageView = binding.imgBackground
+        ImageHelper.applyBlurToImageView(
+            imageView,
+            context,
+            R.drawable.homescreend
+        )
+
+
+        // Bottom sheet settings
+        _bottomSheetBehavior?.setState(BottomSheetBehavior.STATE_EXPANDED)
+        _bottomSheetBehavior?.isDraggable = false
+        _bottomSheetBehavior?.isHideable = false
+        _bottomSheetBehavior?.peekHeight = 150
+
+        // Expand bottom sheet when draggable guide is tapped
+        binding.llVehicleOwnershipFragmentBottomSheet.setOnClickListener {
+            _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        }
 
         binding.btnVehicleOwnershipFragmentTake.setOnClickListener{
             val vin = binding.etVehicleOwnershipFragmentModelNumber.text.toString().trim()
