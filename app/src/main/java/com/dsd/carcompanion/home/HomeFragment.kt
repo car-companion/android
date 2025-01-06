@@ -14,7 +14,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
+import androidx.navigation.fragment.findNavController
 import com.dsd.carcompanion.R
 import com.dsd.carcompanion.adapters.VehicleInfoAdapter
 import com.dsd.carcompanion.api.datastore.JwtTokenDataStore
@@ -29,7 +29,6 @@ import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.flexbox.JustifyContent
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.slider.Slider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -39,7 +38,6 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 
 class HomeFragment : Fragment() {
-    //private lateinit var recyclerView: RecyclerView
     private lateinit var vehicleInfoAdapter: VehicleInfoAdapter
     private var vehicleInfoList: MutableList<VehicleInfo> = mutableListOf()
     private var _binding: FragmentHomeBinding? = null
@@ -121,12 +119,12 @@ class HomeFragment : Fragment() {
             }
         }
 
-        binding.fabHomeFragmentDimension.setOnClickListener {
+        /*binding.fabHomeFragmentDimension.setOnClickListener {
             val is3DMode = binding.fabHomeFragmentDimension.text == getString(R.string.home_fragment_3d_mode_fab_dimension)
             binding.fabHomeFragmentDimension.text = getString(
                 if (is3DMode) R.string.home_fragment_2d_mode_fab_dimension else R.string.home_fragment_3d_mode_fab_dimension
             )
-        }
+        }*/
     }
 
     private suspend fun fetchComponentsData(accessToken: String): List<ComponentResponse> {
@@ -163,14 +161,18 @@ class HomeFragment : Fragment() {
             }
 
             if (textView != null) {
-                val isTemperatureComponent = component.type.name == resources.getString(R.string.bottom_sheet_temperature_tv_label)
+                val isTemperatureComponent =
+                    component.type.name == resources.getString(R.string.bottom_sheet_temperature_tv_label)
                 textView.text = if (isTemperatureComponent) (slider?.value?.times(100f)).toString()
                 else if ((slider?.value ?: 0f) > 0.5f)
                     getString(R.string.bottom_sheet_vehicle_unlocked_tv_state)
                 else getString(R.string.bottom_sheet_vehicle_locked_tv_state)
+            }
+        }
                 
         binding.menuIcon.setOnClickListener {
             findNavController().navigate(R.id.action_HomeFragment_to_FirstFragment)
+        }
 
         /*binding.swHomeFragmentWindows.setOnCheckedChangeListener { _, isChecked ->
             if(isChecked) {
@@ -295,7 +297,6 @@ class HomeFragment : Fragment() {
                     updateComponentStatus(component, value)
                 }
             })
-
             bottomSheetLayout.addView(flexboxLayout)
         }
     }
@@ -363,7 +364,7 @@ class HomeFragment : Fragment() {
                 Log.e("VehicleOwnership", "Error: ${e.message}", e)
                 showToast("Error processing request: ${e.message}")
             }
-        }*/
+        }
     }
 
     override fun onDestroyView() {

@@ -37,10 +37,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-        setSupportActionBar(binding.toolbar)
+        /*setSupportActionBar(binding.toolbar)
 
         //Will be needed in the next sprint
-        /*val navController = findNavController(R.id.nav_host_fragment_content_main)
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)*/
 //        binding.fab.setOnClickListener {
