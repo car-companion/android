@@ -1,6 +1,7 @@
 package com.dsd.carcompanion.welcmeScreen
 
 import android.content.Intent
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,6 +15,7 @@ import com.dsd.carcompanion.databinding.ActivityWelcomeBinding
 import com.dsd.carcompanion.userRegistrationAndLogin.UserStartActivity
 import com.dsd.carcompanion.utility.ImageHelper
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -41,28 +43,32 @@ class WelcomeScreen : AppCompatActivity() {
             R.drawable.background_colors
         )
 
-        // Delay for the splash screen
-        Handler(Looper.getMainLooper()).postDelayed({
-            lifecycleScope.launch {
-                try {
-                    // Check JWT token
-                    val accessToken = withContext(Dispatchers.IO) {
-                        jwtTokenDataStore.getAccessJwt()
-                    }
-                    if (!accessToken.isNullOrEmpty()) {
-                        // Navigate to MainActivity
-                        startActivity(Intent(this@WelcomeScreen, MainActivity::class.java))
-                        finish()
-                    } else {
-                        // Navigate to UserStartActivity
-                        startActivity(Intent(this@WelcomeScreen, UserStartActivity::class.java))
-                        finish()
-                    }
-                } catch (e: Exception) {
-                    Log.e("WelcomeScreen", "Error while checking JWT token: ${e.message}")
+        lifecycleScope.launch {
+            delay(3000) // 3-second delay
+            checkJwtToken()
+        }
+    }
+
+    private fun checkJwtToken() {
+        lifecycleScope.launch {
+            try {
+                // Check JWT token
+                val accessToken = withContext(Dispatchers.IO) {
+                    jwtTokenDataStore.getAccessJwt()
                 }
+                if (!accessToken.isNullOrEmpty()) {
+                    // Navigate to MainActivity
+                    startActivity(Intent(this@WelcomeScreen, MainActivity::class.java))
+                    finish()
+                } else {
+                    // Navigate to UserStartActivity
+                    startActivity(Intent(this@WelcomeScreen, UserStartActivity::class.java))
+                    finish()
+                }
+            } catch (e: Exception) {
+                Log.e("WelcomeScreen", "Error while checking JWT token: ${e.message}")
             }
-        }, 3000) // 3000 ms = 3 seconds
+        }
     }
 
     override fun onDestroy() {

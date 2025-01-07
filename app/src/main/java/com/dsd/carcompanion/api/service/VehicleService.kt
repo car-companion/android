@@ -7,6 +7,7 @@ import com.dsd.carcompanion.api.models.GrantPermissionRequest
 import com.dsd.carcompanion.api.models.GrantedPermissions
 import com.dsd.carcompanion.api.models.PermissionsResponse
 import com.dsd.carcompanion.api.models.PreferencesResponse
+import com.dsd.carcompanion.api.models.RemovedVehicle
 import com.dsd.carcompanion.api.models.RevokedPermissions
 import com.dsd.carcompanion.api.models.VehiclePreferencesResponse
 import com.dsd.carcompanion.api.models.VehicleResponse
@@ -91,4 +92,9 @@ interface VehicleService {
         @Path(value = "component_type", encoded = false) componentType: String,
         @Path(value = "component_name", encoded = false) componentName: String,
     ): Response<RevokedPermissions>
+
+    @DELETE("/api/car_companion/vehicles/{vin}/disown/")
+    suspend fun removeOwnedVehicleForUser(
+        @Path(value = "vin", encoded = false) vin: String
+    ): Response<RemovedVehicle>
 }

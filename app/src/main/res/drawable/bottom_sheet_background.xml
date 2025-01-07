@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="?attr/colorSecondary"/>
-    <corners android:topLeftRadius="35dp"
-        android:topRightRadius="35dp"/>
-</shape>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Shadow Layer -->
+    <item>
+        <shape>
+            <solid android:color="#26000000"/> <!-- Semi-transparent black for the shadow -->
+            <corners android:topLeftRadius="35dp" android:topRightRadius="35dp"/>
+            <size android:height="20dp" /> <!-- The shadow height -->
+        </shape>
+    </item>
+
+    <!-- Main Layer (Original Background) -->
+    <item android:right="0dp" android:left="0dp" android:top="20dp">
+        <shape>
+            <solid android:color="?attr/colorSecondary"/>
+            <corners android:topLeftRadius="35dp" android:topRightRadius="35dp"/>
+        </shape>
+    </item>
+</layer-list>
