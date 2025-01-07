@@ -22,11 +22,11 @@ int main(int argc, char *argv[])
     fmt.setSwapInterval(0);
     QSurfaceFormat::setDefaultFormat(fmt);
 
-    engine.loadFromModule("QmlModule", "Main");
+    //engine.loadFromModule("QmlModule", "Main");
 
-    if (engine.rootObjects().isEmpty()) {
+    /*if (engine.rootObjects().isEmpty()) {
         return -1;
-    }
+    }*/
 
     return app.exec();
 }

@@ -3,11 +3,9 @@
 
 import QtQuick
 
-Item {
-    width: 1080
-    height: 1920
+Rectangle {
     visible: true
-    color: "black"
+    color: "teal"
 
     Text {
         id: helloText
