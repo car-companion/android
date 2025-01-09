@@ -32,8 +32,10 @@ import com.dsd.carcompanion.api.models.PermissionsResponse
 import com.dsd.carcompanion.api.models.RevokedPermissions
 import com.dsd.carcompanion.api.models.VehiclePreferencesResponse
 import com.dsd.carcompanion.api.models.VehicleResponse
+import com.dsd.carcompanion.utility.ImageHelper
 import com.dsd.carcompanion.api.repository.VehicleRepository
 import com.dsd.carcompanion.api.utils.ResultOf
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import java.util.Calendar
 
 class UserPermissionsFragment : Fragment() {
@@ -41,7 +43,7 @@ class UserPermissionsFragment : Fragment() {
     private var _binding: FragmentGrantPermissionsBinding? = null
     private val binding get() = _binding!!
     private lateinit var jwtTokenDataStore: JwtTokenDataStore
-
+    private var _bottomSheetBehavior: BottomSheetBehavior<View>? = null
     val vinMapping: MutableList<String> = mutableListOf("") // Default option has no VIN
     private var components: List<ComponentResponse> = emptyList()
 

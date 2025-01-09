@@ -7,6 +7,7 @@ import com.dsd.carcompanion.api.models.ComponentStatusUpdate
 import com.dsd.carcompanion.api.models.GrantPermissionRequest
 import com.dsd.carcompanion.api.models.GrantedPermissions
 import com.dsd.carcompanion.api.models.PreferencesResponse
+import com.dsd.carcompanion.api.models.RemovedVehicle
 import com.dsd.carcompanion.api.models.RevokedPermissions
 import com.dsd.carcompanion.api.models.VehiclePreferencesResponse
 import com.dsd.carcompanion.api.models.VehicleResponse
@@ -117,5 +118,20 @@ class VehicleRepository(
             call = { vehicleService.revokeAccessToUserForComponent(vin, username, componentType, componentName)},
             transform = { revokedPermissions: RevokedPermissions -> revokedPermissions }
         )
+    }
+
+    suspend fun removeOwnedVehicleForUser(vin: String): ResultOf<Int> {
+        return try {
+            val response = vehicleService.removeOwnedVehicleForUser(vin)
+            Log.d("VehicleRepository", "Response: ${response.code()}")
+
+            if (response.isSuccessful) {
+                ResultOf.Success(response.code())
+            } else {
+                ResultOf.Error("Failed to remove vehicle. Code: ${response.code()}", response.code())
+            }
+        } catch (e: Exception) {
+            ResultOf.Error("Network error: ${e.localizedMessage}")
+        }
     }
 }

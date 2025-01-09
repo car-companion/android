@@ -1,5 +1,6 @@
 package com.dsd.carcompanion.home
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -10,11 +11,12 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
+import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
+import androidx.navigation.fragment.findNavController
 import com.dsd.carcompanion.R
 import com.dsd.carcompanion.adapters.VehicleInfoAdapter
 import com.dsd.carcompanion.api.datastore.JwtTokenDataStore
@@ -25,11 +27,11 @@ import com.dsd.carcompanion.api.models.VehicleInfo
 import com.dsd.carcompanion.api.repository.VehicleRepository
 import com.dsd.carcompanion.api.utils.ResultOf
 import com.dsd.carcompanion.databinding.FragmentHomeBinding
+import com.dsd.carcompanion.userRegistrationAndLogin.UserStartActivity
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.flexbox.JustifyContent
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.slider.Slider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -37,9 +39,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlin.math.log
 
 class HomeFragment : Fragment() {
-    //private lateinit var recyclerView: RecyclerView
     private lateinit var vehicleInfoAdapter: VehicleInfoAdapter
     private var vehicleInfoList: MutableList<VehicleInfo> = mutableListOf()
     private var _binding: FragmentHomeBinding? = null
@@ -59,41 +61,9 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         _bottomSheetBehavior = BottomSheetBehavior.from(binding.llHomeFragmentBottomSheet)
         jwtTokenDataStore = JwtTokenDataStore(requireContext()) // Initialize the JwtTokenDataStore
-        //recyclerView = binding.rvHomeFragmentVehicleInfo
         vehicleInfoAdapter = VehicleInfoAdapter(vehicleInfoList)
-        //recyclerView.adapter = vehicleInfoAdapter
 
         return binding.root
-    }
-
-    private fun showToast(message: String) {
-        if (isAdded) {
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun startPeriodicComponentUpdates(intervalMillis: Long = 5000L) {
-        isPeriodicFetchRunning = true
-        viewLifecycleOwner.lifecycleScope.launch {
-            while (isPeriodicFetchRunning) {
-                try {
-                    val accessToken = withContext(Dispatchers.IO) { jwtTokenDataStore.getAccessJwt() }
-                    if (!accessToken.isNullOrEmpty()) {
-                        val components = fetchComponentsData(accessToken)
-                        withContext(Dispatchers.Main) {
-                            updateComponentsUI(components)
-                        }
-                    }
-                } catch (e: Exception) {
-                    Log.e("HomeFragment", "Error during periodic fetch: ${e.message}", e)
-                }
-                delay(intervalMillis)
-            }
-        }
-    }
-
-    private fun stopPeriodicComponentUpdates() {
-        isPeriodicFetchRunning = false
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -121,12 +91,63 @@ class HomeFragment : Fragment() {
             }
         }
 
-        binding.fabHomeFragmentDimension.setOnClickListener {
-            val is3DMode = binding.fabHomeFragmentDimension.text == getString(R.string.home_fragment_3d_mode_fab_dimension)
-            binding.fabHomeFragmentDimension.text = getString(
-                if (is3DMode) R.string.home_fragment_2d_mode_fab_dimension else R.string.home_fragment_3d_mode_fab_dimension
-            )
+        binding.menuIcon.setOnClickListener {
+            val popupMenu = PopupMenu(requireContext(), binding.menuIcon)
+            popupMenu.menuInflater.inflate(R.menu.menu_main, popupMenu.menu)
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.action_settings -> {
+                        findNavController().navigate(R.id.action_HomeFragment_to_SettingsFragment)
+                        true
+                    }
+                    R.id.action_access -> {
+                        findNavController().navigate(R.id.action_HomeFragment_to_UserPermissionsFragment)
+                        true
+                    }
+                    R.id.action_add_vehicle -> {
+                        findNavController().navigate(R.id.action_HomeFragment_to_VehicleOwnershipFragment)
+                        true
+                    }
+                    R.id.action_logout -> {
+                        logoutUser();
+                        true
+                    }
+                    else -> false
+                }
+            }
+            popupMenu.show()
         }
+    }
+
+
+    private fun showToast(message: String) {
+        if (isAdded) {
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun startPeriodicComponentUpdates(intervalMillis: Long = 5000L) {
+        isPeriodicFetchRunning = false
+        viewLifecycleOwner.lifecycleScope.launch {
+            while (isPeriodicFetchRunning) {
+                try {
+                    val accessToken = withContext(Dispatchers.IO) { jwtTokenDataStore.getAccessJwt() }
+                    if (!accessToken.isNullOrEmpty()) {
+                        val components = fetchComponentsData(accessToken)
+                        withContext(Dispatchers.Main) {
+                            updateComponentsUI(components)
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("HomeFragment", "Error during periodic fetch: ${e.message}", e)
+                }
+                delay(intervalMillis)
+            }
+        }
+    }
+
+    private fun stopPeriodicComponentUpdates() {
+        isPeriodicFetchRunning = false
     }
 
     private suspend fun fetchComponentsData(accessToken: String): List<ComponentResponse> {
@@ -163,22 +184,14 @@ class HomeFragment : Fragment() {
             }
 
             if (textView != null) {
-                val isTemperatureComponent = component.type.name == resources.getString(R.string.bottom_sheet_temperature_tv_label)
+                val isTemperatureComponent =
+                    component.type.name == resources.getString(R.string.bottom_sheet_temperature_tv_label)
                 textView.text = if (isTemperatureComponent) (slider?.value?.times(100f)).toString()
                 else if ((slider?.value ?: 0f) > 0.5f)
                     getString(R.string.bottom_sheet_vehicle_unlocked_tv_state)
                 else getString(R.string.bottom_sheet_vehicle_locked_tv_state)
-                
-        binding.menuIcon.setOnClickListener {
-            findNavController().navigate(R.id.action_HomeFragment_to_FirstFragment)
-
-        /*binding.swHomeFragmentWindows.setOnCheckedChangeListener { _, isChecked ->
-            if(isChecked) {
-                binding.tvHomeFragmentWindowsState.text = getString(R.string.bottom_sheet_windows_opened_tv_state)
-            } else {
-                binding.tvHomeFragmentWindowsState.text = getString(R.string.bottom_sheet_windows_closed_tv_state)
             }
-        }*/
+        }
     }
 
     private suspend fun fetchComponents(accessToken: String) {
@@ -295,7 +308,6 @@ class HomeFragment : Fragment() {
                     updateComponentStatus(component, value)
                 }
             })
-
             bottomSheetLayout.addView(flexboxLayout)
         }
     }
@@ -363,7 +375,21 @@ class HomeFragment : Fragment() {
                 Log.e("VehicleOwnership", "Error: ${e.message}", e)
                 showToast("Error processing request: ${e.message}")
             }
-        }*/
+        }
+    }
+
+    fun logoutUser(){
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                jwtTokenDataStore.clearAllTokens()
+
+                val intent = Intent(requireContext(), UserStartActivity::class.java)
+                startActivity(intent)
+                requireActivity().finish()
+            } catch (e: Exception) {
+                Log.e("FirstFragment", "Error during logout: ${e.message}")
+            }
+        }
     }
 
     override fun onDestroyView() {

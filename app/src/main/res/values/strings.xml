@@ -2,8 +2,10 @@
     <string name="app_name">CarCompanion</string>
     <string name="action_settings">Settings</string>
 
-    <!-- Frequently used -->
+    <!-- BUTTONS-->
     <string name="button_submit">Submit</string>
+    <string name="button_login">Log In</string>
+    <string name="field_required"> field is required!</string>
 
     <!-- LOGIN SCREEN STRINGS -->
     <string name="login_fragment_hint_username">Username</string>
@@ -57,6 +59,14 @@
     <string name="bottom_sheet_lights_on_tv_state">On</string>
     <string name="bottom_sheet_temperature_degrees_tv_state">°C</string>
 
+    <!-- SETTINGS SCREEN -->
+    <string name="settings">Settings</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="app_configurations">App Configurations</string>
+    <string name="appearance">Appearance</string>
+
+    <string name="user_settings">User Settings</string>
+
     <!-- Premade values; will be deleted in the next sprint -->
 
     <!-- VEHICLE ACCESS PERMISSIONS -->
@@ -79,8 +89,8 @@
     <string name="no_permissions_available">No permissions available for this vehicle.</string>
     <string name="no_vehicle_selected">Please select a vehicle from the list.</string>
     <string name="no_permissions_selected">No permissions available for the selected vehicle.</string>
-
-
+    <!-- CUSTOM ELEMENTS -->
+    <string name="default_switch_label">Insert Text</string>
 
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -91,4 +101,83 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="home_fragment_label">Home Fragment</string>
+
+    <string name="settings_title_privacy_policy">Privacy policy</string>
+    <string name="settings_text_privacy_policy">
+        Effective Date: 01.01.2025.\n\n
+        <b>CarCompanion</b> (later in the text: "we," "us," or "our") is committed to protecting your privacy.
+        This Privacy Policy explains how we collect, use, and protect your information when
+        you use our car management mobile application. By using CarCompanion, you agree
+        to the terms of this Privacy Policy.\n\n
+
+        <b>1. Information We Collect:</b>\n
+        - Personal Information: Name, email address, or other identifiers if provided during registration.\n
+        - Vehicle Information: Details about your car, such as make, model, mileage, and maintenance history.\n
+        - Usage Data: Information about how you use the app, such as features accessed and time spent on the app.\n
+        - Device Information: Data about your device, such as operating system and app version.\n\n
+
+        <b>2. How We Use Your Information:</b>\n
+        We use your information to:\n
+        - Provide and improve app functionality.\n
+        - Track and manage your vehicle’s maintenance schedules.\n
+        - Send reminders or notifications about upcoming services or deadlines.\n
+        - Ensure app security and stability.\n\n
+
+        <b>3. Sharing Your Information:</b>\n
+        We do not sell your information. We may share it only:\n
+        - With service providers who assist us in operating the app (e.g., cloud storage).\n
+        - If required by law or to protect our legal rights.\n\n
+
+        <b>4. Data Security:</b>\n
+        We implement reasonable measures to secure your data from unauthorized access or disclosure.
+        However, no method of data transmission or storage is completely secure, and we cannot guarantee
+        absolute security.\n\n
+
+        <b>5. Your Rights:</b>\n
+        You have the right to:\n
+        - Access and review the personal data we hold about you.\n
+        - Request corrections or deletions of your personal data.\n
+        - Opt out of notifications or certain data collection features via app settings.\n\n
+
+        <b>6. Changes to This Policy:</b>\n
+        We may update this Privacy Policy from time to time. We will notify you of any significant
+        changes through the app or other appropriate channels.\n\n
+
+        <b>7. Contact Us:</b>\n
+        If you have any questions or concerns about this Privacy Policy, please contact us at:\n
+        Email: support@carcompanion.com\n
+        Address: Unska ulica 3, 10000, Zagreb, Croatia
+    </string>
+
+    <string name="settings_title_terms_and_conditions">Terms and conditions</string>
+    <string name="settings_text_terms_and_conditions">
+        Effective Date: 01.01.2025.\n\n
+        <b>Terms and Conditions</b>\n
+        Welcome to <b>CarCompanion</b>! By using our app, you agree to the following terms and conditions.\n\n
+        <b>1. Use of the App:</b>\n
+        - You must be at least 18 years old to use CarCompanion.\n
+        - You agree to use the app only for its intended purpose: managing your vehicle-related tasks.\n\n
+        <b>2. User Responsibilities:</b>\n
+        - Provide accurate and up-to-date information when using the app.\n
+        - Keep your login credentials confidential and notify us of any unauthorized access.\n\n
+        <b>3. Limitations of Liability:</b>\n
+        - We are not liable for any damages resulting from inaccurate information or misuse of the app.\n
+        - The app is provided "as is," and we make no warranties about its accuracy, reliability, or performance.\n\n
+        <b>4. Intellectual Property:</b>\n
+        - All content, logos, and trademarks in CarCompanion are owned by us or licensed to us.\n
+        - You may not copy, distribute, or modify app content without our consent.\n\n
+        <b>5. Termination:</b>\n
+        - We reserve the right to suspend or terminate your account if you violate these terms.\n
+        - You can stop using the app at any time.\n\n
+        <b>6. Changes to Terms:</b>\n
+        - We may update these terms from time to time. Significant changes will be communicated through the app.\n\n
+        <b>7. Governing Law:</b>\n
+        - These terms are governed by the laws of Croatia.\n\n
+        <b>8. Contact Us:</b>\n
+        - If you have questions or concerns about these terms, contact us at:\n
+          Email: support@carcompanion.com\n
+          Address: Unska ulica 3, 10000, Zagreb, Croatia\n\n
+        Thank you for using CarCompanion!
+    </string>
+
 </resources>

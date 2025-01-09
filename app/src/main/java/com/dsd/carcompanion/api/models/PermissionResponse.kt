@@ -38,3 +38,8 @@ data class RevokedPermissions(
     val revoked: List<ComponentRevoked>,
     val message: String
 )
+
+data class RemovedVehicle(
+    val code: String,
+    val message: String
+)
