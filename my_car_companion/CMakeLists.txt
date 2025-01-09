@@ -40,6 +40,49 @@ qt_add_qml_module(
         Main.qml
 )
 
+qt_add_qml_module(
+    Qt_Car_Baked_low_v2
+    URI "Qt_Car_Baked_low_v2"
+    VERSION 1.0
+    QML_FILES
+        Qt_Car_Baked_low_v2/Qt_Car_Baked_low_v2.qml
+    RESOURCES
+        "Qt_Car_Baked_low_v2/_importdata.json"
+        "Qt_Car_Baked_low_v2/maps/textureData.jpg"
+        "Qt_Car_Baked_low_v2/maps/textureData72.jpg"
+        "Qt_Car_Baked_low_v2/maps/textureData81.jpg"
+        "Qt_Car_Baked_low_v2/maps/textureData8.png"
+        "Qt_Car_Baked_low_v2/maps/textureData45.jpg"
+        "Qt_Car_Baked_low_v2/maps/textureData63.jpg"
+        "Qt_Car_Baked_low_v2/maps/textureData58.jpg"
+        "Qt_Car_Baked_low_v2/maps/textureData67.jpg"
+        "Qt_Car_Baked_low_v2/maps/textureData33.jpg"
+        "Qt_Car_Baked_low_v2/maps/textureData76.jpg"
+        "Qt_Car_Baked_low_v2/maps/textureData43.jpg"
+        "Qt_Car_Baked_low_v2/maps/textureData35.png"
+        "Qt_Car_Baked_low_v2/maps/textureData13.jpg"
+        "Qt_Car_Baked_low_v2/maps/textureData83.jpg"
+        "Qt_Car_Baked_low_v2/maps/textureData6.jpg"
+        "Qt_Car_Baked_low_v2/meshes/door_b_R_Low_mesh.mesh"
+        "Qt_Car_Baked_low_v2/meshes/doorWindow_b_L_low_mesh.mesh"
+        "Qt_Car_Baked_low_v2/meshes/headLights_low_mesh.mesh"
+        "Qt_Car_Baked_low_v2/meshes/seat_front_low_mesh.mesh"
+        "Qt_Car_Baked_low_v2/meshes/tire_FrontL_low_mesh.mesh"
+        "Qt_Car_Baked_low_v2/meshes/insideFloor_low_mesh.mesh"
+        "Qt_Car_Baked_low_v2/meshes/seat_rear_low_mesh.mesh"
+        "Qt_Car_Baked_low_v2/meshes/backR_Tire_b_Low_mesh.mesh"
+        "Qt_Car_Baked_low_v2/meshes/mainbody_b_Low_mesh.mesh"
+        "Qt_Car_Baked_low_v2/meshes/roof_b_001_mesh.mesh"
+        "Qt_Car_Baked_low_v2/meshes/backL_Tire_b_low_mesh.mesh"
+        "Qt_Car_Baked_low_v2/meshes/dash_low_mesh.mesh"
+        "Qt_Car_Baked_low_v2/meshes/doorWindow_b_R_low_mesh.mesh"
+        "Qt_Car_Baked_low_v2/meshes/frontR_Tire_b_Low_mesh.mesh"
+        "Qt_Car_Baked_low_v2/meshes/carBottom_low_mesh.mesh"
+        "Qt_Car_Baked_low_v2/meshes/door_b_L_Low_mesh.mesh"
+        "Qt_Car_Baked_low_v2/meshes/screens_low_mesh.mesh"
+        "Qt_Car_Baked_low_v2/meshes/wheel_screen_low_mesh.mesh"
+)
+
 target_link_libraries(
     ${CMAKE_PROJECT_NAME}
     PRIVATE

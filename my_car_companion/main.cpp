@@ -22,6 +22,15 @@ int main(int argc, char *argv[])
     fmt.setSwapInterval(0);
     QSurfaceFormat::setDefaultFormat(fmt);
 
+    // Load main QML
+    /*const QUrl url(QStringLiteral(":/Main.qml"));
+    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
+                     &app, [url](QObject *obj, const QUrl &objUrl) {
+                if (!obj && url == objUrl)
+                    QCoreApplication::exit(-1);
+            }, Qt::QueuedConnection);
+    engine.load(url);*/
+
     //engine.loadFromModule("QmlModule", "Main");
 
     /*if (engine.rootObjects().isEmpty()) {

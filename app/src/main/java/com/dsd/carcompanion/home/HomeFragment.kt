@@ -1,5 +1,6 @@
 package com.dsd.carcompanion.home
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import com.dsd.carcompanion.R
 import com.dsd.carcompanion.adapters.VehicleInfoAdapter
 import com.dsd.carcompanion.api.models.VehicleInfo
@@ -60,6 +60,7 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
         return binding.root
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -69,12 +70,28 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
             ViewGroup.LayoutParams.MATCH_PARENT
         )
 
-        Log.d("Home", "Instantiated")
         m_qmlView = QtQuickView(requireContext(), "Main.qml", "my_car_companionApp")
 
         qtContainer.addView(m_qmlView, params)
         m_qmlView!!.loadContent(m_mainQmlContent)
         Log.d("Home", "After loaded")
+
+        m_qmlView?.connectSignalListener("sliderValueChanged", Double::class.java)
+        { signalName, args ->
+            if (signalName == "sliderValueChanged") {
+                val sliderValue = args as Double
+                Log.d("HomeFragment", "Signal: $signalName, Slider value: $sliderValue")
+            }
+        }
+
+        m_qmlView?.setStatusChangeListener { status ->
+            Log.d("HomeFragment", status.toString())
+            if (status == QtQmlStatus.READY) {
+                Log.d("HomeFragment", "QtQuickView is ready")
+                m_qmlView?.setProperty("sliderValue", 300.toDouble())
+                //m_qmlView?.getProperty<String>("root.view3D.scene.qt_Car_Baked_low_v2.node.testing")
+            }
+        }
 
         _bottomSheetBehavior?.setState(BottomSheetBehavior.STATE_COLLAPSED)
         _bottomSheetBehavior?.isDraggable = true
