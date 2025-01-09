@@ -13,7 +13,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 
-object ImageHelper {
+object BlurHelper {
 
     fun applyBlurToViewBackground(
         context: Context?,

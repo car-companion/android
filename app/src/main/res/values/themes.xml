@@ -40,4 +40,10 @@
         <item name="android:background">@drawable/custom_button</item>
     </style>
 
+    <!-- Custom Bottom Sheet Appearance -->
+    <style name="CustomBottomSheet">
+        <item name="android:background">@drawable/bottom_sheet_bg_glass</item>
+    </style>
+
+
 </resources>

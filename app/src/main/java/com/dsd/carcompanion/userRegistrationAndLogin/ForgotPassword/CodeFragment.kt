@@ -16,18 +16,12 @@ class CodeFragment : Fragment() {
 
     private var _binding: FragmentCodeBinding? = null
     private val binding get() = _binding!!
-    private var _bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
-
-    private var _bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCodeBinding.inflate(inflater, container, false)
-        // Initialize BottomSheetBehavior
-        _bottomSheetBehavior = BottomSheetBehavior.from(binding.llCodeFragmentBottomSheet)
-        _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
 
         return binding.root
     }
@@ -41,17 +35,6 @@ class CodeFragment : Fragment() {
             context,
             R.drawable.background_colors
         )
-
-        // Bottom sheet settings
-        _bottomSheetBehavior?.setState(BottomSheetBehavior.STATE_EXPANDED)
-        _bottomSheetBehavior?.isDraggable = true
-        _bottomSheetBehavior?.isHideable = false
-        _bottomSheetBehavior?.peekHeight = 150
-
-        // Expand bottom sheet when draggable guide is tapped
-        binding.llCodeFragmentBottomSheet.setOnClickListener {
-            _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
-        }
 
         binding.btnForgotPasswordVerify.setOnClickListener {
             val codeEditText = binding.etForgotPasswordEnterCode

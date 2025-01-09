@@ -28,6 +28,7 @@ import com.dsd.carcompanion.api.repository.VehicleRepository
 import com.dsd.carcompanion.api.utils.ResultOf
 import com.dsd.carcompanion.databinding.FragmentHomeBinding
 import com.dsd.carcompanion.userRegistrationAndLogin.UserStartActivity
+import com.dsd.carcompanion.utility.ImageHelper
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.flexbox.JustifyContent
@@ -87,7 +88,7 @@ class HomeFragment : Fragment() {
         _bottomSheetBehavior?.setState(BottomSheetBehavior.STATE_COLLAPSED)
         _bottomSheetBehavior?.isDraggable = true
         _bottomSheetBehavior?.isHideable = false
-        _bottomSheetBehavior?.peekHeight = 150
+        _bottomSheetBehavior?.peekHeight = 450
 
         // Expand bottom sheet when draggable guide is tapped
         binding.llHomeFragmentBottomSheet.setOnClickListener {
@@ -104,6 +105,9 @@ class HomeFragment : Fragment() {
         setupCustomToggleLights()
         setupCustomToggleDoorRight()
         setupCustomToggleDoorLeft()
+
+        //Add sliders setup
+        setupCustomSliderTemperature()
 
         // Connect the UI components to functions
         setupListeners()
@@ -576,6 +580,36 @@ class HomeFragment : Fragment() {
                 Toast.makeText(context, "Mode toggled OFF", Toast.LENGTH_SHORT).show()
                 // Perform actions for OFF state
             }
+        }
+    }
+
+    private fun setupCustomSliderTemperature() {
+        // Initialize UI components
+        val sliderTitle = binding.sliderTemperature.tvSliderTitle
+        val customSlider = binding.sliderTemperature.customSlider
+        val sliderInfoLabel = binding.sliderTemperature.tvSliderInfo
+
+        // Set the title text using a string resource
+        sliderTitle.text = getString(R.string.home_temperature)
+
+        // Set the initial value for slider info and slider
+        val initialTemperature = 25 // Adjust this based on your desired initial value
+        sliderInfoLabel.text = getString(R.string.temperature_label, initialTemperature)
+
+        // Set the slider custom range
+        customSlider.valueFrom = 0f
+        customSlider.valueTo = 100f
+        customSlider.stepSize = 1f
+
+        customSlider.value = initialTemperature.toFloat()
+
+        // Disable the value label on the thumb
+        customSlider.setLabelFormatter(null)
+
+        // Attach a listener to update the info label dynamically
+        customSlider.addOnChangeListener { slider, value, fromUser ->
+            Log.d("Slider", "Value: $value")
+            sliderInfoLabel.text = getString(R.string.temperature_label, value.toInt())
         }
     }
 

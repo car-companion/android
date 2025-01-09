@@ -35,7 +35,6 @@ import com.dsd.carcompanion.api.models.VehicleResponse
 import com.dsd.carcompanion.utility.ImageHelper
 import com.dsd.carcompanion.api.repository.VehicleRepository
 import com.dsd.carcompanion.api.utils.ResultOf
-import com.dsd.carcompanion.utility.ImageHelper
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import java.util.Calendar
 

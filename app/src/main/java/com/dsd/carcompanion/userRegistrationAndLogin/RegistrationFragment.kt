@@ -13,7 +13,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.dsd.carcompanion.MainActivity
 import com.dsd.carcompanion.R
 import com.dsd.carcompanion.api.datastore.JwtTokenDataStore
@@ -50,11 +52,6 @@ class RegistrationFragment : Fragment() {
 
         return binding.root
 
-        // Initialize BottomSheetBehavior
-        _bottomSheetBehavior = BottomSheetBehavior.from(binding.llRegistrationFragmentBottomSheet)
-        _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
-
-        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -135,14 +132,11 @@ class RegistrationFragment : Fragment() {
             }
         }
 
-        // Navigate to Login
         binding.textViewToLogin.setOnClickListener {
-            dismiss() // Close the bottom sheet
-            // Use Navigation to transition to the LoginFragment
-        }
+            findNavController().navigate(R.id.action_RegistrationFragment_to_LoginFragment)       }
     }
 
-    private fun loginUser(username: String, password: String) {
+    fun loginUser(username: String, password: String){
         val loginRequest = LoginRequest(username = username, password = password)
 
         val userService = UserClient.apiService
@@ -154,7 +148,7 @@ class RegistrationFragment : Fragment() {
 
                 withContext(Dispatchers.Main) {
                     if (response is ResultOf.Success) {
-                        Log.d("Register Fragment", "Login Successful! Navigating to MainActivity.")
+                        Log.d("Register Fragment", "Well done, you registred. Going to main activity")
                         val intent = Intent(requireActivity(), MainActivity::class.java)
                         startActivity(intent)
                         requireActivity().finish()

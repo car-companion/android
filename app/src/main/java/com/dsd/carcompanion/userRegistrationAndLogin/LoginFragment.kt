@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -79,7 +80,8 @@ class LoginFragment : Fragment() {
         textView.text = spannable
 
         // Adding a listener to handle state changes
-        _bottomSheetBehavior?.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+        _bottomSheetBehavior?.setBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     binding.llLoginFragmentDraggablePartUpper.visibility = View.GONE
@@ -95,16 +97,18 @@ class LoginFragment : Fragment() {
         binding.btnLoginFragmentSubmit.setOnClickListener {
             binding.tvLoginFragmentErrorLogin.visibility = View.GONE
 
-            val usernameEditText: String = binding.tilLoginFragmentUsername.editText?.text.toString()
-            val passwordEditText: String = binding.tilLoginFragmentPassword.editText?.text.toString()
+            val usernameEditText: String =
+                binding.tilLoginFragmentUsername.editText?.text.toString()
+            val passwordEditText: String =
+                binding.tilLoginFragmentPassword.editText?.text.toString()
 
             val flag = checkUserNamePasswordEmpty(usernameEditText, passwordEditText)
 
-            if(flag){
+            if (flag) {
                 binding.tvLoginFragmentErrorLogin.visibility = View.VISIBLE
-            }
-            else {
-                val loginRequest = LoginRequest(username = usernameEditText, password = passwordEditText)
+            } else {
+                val loginRequest =
+                    LoginRequest(username = usernameEditText, password = passwordEditText)
 
                 val userService = UserClient.apiService
                 val authRepository = AuthRepository(userService, jwtTokenDataStore)
@@ -121,45 +125,44 @@ class LoginFragment : Fragment() {
 
                                 requireActivity().finish()
                             } else if (response is ResultOf.Error) {
-                                binding.tvLoginFragmentErrorLogin.text = "Wrong username or password. Please try again."
+                                binding.tvLoginFragmentErrorLogin.text =
+                                    "Wrong username or password. Please try again."
                                 binding.tvLoginFragmentErrorLogin.visibility = View.VISIBLE
                                 Log.e("LoginFragment", "Login failed: ${response.message}")
                             } else {
-                                binding.tvLoginFragmentErrorLogin.text = "Something went wrong during login. Please try again."
+                                binding.tvLoginFragmentErrorLogin.text =
+                                    "Something went wrong during login. Please try again."
                                 binding.tvLoginFragmentErrorLogin.visibility = View.VISIBLE
                                 Log.e("Login Fragment", "Something else")
                             }
                         }
                     } catch (e: Exception) {
-                        binding.tvLoginFragmentErrorLogin.text = "Couldn't connect to the server. Please check your internet connection and try again."
+                        binding.tvLoginFragmentErrorLogin.text =
+                            "Couldn't connect to the server. Please check your internet connection and try again."
                         binding.tvLoginFragmentErrorLogin.visibility = View.VISIBLE
                         Log.e("LoginFragment", "Error during login: ${e.message}")
-                    }
-                } catch (e: Exception) {
-                    Log.e("LoginFragment", "Error during login: ${e.message}")
-                    withContext(Dispatchers.Main) {
-                    }
-                } finally {
-                    withContext(Dispatchers.Main) {
-                        binding.btnLoginFragmentSubmit.isEnabled = true
-                        binding.btnLoginFragmentSubmit.text = getString(R.string.button_login)
+
+                    } finally {
+                        withContext(Dispatchers.Main) {
+                            binding.btnLoginFragmentSubmit.isEnabled = true
+                            binding.btnLoginFragmentSubmit.text = getString(R.string.button_login)
+                        }
                     }
                 }
             }
-        }
 
-        binding.linkLoginFragmentForgotPassword.setTextColor(
-            ContextCompat.getColor(requireContext(), R.color.link)
-        )
-        binding.linkLoginFragmentForgotPassword.setOnClickListener {
-            findNavController().navigate(R.id.action_LoginFragment_to_ForgotPasswordFragment)
-        }
+            binding.linkLoginFragmentForgotPassword.setTextColor(
+                ContextCompat.getColor(requireContext(), R.color.link)
+            )
+            binding.linkLoginFragmentForgotPassword.setOnClickListener {
+                findNavController().navigate(R.id.action_LoginFragment_to_ForgotPasswordFragment)
+            }
 
-        binding.linkLoginFragmentDontHaveAccount.setOnClickListener {
-            findNavController().navigate(R.id.action_LoginFragment_to_RegistrationFragment)
+            binding.linkLoginFragmentDontHaveAccount.setOnClickListener {
+                findNavController().navigate(R.id.action_LoginFragment_to_RegistrationFragment)
+            }
         }
     }
-
     private fun checkUserNamePasswordEmpty(username: String , password: String): Boolean {
         binding.tvLoginFragmentErrorLogin.text = ""
         var text = ""

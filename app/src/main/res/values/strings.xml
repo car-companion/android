@@ -63,6 +63,8 @@
     <!-- HOME SCREEN -->
     <string name="action_3d">3D</string>
     <string name="action_2d">2D</string>
+    <string name="home_temperature">Temperature</string>
+    <string name="temperature_label">%d°C</string>
 
     <!-- SETTINGS SCREEN -->
     <string name="settings">Settings</string>
@@ -196,5 +198,13 @@
           Address: Unska ulica 3, 10000, Zagreb, Croatia\n\n
         Thank you for using CarCompanion!
     </string>
+    <string name="night_mode">Night Mode</string>
+    <string name="night_mode_enabled">Night Mode Enabled</string>
+    <string name="night_mode_disabled">Night Mode Disabled</string>
+    <string name="disabled">Disabled</string>
+    <string name="enabled">Enabled</string>
+    <string name="user_settings_clicked">Notifications changed</string>
+    <string name="about_app_message">About App</string>
+    <string name="close">Close</string>
 
 </resources>
