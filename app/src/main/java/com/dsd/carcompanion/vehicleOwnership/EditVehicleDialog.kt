@@ -199,8 +199,46 @@ class EditVehicleDialog : DialogFragment() {
                     interior_color = colorResponses[selectedInteriorColorIndex],
                     exterior_color = colorResponses[selectedExteriorColorIndex])
 
-                Log.d("EditVehiceDialog", prefsData.toString())
-                //updatePreferences(vin, prefsData)
+                Log.d("EditVehiceDialog", "Daving preferences: " + prefsData.toString())
+                updatePreferences(vehicle.vin, prefsData)
+            }
+        }
+    }
+
+    private fun updatePreferences(vin: String, prefsData: PreferencesResponse) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val accessToken = withContext(Dispatchers.IO) { jwtTokenDataStore.getAccessJwt() }
+
+                if(accessToken.isNullOrEmpty()) {
+                    displayToastMessage("Access token not found")
+                    return@launch
+                }
+
+                val vehicleService = VehicleClient.getApiServiceWithToken(accessToken)
+                val vehicleRepository = VehicleRepository(vehicleService, jwtTokenDataStore)
+
+                when (val response = vehicleRepository.updateVehiclePreferences(vin, prefsData)) {
+                    is ResultOf.Success -> {
+                        displayToastMessage("Vehicle preferences successfully saved!")
+                        dismiss()
+                    }
+                    is ResultOf.Error -> {
+                        val errorMessage = when (response.code) {
+                            400 -> "Invalid preferences data."
+                            403 -> "Unauthorized access."
+                            404 -> "Vehicle not found."
+                            else -> "Unexpected error: ${response.message}"
+                        }
+                        displayToastMessage(errorMessage)
+                        Log.e("VehicleOwnership", errorMessage)
+                    }
+                    ResultOf.Idle -> displayToastMessage("Idle state")
+                    ResultOf.Loading -> displayToastMessage("Processing...")
+                }
+            } catch (e: Exception) {
+                Log.e("VehicleOwnership", "Error: ${e.message}", e)
+                displayToastMessage("Error processing request: ${e.message}")
             }
         }
     }
