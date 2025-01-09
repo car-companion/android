@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -27,7 +29,10 @@ import com.dsd.carcompanion.api.models.GrantPermissionRequest
 import com.dsd.carcompanion.api.models.GrantedPermissions
 import com.dsd.carcompanion.api.models.PermissionResponse
 import com.dsd.carcompanion.api.models.PermissionsResponse
+import com.dsd.carcompanion.api.models.RevokedPermissions
+import com.dsd.carcompanion.api.models.VehiclePreferencesResponse
 import com.dsd.carcompanion.api.models.VehicleResponse
+import com.dsd.carcompanion.utility.ImageHelper
 import com.dsd.carcompanion.api.repository.VehicleRepository
 import com.dsd.carcompanion.api.utils.ResultOf
 import com.dsd.carcompanion.utility.ImageHelper
@@ -40,6 +45,7 @@ class UserPermissionsFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var jwtTokenDataStore: JwtTokenDataStore
     private var _bottomSheetBehavior: BottomSheetBehavior<View>? = null
+    val vinMapping: MutableList<String> = mutableListOf("") // Default option has no VIN
     private var components: List<ComponentResponse> = emptyList()
 
     override fun onCreateView(
@@ -92,7 +98,7 @@ class UserPermissionsFragment : Fragment() {
         }
     }
 
-    private fun setupAccessLevelListener(permissions: List<ComponentResponse>) {
+    private fun setupAccessLevelListener() {
         binding.radioGroupAccessLevel.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.radio_full_access -> giveFullAccess()
@@ -112,7 +118,7 @@ class UserPermissionsFragment : Fragment() {
                 is ResultOf.Success -> {
                     val vehicles = response.data
                     val vehicleInfo = vehicles.joinToString("\n") { vehicle ->
-                        "Nickname: ${vehicle.nickname ?: "N/A"}, VIN: ${vehicle.vin}"
+                        "Nickname: ${vehicle.user_preferences ?: "N/A"}, VIN: ${vehicle.vin}"
                     }
 //                    binding.tvShowApiResponse.text = vehicleInfo
                     updateVehicleSpinner(vehicles,accessToken)
@@ -130,13 +136,13 @@ class UserPermissionsFragment : Fragment() {
         }
     }
 
-    private fun updateVehicleSpinner(vehicles: List<VehicleResponse>, accessToken: String) {
+    private fun updateVehicleSpinner(vehicles: List<VehiclePreferencesResponse>, accessToken: String) {
         val defaultOption = "Select a vehicle"
         val spinnerItems: MutableList<String> = mutableListOf(defaultOption)
-        val vinMapping: MutableList<String> = mutableListOf("") // Default option has no VIN
 
         if (vehicles.isNotEmpty()) {
-            spinnerItems.addAll(vehicles.map { it.nickname ?: "Unnamed Vehicle (${it.vin})" })
+            val titles = vehicles.map { if (it.user_preferences.nickname != null) "${it.user_preferences.nickname} (${it.vin})" else "${it.model.manufacturer} ${it.model.name} (${it.vin})" }
+            spinnerItems.addAll(titles)
             vinMapping.addAll(vehicles.map { it.vin })
         } else {
             spinnerItems.clear()
@@ -161,7 +167,9 @@ class UserPermissionsFragment : Fragment() {
                     val selectedVIN = vinMapping[position]
                     fetchComponentsForVIN(selectedVIN, accessToken)
                 } else {
-//                    binding.tvShowApiResponse.text = getString(R.string.no_permissions_selected)
+                    binding.tvShowApiResponse.text = getString(R.string.no_permissions_selected)
+                    components = emptyList()
+                    updatePermissionsList()
                 }
             }
 
@@ -186,7 +194,7 @@ class UserPermissionsFragment : Fragment() {
                         val fetchedComponents = response.data as? List<ComponentResponse>
                         if (fetchedComponents != null) {
                             components = fetchedComponents
-                            updatePermissionsList(fetchedComponents)
+                            updatePermissionsList()
                         } else {
 //                            binding.tvShowApiResponse.text = getString(R.string.unexpected_response_format)
                         }
@@ -209,7 +217,8 @@ class UserPermissionsFragment : Fragment() {
         }
     }
 
-    private fun updatePermissionsList(components: List<ComponentResponse>) {
+
+    private fun updatePermissionsList() {
         val permissionsLayout = binding.permissionsLayout
 
         permissionsLayout.removeAllViews()
@@ -220,6 +229,15 @@ class UserPermissionsFragment : Fragment() {
             }
             permissionsLayout.addView(textView)
         } else {
+            val componentsLayout = LinearLayout(requireContext()).apply {
+                orientation = LinearLayout.VERTICAL
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                id = "ll_grant_access_fragment_components".hashCode()
+            }
+
             components.forEach { component ->
                 val permissionLayout = LinearLayout(requireContext()).apply {
                     orientation = LinearLayout.VERTICAL
@@ -232,6 +250,7 @@ class UserPermissionsFragment : Fragment() {
                 val permissionName = TextView(requireContext()).apply {
                     "${component.type.name} (${component.name})".also { text = it }
                 }
+
                 permissionLayout.addView(permissionName)
 
                 val radioGroup = RadioGroup(requireContext()).apply {
@@ -247,7 +266,7 @@ class UserPermissionsFragment : Fragment() {
                 val revokeButton = RadioButton(requireContext()).apply {
                     text = "Revoke"
                     id = generateRadioButtonId(component, "revoke")
-                    isChecked = component.status == 0
+                    isChecked = true
                 }
                 radioGroup.addView(revokeButton)
 
@@ -255,7 +274,7 @@ class UserPermissionsFragment : Fragment() {
                 val readButton = RadioButton(requireContext()).apply {
                     text = "Read"
                     id = generateRadioButtonId(component, "read")
-                    isChecked = component.status == 1 // Example: 1 for read
+                    isChecked = false
                 }
                 radioGroup.addView(readButton)
 
@@ -263,7 +282,7 @@ class UserPermissionsFragment : Fragment() {
                 val writeButton = RadioButton(requireContext()).apply {
                     text = "Write"
                     id = generateRadioButtonId(component, "write")
-                    isChecked = component.status == 2 // Example: 2 for write
+                    isChecked = false
                 }
                 radioGroup.addView(writeButton)
 
@@ -276,9 +295,9 @@ class UserPermissionsFragment : Fragment() {
                     )
                     id = generateDatePickerId(component)
 
-                    spinnersShown = true
-
-                    val today = Calendar.getInstance()
+                    val today = Calendar.getInstance().apply {
+                        add(Calendar.DAY_OF_YEAR, 1) // Add one day to today
+                    }
                     minDate = today.timeInMillis
                 }
 
@@ -294,10 +313,41 @@ class UserPermissionsFragment : Fragment() {
                 permissionLayout.addView(divider)
 
                 // Add the permission layout to the main layout
-                permissionsLayout.addView(permissionLayout)
-
+                componentsLayout.addView(permissionLayout)
             }
-            setupAccessLevelListener(components)
+
+            val radioGroupFullAccess = RadioGroup(requireContext()).apply {
+                orientation = RadioGroup.HORIZONTAL
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                id = "radio_group_full_access".hashCode()
+                visibility = GONE
+            }
+
+            val revokeButtonFullAccess = RadioButton(requireContext()).apply {
+                text = "Revoke"
+                id = "radio_revoke_full_access".hashCode()
+                isChecked = true
+            }
+            radioGroupFullAccess.addView(revokeButtonFullAccess)
+            val readButtonFullAccess = RadioButton(requireContext()).apply {
+                text = "Read"
+                id = "radio_read_full_access".hashCode()
+                isChecked = false
+            }
+            radioGroupFullAccess.addView(readButtonFullAccess)
+            val writeButtonFullAccess = RadioButton(requireContext()).apply {
+                text = "Write"
+                id = "radio_write_full_access".hashCode()
+                isChecked = false
+            }
+            radioGroupFullAccess.addView(writeButtonFullAccess)
+            permissionsLayout.addView(componentsLayout)
+            permissionsLayout.addView(radioGroupFullAccess)
+
+            setupAccessLevelListener()
             binding.btnGrantAccess.setOnClickListener { handleGrantAccessClick() }
         }
     }
@@ -336,69 +386,48 @@ class UserPermissionsFragment : Fragment() {
 
     private fun handleGrantAccessClick() {
         val userIdentifier = binding.etUserIdentifier.text.toString()
-        val selectedVehicle = binding.spinnerVehicleSelection.selectedItem?.toString()?.trim()
+        val selectedVehicle = binding.spinnerVehicleSelection.selectedItemPosition
         val selectedAccessLevel = when (binding.radioGroupAccessLevel.checkedRadioButtonId) {
             R.id.radio_full_access -> "Full Access"
             R.id.radio_custom_access -> "Custom Access"
             else -> null
         }
-        val vin = Regex("\\((\\d+)\\)").find(selectedVehicle.toString())?.groupValues?.get(1).toString()
+        val vin = vinMapping[selectedVehicle]
 
-        if (userIdentifier.isNotEmpty() && selectedVehicle != null && selectedAccessLevel != null) {
-            val grantPermissions = getSelectedPermissions()
-
-            //if (selectedAccessLevel == "Full Access") {
-                // TODO: Call grantfullaccess API (but first when full access radio button is selected, the choices of revoke/read/write and the datepicker should reduce to a single one)
-                // TODO: Design should be refactored (grant access for the whole vehicle components / specific type / specific name)
-            //} else {
+        if (userIdentifier.isNotEmpty() && vin != "" && selectedAccessLevel != null) {
+            if (selectedAccessLevel == "Full Access") {
+                val grantPermission = getSelectedPermission()
+                grantOrRevokeFullAccessToUser(vin, userIdentifier, grantPermission)
+            } else {
+                val grantPermissions = getSelectedPermissions()
                 // TODO: check on user exist and is not owner already and is vin correctly retrieved, etc.
                 grantOrRevokeAccessToUser(vin, userIdentifier, grantPermissions)
-            //}
-            showToast(
-                "Access granted to $userIdentifier for $selectedVehicle with $selectedAccessLevel access: $grantPermissions"
-            )
+            }
         } else {
             showToast("Please fill out all fields")
         }
     }
 
     private fun giveFullAccess() {
-        for(component in components) {
-            val writeRadioButtonId = generateRadioButtonId(component, "write")
-            val writeRadioButton = binding.permissionsLayout.findViewById<RadioButton>(writeRadioButtonId)
-
-            writeRadioButton?.let {
-                it.isChecked = true
-                it.isEnabled = false
-            }
-
-            val readRadioButton = binding.permissionsLayout.findViewById<RadioButton>(generateRadioButtonId(component, "read"))
-            val revokeRadioButton = binding.permissionsLayout.findViewById<RadioButton>(generateRadioButtonId(component, "revoke"))
-            readRadioButton?.let {
-                it.isEnabled = false
-            }
-            revokeRadioButton?.let {
-                it.isEnabled = false
-            }
-        }
+        binding.permissionsLayout.findViewById<RadioGroup>("radio_group_full_access".hashCode()).visibility = VISIBLE
+        binding.permissionsLayout.findViewById<LinearLayout>("ll_grant_access_fragment_components".hashCode()).visibility = GONE
     }
 
     private fun giveCustomAccess() {
-        for(component in components) {
-            val writeRadioButton = binding.permissionsLayout.findViewById<RadioButton>(generateRadioButtonId(component, "write"))
-            val readRadioButton = binding.permissionsLayout.findViewById<RadioButton>(generateRadioButtonId(component, "read"))
-            val revokeRadioButton = binding.permissionsLayout.findViewById<RadioButton>(generateRadioButtonId(component, "revoke"))
+        binding.permissionsLayout.findViewById<RadioGroup>("radio_group_full_access".hashCode()).visibility = GONE
+        binding.permissionsLayout.findViewById<LinearLayout>("ll_grant_access_fragment_components".hashCode()).visibility = VISIBLE
+    }
 
-            writeRadioButton?.let {
-                it.isEnabled = true
-            }
-            readRadioButton?.let {
-                it.isEnabled = true
-            }
-            revokeRadioButton?.let {
-                it.isEnabled = true
-            }
+    private fun getSelectedPermission(): GrantPermissionRequest {
+        val radioGroupFullAccess = binding.permissionsLayout.findViewById<RadioGroup>("radio_group_full_access".hashCode())
+        val permissionType = when (radioGroupFullAccess.checkedRadioButtonId) {
+            "radio_revoke_full_access".hashCode() -> "revoke"
+            "radio_read_full_access".hashCode() -> "read"
+            "radio_write_full_access".hashCode() -> "write"
+            else -> {"revoke"}
         }
+        val validity = "9999-12-31T00:00:00.000Z"
+        return GrantPermissionRequest(permissionType, validity)
     }
 
     private fun getSelectedPermissions(): List<PermissionResponse> {
@@ -450,59 +479,109 @@ class UserPermissionsFragment : Fragment() {
         _binding = null
     }
 
-    // TODO: not finished yet
+    private fun grantOrRevokeFullAccessToUser(vin: String, username: String, grantPermission: GrantPermissionRequest) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val accessToken = withContext(Dispatchers.IO) { jwtTokenDataStore.getAccessJwt() }
+
+                if(accessToken.isNullOrEmpty()) {
+                    showToast("Access token not found")
+                    return@launch
+                }
+
+                val vehicleService = VehicleClient.getApiServiceWithToken(accessToken)
+                val vehicleRepository = VehicleRepository(vehicleService, jwtTokenDataStore)
+
+                val response = if(grantPermission.permission_type == "revoke") {
+                    vehicleRepository.revokeFullAccessToUserForVehicle(vin, username)
+                } else {
+                    vehicleRepository.grantFullAccessToUserForVehicle(vin, username, grantPermission)
+                }
+                when (response) {
+                    is ResultOf.Success -> {
+                        if(response.code == 200) {
+                            resetPermissions()
+                            showToast("Permissions have been updated")
+                        }
+                    }
+                    is ResultOf.Error -> {
+                        val errorMessage = when (response.code) {
+                            400 -> "Invalid request."
+                            403 -> "Unauthorized access."
+                            else -> "Unexpected error: ${response.message}"
+                        }
+                        showToast(errorMessage)
+                        Log.e("VehicleOwnership", errorMessage)
+                    }
+                    ResultOf.Idle -> showToast("Idle state")
+                    ResultOf.Loading -> showToast("Processing...")
+                }
+            } catch (e: Exception) {
+                Log.e("VehicleOwnership", "Error: ${e.message}", e)
+                showToast("Error processing request: ${e.message}")
+            }
+        }
+    }
+
     private fun grantOrRevokeAccessToUser(vin: String, username: String, permissions: List<PermissionResponse>) {
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            try {
-//                val accessToken = withContext(Dispatchers.IO) { jwtTokenDataStore.getAccessJwt() }
-//
-//                if(accessToken.isNullOrEmpty()) {
-//                    showToast("Access token not found")
-//                    return@launch
-//                }
-//
-//                val vehicleService = VehicleClient.getApiServiceWithToken(accessToken)
-//                val vehicleRepository = VehicleRepository(vehicleService, jwtTokenDataStore)
-//
-//                val grantPermissionRequests: List<GrantPermissionRequest> = permissions.map { response ->
-//                    GrantPermissionRequest(
-//                        permission_type = response.permission_type,
-//                        valid_until = response.valid_until
-//                    )
-//                }
-//
-//                for(permission in permissions) {
-//                    val response: ResultOf<GrantedPermissions>
-//
-//                    if(permission.permission_type == "revoke") {
-//                        // TODO: Call revokeaccess API
-//                    } else {
-//                        // TODO: Call grantaccess API
-//                    }
-//                }
-//
-//                when (val response = vehicleRepository.grantFullAccessToUserForVehicle(vin, username, permissions)) {
-//                    is ResultOf.Success -> {
-//                        if(response.code == 200) {
-//                        }
-//                    }
-//                    is ResultOf.Error -> {
-//                        val errorMessage = when (response.code) {
-//                            400 -> "Invalid request."
-//                            403 -> "Unauthorized access."
-//                            404 -> "Vehicle not found."
-//                            else -> "Unexpected error: ${response.message}"
-//                        }
-//                        showToast(errorMessage)
-//                        Log.e("VehicleOwnership", errorMessage)
-//                    }
-//                    ResultOf.Idle -> showToast("Idle state")
-//                    ResultOf.Loading -> showToast("Processing...")
-//                }
-//            } catch (e: Exception) {
-//                Log.e("VehicleOwnership", "Error: ${e.message}", e)
-//                showToast("Error processing request: ${e.message}")
-//            }
-//        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val accessToken = withContext(Dispatchers.IO) { jwtTokenDataStore.getAccessJwt() }
+
+                if(accessToken.isNullOrEmpty()) {
+                    showToast("Access token not found")
+                    return@launch
+                }
+
+                val vehicleService = VehicleClient.getApiServiceWithToken(accessToken)
+                val vehicleRepository = VehicleRepository(vehicleService, jwtTokenDataStore)
+
+                val grantPermissionRequests: List<GrantPermissionRequest> = permissions.map { response ->
+                    GrantPermissionRequest(
+                        permission_type = response.permission_type,
+                        valid_until = response.valid_until
+                    )
+                }
+
+                permissions.forEachIndexed { index, permission ->
+                    val response = if(permission.permission_type == "revoke") {
+                        vehicleRepository.revokeAccessToUserForComponent(vin, username, permission.component_type, permission.component_name)
+                    } else {
+                        vehicleRepository.grantAccessToUserForComponent(vin, username, permission.component_type, permission.component_name, grantPermissionRequests[index])
+                    }
+
+                    when (response) {
+                        is ResultOf.Success -> {
+                            if(response.code == 200) {
+                                resetPermissions()
+                                showToast("Permissions have been updated")
+                            }
+                        }
+                        is ResultOf.Error -> {
+                            val errorMessage = when (response.code) {
+                                400 -> "Invalid request."
+                                403 -> "Unauthorized access."
+                                else -> "Unexpected error: ${response.message}"
+                            }
+                            showToast(errorMessage)
+                            Log.e("VehicleOwnership", errorMessage)
+                        }
+                        ResultOf.Idle -> showToast("Idle state")
+                        ResultOf.Loading -> showToast("Processing...")
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("VehicleOwnership", "Error: ${e.message}", e)
+                showToast("Error processing request: ${e.message}")
+            }
+        }
+    }
+
+    private fun resetPermissions() {
+        binding.etUserIdentifier.text.clear()
+        binding.spinnerVehicleSelection.setSelection(0)
+        binding.permissionsLayout.findViewById<RadioGroup>("radio_group_full_access".hashCode()).check("radio_revoke_full_access".hashCode())
+        binding.radioGroupAccessLevel.check(binding.radioCustomAccess.id)
+        updatePermissionsList()
     }
 }

@@ -17,6 +17,7 @@ class NewPasswordFragment : Fragment() {
 
     private var _binding: FragmentNewPasswordBinding? = null
     private val binding get() = _binding!!
+    private var _bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
 
     private var _bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
 
@@ -28,7 +29,7 @@ class NewPasswordFragment : Fragment() {
 
         // Initialize BottomSheetBehavior
         _bottomSheetBehavior = BottomSheetBehavior.from(binding.llNewPasswordFragmentBottomSheet)
-        _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+        _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
 
         return binding.root
     }

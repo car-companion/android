@@ -8,4 +8,5 @@
     <color name="link">#454955</color>
     <color name="link_color">#1E90FF</color>
     <color name="semi_transparent">#20FFFFFF</color>
+    <color name="error_message">#FF0000</color>
 </resources>

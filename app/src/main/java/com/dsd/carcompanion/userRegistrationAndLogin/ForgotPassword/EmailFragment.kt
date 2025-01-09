@@ -19,15 +19,15 @@ class EmailFragment : Fragment() {
     private val binding get() = _binding!!
     private var _bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
 
+    private var _bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentEmailBinding.inflate(inflater, container, false)
-
-        // Initialize BottomSheetBehavior
         _bottomSheetBehavior = BottomSheetBehavior.from(binding.llEmailFragmentBottomSheet)
-        _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+        _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
 
         return binding.root
     }

@@ -16,6 +16,7 @@ class CodeFragment : Fragment() {
 
     private var _binding: FragmentCodeBinding? = null
     private val binding get() = _binding!!
+    private var _bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
 
     private var _bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
 
@@ -24,10 +25,9 @@ class CodeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCodeBinding.inflate(inflater, container, false)
-
         // Initialize BottomSheetBehavior
         _bottomSheetBehavior = BottomSheetBehavior.from(binding.llCodeFragmentBottomSheet)
-        _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+        _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
 
         return binding.root
     }

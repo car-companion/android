@@ -3,11 +3,28 @@
     <style name="Base.Theme.CarCompanion" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">#3F7D20</item>
+        <item name="colorSecondary">#E6E6E6</item>
+        <item name="colorAccent">#0D0A0B</item>
+        <item name="colorSurface">#E6E6E6</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorOnSecondary">#0D0A0B</item>
+        <item name="colorOnSurface">#454955</item>
+        <item name="colorOnBackground">#454955</item>
+        <item name="android:statusBarColor">#72B01D</item>
+        <item name="android:navigationBarColor">#FFFFFF</item>
     </style>
 
     <style name="Theme.CarCompanion" parent="Base.Theme.CarCompanion" />
 
-    <!-- Custom SpinnerElements Style -->
+    <style name="Theme.Splash" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Use a plain or transparent background -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <!-- Custom Spinner Style -->
     <style name="CustomSpinnerStyle">
         <item name="android:background">@drawable/spinner_element</item>
         <item name="android:dropDownSelector">@android:color/transparent</item>

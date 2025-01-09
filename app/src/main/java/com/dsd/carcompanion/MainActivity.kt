@@ -37,10 +37,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-        setSupportActionBar(binding.toolbar)
+        /*setSupportActionBar(binding.toolbar)
 
         //Will be needed in the next sprint
-        /*val navController = findNavController(R.id.nav_host_fragment_content_main)
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)*/
 //        binding.fab.setOnClickListener {
@@ -61,9 +61,7 @@ class MainActivity : AppCompatActivity() {
                 val accessToken = withContext(Dispatchers.IO) {
                     jwtTokenDataStore.getAccessJwt()
                 }
-                if (!accessToken.isNullOrEmpty()) {
-                    Log.d("MainActivity", "Access JWT Token found")
-                } else {
+                if (accessToken.isNullOrEmpty()) {
                     Log.d("MainActivity", "No Access JWT Token, navigating to UserStartActivity")
                     val intent = Intent(this@MainActivity, UserStartActivity::class.java)
                     startActivity(intent)
@@ -74,18 +72,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return super.onCreateView(name, context, attrs)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 
     //Will be needed in the next sprint

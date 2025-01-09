@@ -1,5 +1,6 @@
 package com.dsd.carcompanion.settings
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.dsd.carcompanion.R
 import com.dsd.carcompanion.databinding.FragmentSettingsBinding
@@ -18,7 +21,7 @@ class SettingsFragment : Fragment() {
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
 
-    private var _bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
+    private var isNightMode = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,24 +40,10 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val imageView = binding.imgBackground
-        ImageHelper.applyBlurToImageView(
-            imageView,
-            context,
-            R.drawable.homescreend,
-            blurRadius = 50f
-        )
+        val nightModeFlags = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        isNightMode =  nightModeFlags == Configuration.UI_MODE_NIGHT_YES
 
-        // Bottom sheet settings
-        _bottomSheetBehavior?.setState(BottomSheetBehavior.STATE_EXPANDED)
-        _bottomSheetBehavior?.isDraggable = false
-        _bottomSheetBehavior?.isHideable = false
-        _bottomSheetBehavior?.peekHeight = 150
-
-        // Expand bottom sheet when draggable guide is tapped
-        binding.llSettingsFragmentBottomSheet.setOnClickListener {
-            _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
-        }
+        binding.switchNightMode.customSwitch.isChecked = isNightMode;
 
         // Setup switch functionality
         setupCustomSwitchNotifications()
@@ -130,13 +119,73 @@ class SettingsFragment : Fragment() {
 
         // App Configuration Button
         binding.btnPrivacyPolicy.setOnClickListener {
-            //TODO: Implement App Configuration functionality in the next sprint
-            Toast.makeText(context, "App Configurations clicked", Toast.LENGTH_SHORT).show()
+            val dialogView = layoutInflater.inflate(R.layout.dialog_privacy_policy, null)
+            showDialog(dialogView)
+        }
+
+        // App Configuration Button
+        binding.btnTermsAndConditions.setOnClickListener {
+            val dialogView = layoutInflater.inflate(R.layout.dialog_terms_and_conditions, null)
+            showDialog(dialogView)
+        }
+
+        // App Configuration Button
+        binding.btnAboutApp.setOnClickListener {
+            Toast.makeText(context, "This is it :). Enjoy the app", Toast.LENGTH_SHORT).show()
+        }
+
+        // Setup switch functionality
+        setupCustomSwitchNotifications()
+        setupCustomSwitchNightMode()
+    }
+
+    // Custom switch handler
+    private fun setupCustomSwitchNotifications() {
+        val customSwitchNotification = binding.switchNotification.customSwitch
+        val switchLabelNotification = binding.switchNotification.tvSwitchLabel
+
+        // Set initial text
+        switchLabelNotification.text = "Enable Notifications"
+
+        customSwitchNotification.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                switchLabelNotification.text = "Notifications Enabled"
+            } else {
+                switchLabelNotification.text = "Notifications Disabled"
+            }
+        }
+    }
+
+    private fun setupCustomSwitchNightMode() {
+        val customSwitchNightMode = binding.switchNightMode.customSwitch
+        val switchLabelNightMode = binding.switchNightMode.tvSwitchLabel
+
+        // Set initial text
+        switchLabelNightMode.text = "Night Mode"
+
+        customSwitchNightMode.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                switchLabelNightMode.text = "Night Mode Enabled"
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                switchLabelNightMode.text = "Night Mode Disabled"
+            }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun showDialog(dialogView: View) {
+        AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setPositiveButton("Close") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
     }
 }
