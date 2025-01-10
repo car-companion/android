@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.SeekBar
 import androidx.fragment.app.Fragment
 import com.dsd.carcompanion.R
 import com.dsd.carcompanion.adapters.VehicleInfoAdapter
@@ -31,6 +32,10 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
     private val binding get() = _binding!!
 
     private var _bottomSheetBehavior: BottomSheetBehavior<View>? = null
+
+    private var areDoorsOpen: Boolean = false
+    private var areWindowsUp: Boolean = true
+    private var areLightsTurnedOff: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -76,22 +81,56 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
         m_qmlView!!.loadContent(m_mainQmlContent)
         Log.d("Home", "After loaded")
 
-        m_qmlView?.connectSignalListener("sliderValueChanged", Double::class.java)
-        { signalName, args ->
-            if (signalName == "sliderValueChanged") {
-                val sliderValue = args as Double
-                Log.d("HomeFragment", "Signal: $signalName, Slider value: $sliderValue")
-            }
-        }
-
         m_qmlView?.setStatusChangeListener { status ->
             Log.d("HomeFragment", status.toString())
             if (status == QtQmlStatus.READY) {
                 Log.d("HomeFragment", "QtQuickView is ready")
-                m_qmlView?.setProperty("sliderValue", 300.toDouble())
+                m_qmlView?.setProperty("sliderValue", ((50 / 100f) * (2 * 360)).toDouble())
+                m_qmlView?.setProperty("rightDoorOpen", areDoorsOpen)
+                m_qmlView?.setProperty("leftDoorOpen", areDoorsOpen)
+                m_qmlView?.setProperty("rightWindowUp", areWindowsUp)
+                m_qmlView?.setProperty("leftWindowUp", areWindowsUp)
+                m_qmlView?.setProperty("lightsOff", areLightsTurnedOff)
+                m_qmlView?.setProperty("runningRotation", true)
                 //m_qmlView?.getProperty<String>("root.view3D.scene.qt_Car_Baked_low_v2.node.testing")
             }
         }
+
+        binding.btnOpenDoors.setOnClickListener {
+            areDoorsOpen = !areDoorsOpen
+            m_qmlView?.setProperty("rightDoorOpen", areDoorsOpen)
+            m_qmlView?.setProperty("leftDoorOpen", areDoorsOpen)
+        }
+
+        binding.btnRollWindows.setOnClickListener {
+            areWindowsUp = !areWindowsUp
+            m_qmlView?.setProperty("rightWindowUp", areWindowsUp)
+            m_qmlView?.setProperty("leftWindowUp", areWindowsUp)
+        }
+
+        binding.btnTurnLights.setOnClickListener {
+            areLightsTurnedOff = !areLightsTurnedOff
+            m_qmlView?.setProperty("lightsOff", areLightsTurnedOff)
+        }
+
+        binding.seekBar.setOnSeekBarChangeListener(
+            object : SeekBar.OnSeekBarChangeListener {
+                // Handle when the progress changes
+                override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
+                    val totalDegrees = 2 * 360
+                    m_qmlView?.setProperty("sliderValue", ((progress / 100f) * totalDegrees).toDouble())
+                    Log.d("OnProgressChange", progress.toString())
+                }
+                // Handle when the user starts tracking touch
+                override fun onStartTrackingTouch(seek: SeekBar) {
+                    m_qmlView?.setProperty("runningRotation", false)
+                }
+
+                // Handle when the user stops tracking touch
+                override fun onStopTrackingTouch(seek: SeekBar) {
+                    m_qmlView?.setProperty("runningRotation", true)
+                }
+            })
 
         _bottomSheetBehavior?.setState(BottomSheetBehavior.STATE_COLLAPSED)
         _bottomSheetBehavior?.isDraggable = true

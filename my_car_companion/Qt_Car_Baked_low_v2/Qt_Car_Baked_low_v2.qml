@@ -9,6 +9,12 @@ Node {
     scale.y: 100
     scale.z: 100
 
+    property bool rightDoorOpen: false
+    property bool leftWindowUp: true
+    property bool rightWindowUp: true
+    property bool leftDoorOpen: false
+    property bool lightsOff: true
+
     // Resources
     property url textureData: "maps/textureData.jpg"
     property url textureData63: "maps/textureData63.jpg"
@@ -25,8 +31,6 @@ Node {
     property url textureData43: "maps/textureData43.jpg"
     property url textureData35: "maps/textureData35.png"
     property url textureData67: "maps/textureData67.jpg"
-
-    property string testing: "Testing"
     Texture {
         id: _2_texture
         generateMipmaps: true
@@ -126,10 +130,7 @@ Node {
     Node {
         id: root
         visible: true
-        property bool leftWindowUp: false
-        property bool rightWidowUp: false
-        property bool leftDoorOpen: false
-        property bool rightDoorOpen: false
+
         objectName: "ROOT"
         Model {
             id: dash_low
@@ -158,34 +159,78 @@ Node {
         }
         Model {
             id: headLights_low
-            visible: true
+            visible: !node.lightsOff
             objectName: "HeadLights_low"
             source: "meshes/headLights_low_mesh.mesh"
             materials: [
                 m_Headlights_material
             ]
+            Behavior on visible {
+                NumberAnimation {
+                    duration: 500
+                    easing.type: Easing.InOutQuad
+                }
+            }
         }
         Model {
             id: doorWindow_b_L_low
             objectName: "DoorWindow_b_L_low"
-            x: -0.6165767908096313
-            y: 0.2809993028640747
+            x: node.leftWindowUp? -0.6165767908096313 : -0.6565767908096313
+            y: node.leftWindowUp? 0.2809993028640747 : 0.1409993028640747
             z: 0.6550559401512146
             source: "meshes/doorWindow_b_L_low_mesh.mesh"
+            eulerRotation.y: node.leftDoorOpen? -74 : 0
             materials: [
                 m_windowGlass_material
             ]
+            Behavior on eulerRotation.y {
+                NumberAnimation {
+                    duration: 500
+                    easing.type: Easing.InOutQuad
+                }
+            }
+            Behavior on x {
+                NumberAnimation {
+                    duration: 500
+                    easing.type: Easing.InOutQuad
+                }
+            }
+            Behavior on y {
+                NumberAnimation {
+                    duration: 500
+                    easing.type: Easing.InOutQuad
+                }
+            }
         }
         Model {
             id: doorWindow_b_R_low
             objectName: "DoorWindow_b_R_low"
-            x: -0.6165767908096313
-            y: 0.2809993028640747
+            x: node.rightWindowUp? -0.6165767908096313 : -0.6565767908096313
+            y: node.rightWindowUp? 0.2809993028640747 : 0.1409993028640747
             z: -0.6550559401512146
             source: "meshes/doorWindow_b_R_low_mesh.mesh"
+            eulerRotation.y: node.rightDoorOpen? 74 : 0
             materials: [
                 m_windowGlass_material
             ]
+            Behavior on eulerRotation.y {
+                NumberAnimation {
+                    duration: 500
+                    easing.type: Easing.InOutQuad
+                }
+            }
+            Behavior on x {
+                NumberAnimation {
+                    duration: 500
+                    easing.type: Easing.InOutQuad
+                }
+            }
+            Behavior on y {
+                NumberAnimation {
+                    duration: 500
+                    easing.type: Easing.InOutQuad
+                }
+            }
         }
         Model {
             id: mainbody_b_Low
@@ -204,12 +249,19 @@ Node {
             y: 0.2809993028640747
             z: 0.6550559401512146
             source: "meshes/door_b_L_Low_mesh.mesh"
+            eulerRotation.y: node.leftDoorOpen? -70 : 0
             materials: [
                 m_CarPaint_material,
                 m_Doors_material,
                 m_DarkPlastic_material,
                 m_Screens_material
             ]
+            Behavior on eulerRotation.y {
+                NumberAnimation {
+                    duration: 500
+                    easing.type: Easing.InOutQuad
+                }
+            }
         }
         Model {
             id: door_b_R_Low
@@ -218,16 +270,21 @@ Node {
             y: 0.2809993028640747
             z: -0.6550559401512146
             source: "meshes/door_b_R_Low_mesh.mesh"
-            eulerRotation.z: 0.00002
-            eulerRotation.y: 0
-            eulerRotation.x: -0.00001
+            eulerRotation.y: node.rightDoorOpen? 70 : 0
             materials: [
                 m_CarPaint_material,
                 m_Doors_material,
                 m_DarkPlastic_material,
                 m_Screens_material
             ]
+            Behavior on eulerRotation.y {
+                NumberAnimation {
+                    duration: 500
+                    easing.type: Easing.InOutQuad
+                }
+            }
         }
+
         Model {
             id: tire_FrontL_low
             objectName: "Tire_FrontL_low"
@@ -343,7 +400,6 @@ Node {
                 m_InteriorFabric_material
             ]
         }
-
     }
 
     Node {
@@ -530,142 +586,5 @@ Node {
         }
     }
 
-    states: [
-        State {
-            name: "rightDoorOpen"
-            when: root.rightDoorOpen
-
-            PropertyChanges {
-                target: doorWindow_b_R_low
-                eulerRotation.y: 70
-            }
-
-            PropertyChanges {
-                target: door_b_R_Low
-                eulerRotation.y: 70
-            }
-        },
-        State {
-            id: _state
-            name: "rightDoorClose"
-            when: !root.rightDoorOpen
-
-            PropertyChanges {
-                target: doorWindow_b_R_low
-                eulerRotation.y: 0
-            }
-
-            PropertyChanges {
-                target: door_b_R_Low
-                eulerRotation.y: 0
-            }
-
-            PropertyChanges {
-                target: root
-                leftWindowUp: false
-                rightDoorOpen: false
-            }
-        },
-        State {
-            name: "leftDoorOpen"
-            when: root.leftDoorOpen
-
-            PropertyChanges {
-                target: door_b_L_Low
-                eulerRotation.y: -70
-            }
-
-            PropertyChanges {
-                target: doorWindow_b_L_low
-                eulerRotation.y: -70
-            }
-
-        },
-        State {
-            name: "leftDoorClose"
-            when: !root.leftDoorOpen
-
-            PropertyChanges {
-                target: door_b_L_Low
-                eulerRotation.y: 0
-            }
-
-            PropertyChanges {
-                target: doorWindow_b_L_low
-                eulerRotation.y: 0
-            }
-        },
-        State {
-            name: "bothDoorOpen"
-            when: root.rightDoorOpen && root.leftDoorOpen
-
-            PropertyChanges {
-                target: door_b_L_Low
-                eulerRotation.y: -70
-            }
-
-            PropertyChanges {
-                target: doorWindow_b_L_low
-                eulerRotation.y: -70
-            }
-
-            PropertyChanges {
-                target: doorWindow_b_R_low
-                eulerRotation.y: 70
-            }
-
-            PropertyChanges {
-                target: door_b_R_Low
-                eulerRotation.y: 70
-            }
-        },
-        State {
-            name: "rightWindowDown"
-            when: root.rightWidowUp
-
-            PropertyChanges {
-                target: doorWindow_b_R_low
-                y: 0.1
-            }
-        },
-        State {
-            name: "leftWindowDown"
-            when: root.leftWindowUp
-
-            PropertyChanges {
-                target: doorWindow_b_L_low
-                y: 0.1
-            }
-        },
-        State {
-            name: "bothWindowDown"
-            when: root.rightWidowUp && root.leftWindowUp
-
-            PropertyChanges {
-                target: doorWindow_b_R_low
-                y: 0.1
-            }
-
-            PropertyChanges {
-                target: doorWindow_b_L_low
-                y: 0.1
-            }
-        },
-        State {
-            name: "lightsOff"
-
-            PropertyChanges {
-                target: headLights_low
-                visible: false
-            }
-        }
-    ]
-
     // Animations:
 }
-
-/*##^##
-Designer {
-    D{i:0;cameraSpeed3d:25;cameraSpeed3dMultiplier:1}
-}
-##^##*/

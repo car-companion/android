@@ -9,10 +9,16 @@ import Qt_Car_Baked_low_v2
 
 Rectangle {
     id: root
-    property bool lightsON: false
     property double sliderValue: 0
-    color: "transparent"
+    property bool rightDoorOpen: false
+    property bool rightWindowUp: true
+    property bool leftWindowUp: true
+    property bool leftDoorOpen: false
+    property bool lightsOff: false
+    width: Constants.width
+    height: 1080
 
+    color: "#00FFFFFF"
 
     View3D {
         id: view3D
@@ -40,23 +46,42 @@ Rectangle {
             Qt_Car_Baked_low_v2 {
                 id: qt_Car_Baked_low_v2
                 visible: true
+                rightWindowUp: root.rightWindowUp
+                rightDoorOpen: root.rightDoorOpen
+                leftWindowUp: root.leftWindowUp
+                leftDoorOpen: root.leftDoorOpen
+                lightsOff: root.lightsOff
                 eulerRotation.y: root.sliderValue
-                scale.z: 400
-                scale.y: 400
-                scale.x: 400
-                eulerRotation.z: 0.00002
-                eulerRotation.x: -0.00003
+                scale: Qt.vector3d(400, 400, 400)
+
+                SequentialAnimation {
+                    running: true
+                    loops: Animation.Infinite
+                    NumberAnimation {
+                        target: qt_Car_Baked_low_v2
+                        property: "eulerRotation.y"
+                        from: 0
+                        to: 360
+                        duration: 120000
+                    }
+                }
             }
 
             PerspectiveCamera {
                 id: sceneCamera
                 x: -1500
                 y: 500
-                eulerRotation.z: 0
-                eulerRotation.y: -111.56232
-                eulerRotation.x: -20.93197
+                eulerRotation.z: -0.49531
+                eulerRotation.y: -110.44622
+                eulerRotation.x: -19.31819
                 z: -500
             }
+        }
+
+        Text {
+            id: _text
+            text: qsTr("Text")
+            font.pixelSize: 12
         }
     }
 
