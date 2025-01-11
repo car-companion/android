@@ -28,6 +28,7 @@ import com.dsd.carcompanion.api.repository.VehicleRepository
 import com.dsd.carcompanion.api.utils.ResultOf
 import com.dsd.carcompanion.databinding.FragmentHomeBinding
 import com.dsd.carcompanion.userRegistrationAndLogin.UserStartActivity
+import com.dsd.carcompanion.utility.ImageHelper
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.flexbox.JustifyContent
@@ -40,6 +41,7 @@ import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.math.log
+
 
 class HomeFragment : Fragment() {
     private lateinit var vehicleInfoAdapter: VehicleInfoAdapter
@@ -59,6 +61,7 @@ class HomeFragment : Fragment() {
         super.onCreateView(inflater, container, savedInstanceState)
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+
         _bottomSheetBehavior = BottomSheetBehavior.from(binding.llHomeFragmentBottomSheet)
         jwtTokenDataStore = JwtTokenDataStore(requireContext()) // Initialize the JwtTokenDataStore
         vehicleInfoAdapter = VehicleInfoAdapter(vehicleInfoList)
@@ -69,10 +72,45 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val imageView = binding.imgBackground
+        ImageHelper.applyBlurToImageView(
+            imageView,
+            context,
+            R.drawable.homescreend,
+            blurRadius = 50f
+        )
+
+//        bottomSheet.post {
+//            ImageHelper.applyBlurToViewBackground(requireContext(), bottomSheet, blurRadius = 25f)
+//        }
+
+        // Bottom sheet settings
         _bottomSheetBehavior?.setState(BottomSheetBehavior.STATE_COLLAPSED)
         _bottomSheetBehavior?.isDraggable = true
         _bottomSheetBehavior?.isHideable = false
-        _bottomSheetBehavior?.peekHeight = 150
+        _bottomSheetBehavior?.peekHeight = 450
+
+        // Expand bottom sheet when draggable guide is tapped
+        binding.llHomeFragmentBottomSheet.setOnClickListener {
+            _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        // Setup switch functionality
+        setupCustomSwitchWindows()
+        setupCustomSwitchLocks()
+        setupCustomSwitchLights()
+
+        // Add toggle button setup
+        setupCustomToggleLocks()
+        setupCustomToggleLights()
+        setupCustomToggleDoorRight()
+        setupCustomToggleDoorLeft()
+
+        //Add sliders setup
+        setupCustomSliderTemperature()
+
+        // Connect the UI components to functions
+        setupListeners()
 
         // Fetch and display components
         viewLifecycleOwner.lifecycleScope.launch {
@@ -391,6 +429,190 @@ class HomeFragment : Fragment() {
             }
         }
     }
+
+    // Custom switch handlers
+    private fun setupCustomSwitchWindows() {
+        val switchLabel = binding.switchWindows.tvSwitchLabel
+        val customSwitch = binding.switchWindows.customSwitch
+        val switchLabelAction = binding.switchWindows.tvSwitchLabelAction
+
+        // Set initial text
+        switchLabel.text = "Windows"
+        switchLabelAction.text = "Closed"  //This will depend on the user profile
+
+        customSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                switchLabelAction.text = "Open"
+            } else {
+                switchLabelAction.text = "Closed"
+            }
+        }
+    }
+
+    private fun setupCustomSwitchLights() {
+        val switchLabel = binding.switchLights.tvSwitchLabel
+        val customSwitch = binding.switchLights.customSwitch
+        val switchLabelAction = binding.switchLights.tvSwitchLabelAction
+
+        // Set initial text
+        switchLabel.text = "Lights"
+        switchLabelAction.text = "Off"  //This will depend on the user profile
+
+        customSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                switchLabelAction.text = "On"
+            } else {
+                switchLabelAction.text = "Off"
+            }
+        }
+    }
+
+    private fun setupCustomSwitchLocks() {
+        val switchLabel = binding.switchVehicle.tvSwitchLabel
+        val customSwitch = binding.switchVehicle.customSwitch
+        val switchLabelAction = binding.switchVehicle.tvSwitchLabelAction
+
+        // Set initial text
+        switchLabel.text = "Vehicle"
+        switchLabelAction.text = "Unlocked"   //This will depend on the user profile
+
+        customSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                switchLabelAction.text = "Unlocked"
+            } else {
+                switchLabelAction.text = "Locked"
+            }
+        }
+    }
+
+    private fun setupListeners() {
+        // User Notifications Button
+        binding.switchWindows.customSwitch.setOnClickListener {
+            //TODO: Implement User Settings functionality in the next sprint
+            Toast.makeText(context, "Windows state", Toast.LENGTH_SHORT).show()
+        }
+
+        binding.switchVehicle.customSwitch.setOnClickListener {
+            //TODO: Implement User Settings functionality in the next sprint
+            Toast.makeText(context, "Vehicle state", Toast.LENGTH_SHORT).show()
+        }
+
+        binding.switchLights.customSwitch.setOnClickListener {
+            //TODO: Implement User Settings functionality in the next sprint
+            Toast.makeText(context, "Lights state", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun setupCustomToggleLocks() {
+        val toggleButton = binding.toggleLocks
+
+        // Set initial state
+        toggleButton.setToggleIcon(R.drawable.lock) // Set your custom icon here
+        toggleButton.isToggled = false // Default state
+
+        // Set a click listener to handle toggle state changes
+        toggleButton.setOnClickListener {
+            toggleButton.isToggled = !toggleButton.isToggled
+            if (toggleButton.isToggled) {
+                Toast.makeText(context, "Mode toggled ON", Toast.LENGTH_SHORT).show()
+                // Perform actions for ON state
+            } else {
+                Toast.makeText(context, "Mode toggled OFF", Toast.LENGTH_SHORT).show()
+                // Perform actions for OFF state
+            }
+        }
+    }
+
+    private fun setupCustomToggleLights() {
+        val toggleButton = binding.toggleLights
+
+        // Set initial state
+        toggleButton.setToggleIcon(R.drawable.light) // Set your custom icon here
+        toggleButton.isToggled = false // Default state
+
+        // Set a click listener to handle toggle state changes
+        toggleButton.setOnClickListener {
+            toggleButton.isToggled = !toggleButton.isToggled
+            if (toggleButton.isToggled) {
+                Toast.makeText(context, "Mode toggled ON", Toast.LENGTH_SHORT).show()
+                // Perform actions for ON state
+            } else {
+                Toast.makeText(context, "Mode toggled OFF", Toast.LENGTH_SHORT).show()
+                // Perform actions for OFF state
+            }
+        }
+    }
+
+    private fun setupCustomToggleDoorRight() {
+        val toggleButton = binding.toggleDoorRight
+
+        // Set initial state
+        toggleButton.setToggleIcon(R.drawable.door) // Set your custom icon here
+        toggleButton.isToggled = false // Default state
+
+        // Set a click listener to handle toggle state changes
+        toggleButton.setOnClickListener {
+            toggleButton.isToggled = !toggleButton.isToggled
+            if (toggleButton.isToggled) {
+                Toast.makeText(context, "Mode toggled ON", Toast.LENGTH_SHORT).show()
+                // Perform actions for ON state
+            } else {
+                Toast.makeText(context, "Mode toggled OFF", Toast.LENGTH_SHORT).show()
+                // Perform actions for OFF state
+            }
+        }
+    }
+
+    private fun setupCustomToggleDoorLeft() {
+        val toggleButton = binding.toggleDoorLeft
+
+        // Set initial state
+        toggleButton.setToggleIcon(R.drawable.doorr) // Set your custom icon here
+        toggleButton.isToggled = false // Default state
+
+        // Set a click listener to handle toggle state changes
+        toggleButton.setOnClickListener {
+            toggleButton.isToggled = !toggleButton.isToggled
+            if (toggleButton.isToggled) {
+                Toast.makeText(context, "Mode toggled ON", Toast.LENGTH_SHORT).show()
+                // Perform actions for ON state
+            } else {
+                Toast.makeText(context, "Mode toggled OFF", Toast.LENGTH_SHORT).show()
+                // Perform actions for OFF state
+            }
+        }
+    }
+
+    private fun setupCustomSliderTemperature() {
+        // Initialize UI components
+        val sliderTitle = binding.sliderTemperature.tvSliderTitle
+        val customSlider = binding.sliderTemperature.customSlider
+        val sliderInfoLabel = binding.sliderTemperature.tvSliderInfo
+
+        // Set the title text using a string resource
+        sliderTitle.text = getString(R.string.home_temperature)
+
+        // Set the initial value for slider info and slider
+        val initialTemperature = 25 // Adjust this based on your desired initial value
+        sliderInfoLabel.text = getString(R.string.temperature_label, initialTemperature)
+
+        // Set the slider custom range
+        customSlider.valueFrom = 0f
+        customSlider.valueTo = 100f
+        customSlider.stepSize = 1f
+
+        customSlider.value = initialTemperature.toFloat()
+
+        // Disable the value label on the thumb
+        customSlider.setLabelFormatter(null)
+
+        // Attach a listener to update the info label dynamically
+        customSlider.addOnChangeListener { slider, value, fromUser ->
+            Log.d("Slider", "Value: $value")
+            sliderInfoLabel.text = getString(R.string.temperature_label, value.toInt())
+        }
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

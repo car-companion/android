@@ -37,7 +37,7 @@ class WelcomeScreen : AppCompatActivity() {
 
         // Apply image effects
         val imageView = binding.imgBackground
-        ImageHelper.applyBlurAndColorFilterToImageView(
+        ImageHelper.applyBlurToImageView(
             imageView,
             this,
             R.drawable.background_colors

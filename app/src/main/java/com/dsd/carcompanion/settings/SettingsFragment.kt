@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
@@ -30,85 +31,112 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Determine the current night mode
         val nightModeFlags = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        isNightMode =  nightModeFlags == Configuration.UI_MODE_NIGHT_YES
+        isNightMode = nightModeFlags == Configuration.UI_MODE_NIGHT_YES
 
-        binding.switchNightMode.customSwitch.isChecked = isNightMode;
+        // Set initial state of night mode switch
+        binding.switchNightMode.customSwitch.isChecked = isNightMode
 
-        // Connect the UI components to functions
+        // Initialize UI components
+        setupCustomSwitchNotifications()
+        setupCustomSwitchNightMode()
         setupListeners()
     }
 
+    // Initialize notification switch functionality
+    private fun setupCustomSwitchNotifications() {
+        val switchLabel = binding.switchNotification.tvSwitchLabel
+        val customSwitch = binding.switchNotification.customSwitch
+        val switchLabelAction = binding.switchNotification.tvSwitchLabelAction
+
+        // Set title if available
+        val titleTextView: TextView = binding.switchNotification.tvSwitchTitle
+        val titleText: String? = getString(R.string.user_settings)
+
+        if (!titleText.isNullOrEmpty()) {
+            titleTextView.text = titleText
+            titleTextView.visibility = View.VISIBLE
+        } else {
+            titleTextView.visibility = View.GONE
+        }
+
+        // Set initial label text
+        switchLabel.text = getString(R.string.notifications)
+        switchLabelAction.text = getString(R.string.disabled)
+
+        // Handle switch toggle
+        customSwitch.setOnCheckedChangeListener { _, isChecked ->
+            switchLabelAction.text = if (isChecked) {
+                getString(R.string.enabled)
+            } else {
+                getString(R.string.disabled)
+            }
+        }
+    }
+
+    // Initialize night mode switch functionality
+    private fun setupCustomSwitchNightMode() {
+        val switchLabel = binding.switchNightMode.tvSwitchLabel
+        val customSwitch = binding.switchNightMode.customSwitch
+
+        // Set label text
+        switchLabel.text = getString(R.string.night_mode)
+
+        // Handle switch toggle
+        customSwitch.setOnCheckedChangeListener { _, isChecked ->
+            AppCompatDelegate.setDefaultNightMode(
+                if (isChecked) AppCompatDelegate.MODE_NIGHT_YES
+                else AppCompatDelegate.MODE_NIGHT_NO
+            )
+
+            Toast.makeText(
+                context,
+                if (isChecked) getString(R.string.night_mode_enabled)
+                else getString(R.string.night_mode_disabled),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    // Setup general listeners for UI components
     private fun setupListeners() {
-        // App Configuration Button
+        // User notifications button
+        binding.switchNotification.customSwitch.setOnClickListener {
+            Toast.makeText(context, getString(R.string.user_settings_clicked), Toast.LENGTH_SHORT).show()
+        }
+
+        // Privacy policy button
         binding.btnPrivacyPolicy.setOnClickListener {
             val dialogView = layoutInflater.inflate(R.layout.dialog_privacy_policy, null)
             showDialog(dialogView)
         }
 
-        // App Configuration Button
+        // Terms and conditions button
         binding.btnTermsAndConditions.setOnClickListener {
             val dialogView = layoutInflater.inflate(R.layout.dialog_terms_and_conditions, null)
             showDialog(dialogView)
         }
 
-        // App Configuration Button
+        // About app button
         binding.btnAboutApp.setOnClickListener {
-            Toast.makeText(context, "This is it :). Enjoy the app", Toast.LENGTH_SHORT).show()
-        }
-
-        // Setup switch functionality
-        setupCustomSwitchNotifications()
-        setupCustomSwitchNightMode()
-    }
-
-    // Custom switch handler
-    private fun setupCustomSwitchNotifications() {
-        val customSwitchNotification = binding.switchNotification.customSwitch
-        val switchLabelNotification = binding.switchNotification.tvSwitchLabel
-
-        // Set initial text
-        switchLabelNotification.text = "Enable Notifications"
-
-        customSwitchNotification.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                switchLabelNotification.text = "Notifications Enabled"
-            } else {
-                switchLabelNotification.text = "Notifications Disabled"
-            }
+            Toast.makeText(context, getString(R.string.about_app_message), Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun setupCustomSwitchNightMode() {
-        val customSwitchNightMode = binding.switchNightMode.customSwitch
-        val switchLabelNightMode = binding.switchNightMode.tvSwitchLabel
-
-        // Set initial text
-        switchLabelNightMode.text = "Night Mode"
-
-        customSwitchNightMode.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                switchLabelNightMode.text = "Night Mode Enabled"
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                switchLabelNightMode.text = "Night Mode Disabled"
+    // Show a dialog with the provided view
+    private fun showDialog(dialogView: View) {
+        AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setPositiveButton(getString(R.string.close)) { dialog, _ ->
+                dialog.dismiss()
             }
-        }
+            .create()
+            .show()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun showDialog(dialogView: View) {
-        AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .setPositiveButton("Close") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .create()
-            .show()
     }
 }
