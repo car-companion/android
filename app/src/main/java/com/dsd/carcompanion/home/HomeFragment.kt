@@ -36,6 +36,7 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
     private var areDoorsOpen: Boolean = false
     private var areWindowsUp: Boolean = true
     private var areLightsTurnedOff: Boolean = false
+    private var isCarDriving: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -85,13 +86,12 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
             Log.d("HomeFragment", status.toString())
             if (status == QtQmlStatus.READY) {
                 Log.d("HomeFragment", "QtQuickView is ready")
-                m_qmlView?.setProperty("sliderValue", ((50 / 100f) * (2 * 360)).toDouble())
                 m_qmlView?.setProperty("rightDoorOpen", areDoorsOpen)
                 m_qmlView?.setProperty("leftDoorOpen", areDoorsOpen)
                 m_qmlView?.setProperty("rightWindowUp", areWindowsUp)
                 m_qmlView?.setProperty("leftWindowUp", areWindowsUp)
                 m_qmlView?.setProperty("lightsOff", areLightsTurnedOff)
-                m_qmlView?.setProperty("runningRotation", true)
+                m_qmlView?.setProperty("areTiresTurning", isCarDriving)
                 //m_qmlView?.getProperty<String>("root.view3D.scene.qt_Car_Baked_low_v2.node.testing")
             }
         }
@@ -113,24 +113,10 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
             m_qmlView?.setProperty("lightsOff", areLightsTurnedOff)
         }
 
-        binding.seekBar.setOnSeekBarChangeListener(
-            object : SeekBar.OnSeekBarChangeListener {
-                // Handle when the progress changes
-                override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
-                    val totalDegrees = 2 * 360
-                    m_qmlView?.setProperty("sliderValue", ((progress / 100f) * totalDegrees).toDouble())
-                    Log.d("OnProgressChange", progress.toString())
-                }
-                // Handle when the user starts tracking touch
-                override fun onStartTrackingTouch(seek: SeekBar) {
-                    m_qmlView?.setProperty("runningRotation", false)
-                }
-
-                // Handle when the user stops tracking touch
-                override fun onStopTrackingTouch(seek: SeekBar) {
-                    m_qmlView?.setProperty("runningRotation", true)
-                }
-            })
+        binding.btnTiresTurinig.setOnClickListener {
+            isCarDriving = !isCarDriving
+            m_qmlView?.setProperty("areTiresTurning", isCarDriving)
+        }
 
         _bottomSheetBehavior?.setState(BottomSheetBehavior.STATE_COLLAPSED)
         _bottomSheetBehavior?.isDraggable = true

@@ -5,15 +5,16 @@ import QtQuick.Controls 6.7
 
 Node {
     id: node
-    scale.x: 100
-    scale.y: 100
-    scale.z: 100
+    scale.x: 500
+    scale.y: 500
+    scale.z: 500
 
     property bool rightDoorOpen: false
     property bool leftWindowUp: true
     property bool rightWindowUp: true
     property bool leftDoorOpen: false
     property bool lightsOff: true
+    property bool areTiresTurning: false
 
     // Resources
     property url textureData: "maps/textureData.jpg"
@@ -297,6 +298,26 @@ Node {
                 m_ShinyMetal_material,
                 m_CarPaint_material
             ]
+            NumberAnimation on eulerRotation.z {
+                from: 2160
+                to: 0
+                duration: 3000
+                easing.type: Easing.Linear
+            }
+            NumberAnimation on eulerRotation.y {
+                from: 40
+                to: 0
+                duration: 3000
+                easing.type: Easing.Linear
+            }
+            NumberAnimation on eulerRotation.z {
+                from: 2160
+                to: 0
+                duration: 3000
+                easing.type: Easing.Linear
+                loops: Animation.Infinite
+                running: node.areTiresTurning
+            }
         }
         Model {
             id: backL_Tire_b_low
@@ -310,6 +331,20 @@ Node {
                 m_ShinyMetal_material,
                 m_CarPaint_material
             ]
+            NumberAnimation on eulerRotation.z {
+                from: 2160
+                to: 0
+                duration: 3000
+                easing.type: Easing.Linear
+            }
+            NumberAnimation on eulerRotation.z {
+                from: 2160
+                to: 0
+                duration: 3000
+                easing.type: Easing.Linear
+                loops: Animation.Infinite
+                running: node.areTiresTurning
+            }
         }
         Model {
             id: frontR_Tire_b_Low
@@ -324,6 +359,21 @@ Node {
                 m_ShinyMetal_material,
                 m_CarPaint_material
             ]
+            NumberAnimation on eulerRotation.z {
+                from: 2160
+                to: 0
+                duration: 3000
+                easing.type: Easing.Linear
+            }
+
+            NumberAnimation on eulerRotation.z {
+                from: 2160
+                to: 0
+                duration: 3000
+                easing.type: Easing.Linear
+                loops: Animation.Infinite
+                running: node.areTiresTurning
+            }
         }
         Model {
             id: backR_Tire_b_Low
@@ -338,6 +388,21 @@ Node {
                 m_ShinyMetal_material,
                 m_CarPaint_material
             ]
+            NumberAnimation on eulerRotation.z {
+                from: 2160
+                to: 0
+                duration: 3000
+                easing.type: Easing.Linear
+            }
+
+            NumberAnimation on eulerRotation.z {
+                from: 2160
+                to: 0
+                duration: 3000
+                easing.type: Easing.Linear
+                loops: Animation.Infinite
+                running: node.areTiresTurning
+            }
         }
         Model {
             id: seat_front_low

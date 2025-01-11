@@ -5,20 +5,39 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick3D
 import QtQuick3D.Effects
+import QtQuick3D.Helpers
+import QtQuick3D.Particles3D 6.7
 import Qt_Car_Baked_low_v2
 
 Rectangle {
     id: root
-    property double sliderValue: 0
     property bool rightDoorOpen: false
     property bool rightWindowUp: true
     property bool leftWindowUp: true
     property bool leftDoorOpen: false
     property bool lightsOff: false
-    width: Constants.width
-    height: 1080
-
+    property bool runningRotation: true
+    property bool areTiresTurning: false
     color: "#00FFFFFF"
+
+    MouseArea {
+        anchors.fill: parent
+        onPressed: {
+            parent.runningRotation = false
+        }
+        onReleased: {
+            parent.runningRotation = true
+        }
+
+
+        OrbitCameraController {
+            anchors.fill: parent
+            origin: qt_Car_Baked_low_v2
+            camera: sceneCamera
+            xInvert: true
+            ySpeed: 0
+        }
+    }
 
     View3D {
         id: view3D
@@ -51,37 +70,131 @@ Rectangle {
                 leftWindowUp: root.leftWindowUp
                 leftDoorOpen: root.leftDoorOpen
                 lightsOff: root.lightsOff
-                eulerRotation.y: root.sliderValue
-                scale: Qt.vector3d(400, 400, 400)
+                areTiresTurning: root.areTiresTurning
 
-                SequentialAnimation {
-                    running: true
-                    loops: Animation.Infinite
+                x: 1000
+                y: 0
+                z: 3000
+
+                ParallelAnimation {
+                    id: driveInAnimation // Give the animation an ID
+                    NumberAnimation {
+                        target: qt_Car_Baked_low_v2
+                        property: "x"
+                        from: 1000
+                        to: 0
+                        duration: 5000
+                        easing.type: Easing.InOutQuad
+                    }
+                    NumberAnimation {
+                        target: qt_Car_Baked_low_v2
+                        property: "z"
+                        from: 3000
+                        to: 0
+                        duration: 3000
+                        easing.type: Easing.InOutQuad
+                    }
                     NumberAnimation {
                         target: qt_Car_Baked_low_v2
                         property: "eulerRotation.y"
-                        from: 0
-                        to: 360
-                        duration: 120000
+                        from: -90
+                        to: 20
+                        duration: 5000
+                        easing.type: Easing.InOutQuad
                     }
+                }
+
+                Component.onCompleted: {
+                    driveInAnimation.start(); // Start the animation explicitly
                 }
             }
 
             PerspectiveCamera {
                 id: sceneCamera
-                x: -1500
+                x: -1800
                 y: 500
-                eulerRotation.z: -0.49531
-                eulerRotation.y: -110.44622
-                eulerRotation.x: -19.31819
-                z: -500
+                fieldOfViewOrientation: PerspectiveCamera.Vertical
+                fieldOfView: 50
+                clipNear: 10
+                scale.x: 1
+                scale.y: 1
+                eulerRotation.z: 0
+                eulerRotation.y: -90
+                eulerRotation.x: -10
+                z: 0
+            }
+
+            Model {
+                id: plane
+                x: 0
+                y: 0
+                z: 0
+                source: "#Rectangle"
+                scale.z: 1
+                scale.y: 60
+                scale.x: 40
+                eulerRotation.x: -90
+                materials: defaultMaterial
             }
         }
 
-        Text {
-            id: _text
-            text: qsTr("Text")
-            font.pixelSize: 12
+        ParticleSystem3D {
+            id: snow
+            x: 0
+            y: 0
+            visible: true
+            ParticleEmitter3D {
+                id: snowEmitter
+                velocity: snowDirection
+                shape: snowShape
+                particleScaleVariation: 1
+                particleScale: 2
+                particle: snowParticle
+                lifeSpan: 4000
+                emitRate: 500
+                VectorDirection3D {
+                    id: snowDirection
+                    direction.z: 0
+                    direction.y: -100
+                }
+
+                SpriteParticle3D {
+                    id: snowParticle
+                    color: "#dcdcdc"
+                    sprite: snowTexture
+                    particleScale: 5
+                    maxAmount: 100001
+                    Texture {
+                        id: snowTexture
+                        source: "snowflake.png"
+                    }
+                    billboard: true
+                }
+            }
+
+            ParticleShape3D {
+                id: snowShape
+                type: ParticleShape3D.Cube
+                fill: true
+                extents.z: 1000
+                extents.y: 1000
+                extents.x: 1000
+            }
+
+            Wander3D {
+                id: wander
+                uniquePaceVariation: 0.2
+                uniquePace.z: 0.03
+                uniquePace.y: 0.01
+                uniquePace.x: 0.03
+                uniqueAmountVariation: 0.1
+                uniqueAmount.z: 50
+                uniqueAmount.y: 20
+                uniqueAmount.x: 50
+                particles: snowParticle
+                globalPace.x: 0.01
+                globalAmount.x: -500
+            }
         }
     }
 
@@ -90,7 +203,7 @@ Rectangle {
         PrincipledMaterial {
             id: defaultMaterial
             objectName: "Default Material"
-            baseColor: "#4aee45"
+            baseColor: "#9b9b9b"
         }
     }
 }
