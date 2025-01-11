@@ -21,7 +21,6 @@
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:textStyle="normal"
-            android:textColor="@color/main_gray"
             android:textAlignment="viewStart" />
 
         <!-- Info Label -->
@@ -31,8 +30,7 @@
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:textStyle="normal"
-            android:textAlignment="viewEnd"
-            android:textColor="@color/main_gray" />
+            android:textAlignment="viewEnd" />
     </com.google.android.flexbox.FlexboxLayout>
 
     <!-- Custom Slider -->

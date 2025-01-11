@@ -5,7 +5,7 @@
         <shape>
             <solid android:color="#26000000"/> <!-- Semi-transparent black for the shadow -->
             <corners android:topLeftRadius="35dp" android:topRightRadius="35dp"/>
-            <size android:height="20dp" /> <!-- The shadow height -->
+            <size android:height="10dp" /> <!-- The shadow height -->
         </shape>
     </item>
 
