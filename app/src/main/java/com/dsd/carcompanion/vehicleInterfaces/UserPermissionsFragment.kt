@@ -1,7 +1,9 @@
 package com.dsd.carcompanion.vehicleInterfaces
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -80,6 +82,9 @@ class UserPermissionsFragment : Fragment() {
             _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
+        binding.radioFullAccess.isEnabled = false
+        binding.radioCustomAccess.isEnabled = false
+
         // Fetch and display vehicles
         viewLifecycleOwner.lifecycleScope.launch {
             try {
@@ -119,7 +124,9 @@ class UserPermissionsFragment : Fragment() {
                     val vehicleInfo = vehicles.joinToString("\n") { vehicle ->
                         "Nickname: ${vehicle.user_preferences ?: "N/A"}, VIN: ${vehicle.vin}"
                     }
-//                    binding.tvShowApiResponse.text = vehicleInfo
+
+                    //binding.tvShowApiResponse.text = vehicleInfo
+
                     updateVehicleSpinner(vehicles,accessToken)
                 }
                 is ResultOf.Error -> {
@@ -161,7 +168,12 @@ class UserPermissionsFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if (position == 0) {
                     // Default option selected
-//                    binding.tvShowApiResponse.text = getString(R.string.no_vehicle_selected)
+                    binding.tvShowApiResponse.visibility = VISIBLE
+                    binding.permissionsLayout.removeAllViews()
+                    binding.radioGroupAccessLevel.clearCheck()
+                    binding.radioFullAccess.isEnabled = false
+                    binding.radioCustomAccess.isEnabled = false
+
                 } else if (vehicles.isNotEmpty() && position in 1 until vinMapping.size) {
                     val selectedVIN = vinMapping[position]
                     fetchComponentsForVIN(selectedVIN, accessToken)
@@ -190,6 +202,7 @@ class UserPermissionsFragment : Fragment() {
 
                 when (response) {
                     is ResultOf.Success -> {
+                        binding.tvShowApiResponse.visibility = GONE
                         val fetchedComponents = response.data as? List<ComponentResponse>
                         if (fetchedComponents != null) {
                             components = fetchedComponents
@@ -346,6 +359,9 @@ class UserPermissionsFragment : Fragment() {
             permissionsLayout.addView(componentsLayout)
             permissionsLayout.addView(radioGroupFullAccess)
 
+            binding.radioFullAccess.isEnabled = true
+            binding.radioCustomAccess.isEnabled = true
+            binding.radioCustomAccess.isChecked = true
             setupAccessLevelListener()
             binding.btnGrantAccess.setOnClickListener { handleGrantAccessClick() }
         }
@@ -399,7 +415,7 @@ class UserPermissionsFragment : Fragment() {
                 grantOrRevokeFullAccessToUser(vin, userIdentifier, grantPermission)
             } else {
                 val grantPermissions = getSelectedPermissions()
-                // TODO: check on user exist and is not owner already and is vin correctly retrieved, etc.
+                // TODO: check on user exist and is not owner already, etc.
                 grantOrRevokeAccessToUser(vin, userIdentifier, grantPermissions)
             }
         } else {
@@ -552,7 +568,6 @@ class UserPermissionsFragment : Fragment() {
                     when (response) {
                         is ResultOf.Success -> {
                             if(response.code == 200) {
-                                resetPermissions()
                                 showToast("Permissions have been updated")
                             }
                         }
@@ -569,6 +584,7 @@ class UserPermissionsFragment : Fragment() {
                         ResultOf.Loading -> showToast("Processing...")
                     }
                 }
+                resetPermissions()
             } catch (e: Exception) {
                 Log.e("VehicleOwnership", "Error: ${e.message}", e)
                 showToast("Error processing request: ${e.message}")
@@ -579,8 +595,11 @@ class UserPermissionsFragment : Fragment() {
     private fun resetPermissions() {
         binding.etUserIdentifier.text.clear()
         binding.spinnerVehicleSelection.setSelection(0)
+        binding.tvShowApiResponse.visibility = VISIBLE
         binding.permissionsLayout.findViewById<RadioGroup>("radio_group_full_access".hashCode()).check("radio_revoke_full_access".hashCode())
-        binding.radioGroupAccessLevel.check(binding.radioCustomAccess.id)
-        updatePermissionsList()
+        binding.radioGroupAccessLevel.clearCheck()
+        binding.radioFullAccess.isEnabled = false
+        binding.radioCustomAccess.isEnabled = false
+        binding.permissionsLayout.removeAllViews()
     }
 }

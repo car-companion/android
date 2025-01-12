@@ -35,7 +35,6 @@
             android:scrollbars="vertical"
             android:overScrollMode="ifContentScrolls"
             android:textSize="16sp"
-            android:textColor="@android:color/black"
             android:text="@string/settings_text_privacy_policy"  />
     </LinearLayout>
 </ScrollView>

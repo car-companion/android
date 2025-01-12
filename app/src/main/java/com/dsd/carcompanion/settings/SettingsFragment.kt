@@ -2,6 +2,7 @@ package com.dsd.carcompanion.settings
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.TypedValue
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -36,8 +37,7 @@ class SettingsFragment : Fragment() {
         val nightModeFlags = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         isNightMode = nightModeFlags == Configuration.UI_MODE_NIGHT_YES
 
-        // Set initial state of night mode switch
-        binding.switchNightMode.customSwitch.isChecked = isNightMode
+        binding.customSwitchNightMode.isChecked = isNightMode
 
         // Initialize UI components
         setupCustomSwitchNotifications()
@@ -47,19 +47,8 @@ class SettingsFragment : Fragment() {
 
     // Initialize notification switch functionality
     private fun setupCustomSwitchNotifications() {
-        val switchLabel = binding.switchNotification.tvSwitchLabel
-        val customSwitch = binding.switchNotification.customSwitch
-
-        // Set title if available
-        val titleTextView: TextView = binding.switchNotification.tvSwitchTitle
-        val titleText: String? = getString(R.string.user_settings)
-
-        if (!titleText.isNullOrEmpty()) {
-            titleTextView.text = titleText
-            titleTextView.visibility = View.VISIBLE
-        } else {
-            titleTextView.visibility = View.GONE
-        }
+        val customSwitchNotification = binding.customSwitchNotification
+        val switchLabelNotification = binding.tvSwitchLabelNotification
 
         // Set initial label text
         switchLabel.text = getString(R.string.notifications)
@@ -76,8 +65,8 @@ class SettingsFragment : Fragment() {
 
     // Initialize night mode switch functionality
     private fun setupCustomSwitchNightMode() {
-        val switchLabel = binding.switchNightMode.tvSwitchLabel
-        val customSwitch = binding.switchNightMode.customSwitch
+        val switchLabel = binding.customSwitchNightMode
+        val customSwitch = binding.tvSwitchLabelNightMode
 
         // Set label text
         switchLabel.text = getString(R.string.night_mode)
@@ -105,6 +94,16 @@ class SettingsFragment : Fragment() {
             Toast.makeText(context, getString(R.string.user_settings_clicked), Toast.LENGTH_SHORT).show()
         }
 
+        customSwitchNightMode.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                switchLabelNightMode.text = "Night Mode Enabled"
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                switchLabelNightMode.text = "Night Mode Disabled"
+            }
+        }
+        
         // Privacy policy button
         binding.btnPrivacyPolicy.setOnClickListener {
             val dialogView = layoutInflater.inflate(R.layout.dialog_privacy_policy, null)
@@ -125,7 +124,7 @@ class SettingsFragment : Fragment() {
 
     // Show a dialog with the provided view
     private fun showDialog(dialogView: View) {
-        AlertDialog.Builder(requireContext())
+        val dialog = AlertDialog.Builder(requireContext())
             .setView(dialogView)
             .setPositiveButton(getString(R.string.close)) { dialog, _ ->
                 dialog.dismiss()
