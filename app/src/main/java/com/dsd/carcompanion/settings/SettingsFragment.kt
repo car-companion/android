@@ -2,6 +2,7 @@ package com.dsd.carcompanion.settings
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +34,7 @@ class SettingsFragment : Fragment() {
         val nightModeFlags = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         isNightMode =  nightModeFlags == Configuration.UI_MODE_NIGHT_YES
 
-        binding.switchNightMode.customSwitch.isChecked = isNightMode;
+        binding.customSwitchNightMode.isChecked = isNightMode
 
         // Connect the UI components to functions
         setupListeners()
@@ -64,8 +65,8 @@ class SettingsFragment : Fragment() {
 
     // Custom switch handler
     private fun setupCustomSwitchNotifications() {
-        val customSwitchNotification = binding.switchNotification.customSwitch
-        val switchLabelNotification = binding.switchNotification.tvSwitchLabel
+        val customSwitchNotification = binding.customSwitchNotification
+        val switchLabelNotification = binding.tvSwitchLabelNotification
 
         // Set initial text
         switchLabelNotification.text = "Enable Notifications"
@@ -80,18 +81,18 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setupCustomSwitchNightMode() {
-        val customSwitchNightMode = binding.switchNightMode.customSwitch
-        val switchLabelNightMode = binding.switchNightMode.tvSwitchLabel
+        val customSwitchNightMode = binding.customSwitchNightMode
+        val switchLabelNightMode = binding.tvSwitchLabelNightMode
 
         // Set initial text
         switchLabelNightMode.text = "Night Mode"
 
         customSwitchNightMode.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 switchLabelNightMode.text = "Night Mode Enabled"
             } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 switchLabelNightMode.text = "Night Mode Disabled"
             }
         }
@@ -103,7 +104,7 @@ class SettingsFragment : Fragment() {
     }
 
     private fun showDialog(dialogView: View) {
-        AlertDialog.Builder(requireContext())
+        val dialog = AlertDialog.Builder(requireContext())
             .setView(dialogView)
             .setPositiveButton("Close") { dialog, _ ->
                 dialog.dismiss()

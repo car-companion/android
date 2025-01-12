@@ -60,9 +60,32 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_user_settings" />
 
-            <include
+            <LinearLayout
                 android:id="@+id/switch_notification"
-                layout="@layout/custom_switch" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <!-- Text Label -->
+                <TextView
+                    android:id="@+id/tv_switch_label_notification"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/default_switch_label"
+                    android:textSize="16sp" />
+
+                <!-- Custom Switch -->
+                <Switch
+                    android:id="@+id/custom_switch_notification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/switch_thumb"
+                    android:track="@drawable/switch_track"
+                    app:thumbTextPadding="4dp" />
+            </LinearLayout>
 
             <!-- Night Mode Section -->
             <TextView
@@ -75,9 +98,34 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/switch_notification" />
 
-            <include
+            <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/switch_night_mode"
-                layout="@layout/custom_switch"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <!-- Text Label -->
+                <TextView
+                    android:id="@+id/tv_switch_label_night_mode"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/default_switch_label"
+                    android:textSize="16sp" />
+
+                <!-- Custom Switch -->
+                <Switch
+                    android:id="@+id/custom_switch_night_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/switch_thumb"
+                    android:track="@drawable/switch_track"
+                    app:thumbTextPadding="4dp" />
+            </LinearLayout>
 
             <Button
                 android:id="@+id/btn_privacy_policy"
