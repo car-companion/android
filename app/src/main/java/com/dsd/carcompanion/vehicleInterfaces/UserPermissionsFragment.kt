@@ -1,5 +1,7 @@
 package com.dsd.carcompanion.vehicleInterfaces
 
+import android.app.DatePickerDialog
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.DatePicker
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
@@ -19,8 +22,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.dsd.carcompanion.MainActivity
 import com.dsd.carcompanion.R
 import com.dsd.carcompanion.api.datastore.JwtTokenDataStore
+import com.dsd.carcompanion.api.instance.UserClient
 import com.dsd.carcompanion.databinding.FragmentGrantPermissionsBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,11 +39,14 @@ import com.dsd.carcompanion.api.models.PermissionsResponse
 import com.dsd.carcompanion.api.models.RevokedPermissions
 import com.dsd.carcompanion.api.models.VehiclePreferencesResponse
 import com.dsd.carcompanion.api.models.VehicleResponse
+import com.dsd.carcompanion.api.repository.AuthRepository
 import com.dsd.carcompanion.utility.ImageHelper
 import com.dsd.carcompanion.api.repository.VehicleRepository
 import com.dsd.carcompanion.api.utils.ResultOf
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 class UserPermissionsFragment : Fragment() {
 
@@ -48,6 +56,8 @@ class UserPermissionsFragment : Fragment() {
     private var _bottomSheetBehavior: BottomSheetBehavior<View>? = null
     val vinMapping: MutableList<String> = mutableListOf("") // Default option has no VIN
     private var components: List<ComponentResponse> = emptyList()
+
+    private var accessToken: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -82,15 +92,15 @@ class UserPermissionsFragment : Fragment() {
             _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
-        binding.radioFullAccess.isEnabled = false
+        binding.radioFullAccess.isEnabled = true
         binding.radioCustomAccess.isEnabled = false
 
         // Fetch and display vehicles
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                val accessToken = withContext(Dispatchers.IO) { jwtTokenDataStore.getAccessJwt() }
+                accessToken = withContext(Dispatchers.IO) { jwtTokenDataStore.getAccessJwt().toString() }
 
-                if (!accessToken.isNullOrEmpty()) {
+                if (accessToken.isNotEmpty()) {
                     fetchVehicles(accessToken) // Fetch vehicles using the token
                 } else {
                     showToast("No Access JWT Token found")
@@ -190,7 +200,6 @@ class UserPermissionsFragment : Fragment() {
         }
     }
 
-
     private fun fetchComponentsForVIN(vin: String, accessToken: String) {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
@@ -229,7 +238,6 @@ class UserPermissionsFragment : Fragment() {
         }
     }
 
-
     private fun updatePermissionsList() {
         val permissionsLayout = binding.permissionsLayout
 
@@ -247,8 +255,55 @@ class UserPermissionsFragment : Fragment() {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
-                id = "ll_grant_access_fragment_components".hashCode()
+                id = R.id.ll_grant_access_fragment_components
             }
+
+            val datePickerInput = EditText(requireContext()).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                id = R.id.grant_access_date_picker
+                hint = "Select a date"
+                isFocusable = false // Prevents the keyboard from showing up
+                isClickable = true  // Makes it clickable
+            }
+
+            // Set up the Calendar instance
+            val calendar = Calendar.getInstance()
+
+            // Set up the DatePickerDialog
+            val datePickerDialog = DatePickerDialog(
+                requireContext(),
+                { _, year, month, dayOfMonth ->
+                    // Update the EditText with the selected date
+                    calendar.set(year, month, dayOfMonth)
+                    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    datePickerInput.setText(dateFormat.format(calendar.time))
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+
+            // Set minimum date to tomorrow
+            val today = Calendar.getInstance().apply {
+                add(Calendar.DAY_OF_YEAR, 1)
+            }
+            datePickerDialog.datePicker.minDate = today.timeInMillis
+
+            // Show the DatePickerDialog when the EditText is clicked
+            datePickerInput.setOnClickListener {
+                datePickerDialog.show()
+            }
+
+            // Add the EditText to your layout
+            val dateLayout = LinearLayout(requireContext()).apply {
+                orientation = LinearLayout.VERTICAL
+                addView(datePickerInput)
+            }
+
+            componentsLayout.addView(dateLayout)
 
             components.forEach { component ->
                 val permissionLayout = LinearLayout(requireContext()).apply {
@@ -257,63 +312,56 @@ class UserPermissionsFragment : Fragment() {
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                     )
+                    setPadding(12, 16, 12, 16)
                 }
+
+                Log.d("Testing", component.toString())
 
                 val permissionName = TextView(requireContext()).apply {
                     "${component.type.name} (${component.name})".also { text = it }
+                    textSize = 18f
                 }
 
                 permissionLayout.addView(permissionName)
 
                 val radioGroup = RadioGroup(requireContext()).apply {
-                    orientation = RadioGroup.HORIZONTAL
+                    orientation = RadioGroup.VERTICAL
                     layoutParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                     )
                     id = generateRadioGroupId(component)
+                    setPadding(12, 12, 0, 12)
                 }
 
                 // Add "Revoke" radio button
                 val revokeButton = RadioButton(requireContext()).apply {
-                    text = "Revoke"
+                    text = "Forbidden"
                     id = generateRadioButtonId(component, "revoke")
                     isChecked = true
+                    setPadding(12, 12, 0, 12)
                 }
                 radioGroup.addView(revokeButton)
 
                 // Add "Read" radio button
                 val readButton = RadioButton(requireContext()).apply {
-                    text = "Read"
+                    text = "Only see state of component"
                     id = generateRadioButtonId(component, "read")
                     isChecked = false
+                    setPadding(12, 12, 0, 12)
                 }
                 radioGroup.addView(readButton)
 
                 // Add "Write" radio button
                 val writeButton = RadioButton(requireContext()).apply {
-                    text = "Write"
+                    text = "Give access"
                     id = generateRadioButtonId(component, "write")
                     isChecked = false
+                    setPadding(12, 12, 0, 12)
                 }
                 radioGroup.addView(writeButton)
 
                 permissionLayout.addView(radioGroup)
-
-                val datePicker = DatePicker(requireContext()).apply {
-                    layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    )
-                    id = generateDatePickerId(component)
-
-                    val today = Calendar.getInstance().apply {
-                        add(Calendar.DAY_OF_YEAR, 1) // Add one day to today
-                    }
-                    minDate = today.timeInMillis
-                }
-
-                permissionLayout.addView(datePicker)
 
                 val divider = View(requireContext()).apply {
                     layoutParams = LinearLayout.LayoutParams(
@@ -329,35 +377,44 @@ class UserPermissionsFragment : Fragment() {
             }
 
             val radioGroupFullAccess = RadioGroup(requireContext()).apply {
-                orientation = RadioGroup.HORIZONTAL
+                orientation = RadioGroup.VERTICAL
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
-                id = "radio_group_full_access".hashCode()
+                id = R.id.radio_group_full_access
                 visibility = GONE
+                setPadding(12, 12, 0, 12)
             }
 
             val revokeButtonFullAccess = RadioButton(requireContext()).apply {
-                text = "Revoke"
-                id = "radio_revoke_full_access".hashCode()
+                text = "Forbidden"
+                id = R.id.radio_revoke_full_access
                 isChecked = true
+                setPadding(12, 12, 0, 12)
             }
             radioGroupFullAccess.addView(revokeButtonFullAccess)
+            Log.d("Error", "Is error 1?")
             val readButtonFullAccess = RadioButton(requireContext()).apply {
-                text = "Read"
-                id = "radio_read_full_access".hashCode()
+                text = "Only see state of component"
+                id = R.id.radio_read_full_access
                 isChecked = false
+                setPadding(12, 12, 0, 12)
             }
             radioGroupFullAccess.addView(readButtonFullAccess)
+            Log.d("Error", "Is error 2?")
             val writeButtonFullAccess = RadioButton(requireContext()).apply {
-                text = "Write"
-                id = "radio_write_full_access".hashCode()
+                text = "Give access"
+                id = R.id.radio_write_full_access
                 isChecked = false
+                setPadding(12, 12, 0, 12)
             }
             radioGroupFullAccess.addView(writeButtonFullAccess)
+            Log.d("Error", "Is error 3?")
             permissionsLayout.addView(componentsLayout)
+            Log.d("Error", "Is error 4?")
             permissionsLayout.addView(radioGroupFullAccess)
+            Log.d("Error", "Is error 5?")
 
             binding.radioFullAccess.isEnabled = true
             binding.radioCustomAccess.isEnabled = true
@@ -374,6 +431,7 @@ class UserPermissionsFragment : Fragment() {
         val formattedName = name.replace(" ", "_").replace(Regex("[^a-zA-Z0-9_]"), "").lowercase()
 
         val idString = "rbtn_${action}_grant_access_fragment_${formattedType}_${formattedName}"
+        Log.d("PremissionFragment", idString)
         return idString.hashCode()
     }
 
@@ -385,16 +443,7 @@ class UserPermissionsFragment : Fragment() {
 
         val idString = "rg_grant_access_fragment_${formattedType}_${formattedName}"
 
-        return idString.hashCode()
-    }
-
-    private fun generateDatePickerId(component: ComponentResponse): Int {
-        val type = component.type.name
-        val name = component.name
-        val formattedType = type.replace(" ", "_").replace(Regex("[^a-zA-Z0-9_]"), "").lowercase()
-        val formattedName = name.replace(" ", "_").replace(Regex("[^a-zA-Z0-9_]"), "").lowercase()
-
-        val idString = "dp_grant_access_fragment_${formattedType}_${formattedName}"
+        Log.d("PremissionFragment", idString)
 
         return idString.hashCode()
     }
@@ -416,6 +465,7 @@ class UserPermissionsFragment : Fragment() {
             } else {
                 val grantPermissions = getSelectedPermissions()
                 // TODO: check on user exist and is not owner already, etc.
+                //checkIfUserExists()
                 grantOrRevokeAccessToUser(vin, userIdentifier, grantPermissions)
             }
         } else {
@@ -424,21 +474,44 @@ class UserPermissionsFragment : Fragment() {
     }
 
     private fun giveFullAccess() {
-        binding.permissionsLayout.findViewById<RadioGroup>("radio_group_full_access".hashCode()).visibility = VISIBLE
-        binding.permissionsLayout.findViewById<LinearLayout>("ll_grant_access_fragment_components".hashCode()).visibility = GONE
+        binding.permissionsLayout.findViewById<RadioGroup>(R.id.radio_group_full_access).visibility = VISIBLE
+        binding.permissionsLayout.findViewById<LinearLayout>(R.id.ll_grant_access_fragment_components).visibility = GONE
     }
 
     private fun giveCustomAccess() {
-        binding.permissionsLayout.findViewById<RadioGroup>("radio_group_full_access".hashCode()).visibility = GONE
-        binding.permissionsLayout.findViewById<LinearLayout>("ll_grant_access_fragment_components".hashCode()).visibility = VISIBLE
+        binding.permissionsLayout.findViewById<RadioGroup>(R.id.radio_group_full_access).visibility = GONE
+        binding.permissionsLayout.findViewById<LinearLayout>(R.id.ll_grant_access_fragment_components).visibility = VISIBLE
+    }
+
+    private fun checkIfUserExists() {
+        val userService = UserClient.getApiServiceWithToken(accessToken)
+        val authRepository = AuthRepository(userService, jwtTokenDataStore)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val response = authRepository.getAllUsers()
+
+                withContext(Dispatchers.Main) {
+                    if (response is ResultOf.Success) {
+                        Log.d("GotterUsers", response.toString())
+                    } else if (response is ResultOf.Error) {
+                        showToast("No users could be found")
+                    } else {
+                        showToast("Something went wrong during login. Please try again.")
+                    }
+                }
+            } catch (e: Exception) {
+                showToast("Couldn't connect to the server. Please check your internet connection and try again.")
+            }
+        }
     }
 
     private fun getSelectedPermission(): GrantPermissionRequest {
-        val radioGroupFullAccess = binding.permissionsLayout.findViewById<RadioGroup>("radio_group_full_access".hashCode())
+        val radioGroupFullAccess = binding.permissionsLayout.findViewById<RadioGroup>(R.id.radio_group_full_access)
         val permissionType = when (radioGroupFullAccess.checkedRadioButtonId) {
-            "radio_revoke_full_access".hashCode() -> "revoke"
-            "radio_read_full_access".hashCode() -> "read"
-            "radio_write_full_access".hashCode() -> "write"
+            R.id.radio_revoke_full_access -> "revoke"
+            R.id.radio_read_full_access -> "read"
+            R.id.radio_write_full_access -> "write"
             else -> {"revoke"}
         }
         val validity = "9999-12-31T00:00:00.000Z"
@@ -447,6 +520,19 @@ class UserPermissionsFragment : Fragment() {
 
     private fun getSelectedPermissions(): List<PermissionResponse> {
         val updatedPermissions = mutableListOf<PermissionResponse>()
+
+        val datePicker = binding.permissionsLayout.findViewById<EditText>(R.id.grant_access_date_picker)
+        val validUntil = if (datePicker != null && !datePicker.text.isNullOrBlank()) {
+            val date = datePicker.text.split("/")
+            val year = date.get(2).toInt()
+            val month = date.get(1).toInt()
+            val day = date.get(0).toInt()
+            String.format("%04d-%02d-%02dT00:00:00.000Z", year, month, day)
+        } else {
+            "9999-12-31T00:00:00.000Z" // Default to a far-future date if no DatePicker is found
+        }
+
+        Log.d("GrantPremission", validUntil)
 
         for (component in components) {
             val radioGroupId = generateRadioGroupId(component)
@@ -457,18 +543,6 @@ class UserPermissionsFragment : Fragment() {
                 generateRadioButtonId(component, "read") -> "read"
                 generateRadioButtonId(component, "write") -> "write"
                 else -> "revoke" // Default to revoke if nothing is selected
-            }
-
-            val datePickerId = generateDatePickerId(component)
-            val datePicker = binding.permissionsLayout.findViewById<DatePicker>(datePickerId)
-
-            val validUntil = if (datePicker != null) {
-                val year = datePicker.year
-                val month = datePicker.month + 1 // Months are 0-indexed
-                val day = datePicker.dayOfMonth
-                String.format("%04d-%02d-%02dT00:00:00.000Z", year, month, day)
-            } else {
-                "9999-12-31T00:00:00.000Z" // Default to a far-future date if no DatePicker is found
             }
 
             val updatedPermission = PermissionResponse(
@@ -520,9 +594,11 @@ class UserPermissionsFragment : Fragment() {
                         }
                     }
                     is ResultOf.Error -> {
+                        Log.d("SomethngSomething", response.code.toString())
                         val errorMessage = when (response.code) {
                             400 -> "Invalid request."
                             403 -> "Unauthorized access."
+                            404 -> "User not found. Please try again"
                             else -> "Unexpected error: ${response.message}"
                         }
                         showToast(errorMessage)
@@ -596,7 +672,7 @@ class UserPermissionsFragment : Fragment() {
         binding.etUserIdentifier.text.clear()
         binding.spinnerVehicleSelection.setSelection(0)
         binding.tvShowApiResponse.visibility = VISIBLE
-        binding.permissionsLayout.findViewById<RadioGroup>("radio_group_full_access".hashCode()).check("radio_revoke_full_access".hashCode())
+        binding.permissionsLayout.findViewById<RadioGroup>(R.id.radio_group_full_access).check(R.id.radio_revoke_full_access)
         binding.radioGroupAccessLevel.clearCheck()
         binding.radioFullAccess.isEnabled = false
         binding.radioCustomAccess.isEnabled = false

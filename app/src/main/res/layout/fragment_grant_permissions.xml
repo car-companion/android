@@ -26,6 +26,7 @@
             android:padding="16dp"
             app:behavior_hideable="true"
             app:behavior_peekHeight="30dp"
+            android:maxHeight="500dp"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
             <!-- Spacer -->
@@ -42,7 +43,8 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    android:layout_marginTop="24dp">
 
                     <!-- Section 1: User Identifier -->
                     <TextView
@@ -66,7 +68,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/rounded_edittext"
-                            android:textColor="?attr/colorSecondary"
                             android:inputType="textPersonName"
                             android:layout_marginTop="2dp"
                             android:lines="1"

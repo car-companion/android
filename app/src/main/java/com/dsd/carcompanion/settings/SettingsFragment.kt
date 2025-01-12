@@ -51,10 +51,10 @@ class SettingsFragment : Fragment() {
         val switchLabelNotification = binding.tvSwitchLabelNotification
 
         // Set initial label text
-        switchLabel.text = getString(R.string.notifications)
+        switchLabelNotification.text = getString(R.string.notifications)
 
         // Handle switch toggle
-        customSwitch.setOnCheckedChangeListener { _, isChecked ->
+        customSwitchNotification.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 Log.d("SettingsFragment", "Notifications enabled")
             } else {
@@ -65,8 +65,8 @@ class SettingsFragment : Fragment() {
 
     // Initialize night mode switch functionality
     private fun setupCustomSwitchNightMode() {
-        val switchLabel = binding.customSwitchNightMode
-        val customSwitch = binding.tvSwitchLabelNightMode
+        val customSwitch = binding.customSwitchNightMode
+        val switchLabel = binding.tvSwitchLabelNightMode
 
         // Set label text
         switchLabel.text = getString(R.string.night_mode)
@@ -90,17 +90,17 @@ class SettingsFragment : Fragment() {
     // Setup general listeners for UI components
     private fun setupListeners() {
         // User notifications button
-        binding.switchNotification.customSwitch.setOnClickListener {
+        binding.customSwitchNotification.setOnClickListener {
             Toast.makeText(context, getString(R.string.user_settings_clicked), Toast.LENGTH_SHORT).show()
         }
 
-        customSwitchNightMode.setOnCheckedChangeListener { _, isChecked ->
+        binding.customSwitchNightMode.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                switchLabelNightMode.text = "Night Mode Enabled"
+                binding.tvSwitchLabelNightMode.text = "Night Mode Enabled"
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                switchLabelNightMode.text = "Night Mode Disabled"
+                binding.tvSwitchLabelNightMode.text = "Night Mode Disabled"
             }
         }
         

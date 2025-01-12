@@ -18,17 +18,13 @@ Rectangle {
     property bool lightsOff: false
     property bool runningRotation: true
     property bool areTiresTurning: false
-    property bool isItSnowing: true
+    property bool isItSnowing: false
+    property bool mouseAreaEnabled: true
     color: "#00FFFFFF"
 
     MouseArea {
         anchors.fill: parent
-        onPressed: {
-            parent.runningRotation = false
-        }
-        onReleased: {
-            parent.runningRotation = true
-        }
+        enabled: root.mouseAreaEnabled
 
         OrbitCameraController {
             anchors.fill: parent

@@ -1,43 +1,30 @@
 package com.dsd.carcompanion.home
 
-import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.util.TypedValue
-import android.view.Gravity.CENTER
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.dsd.carcompanion.R
 import com.dsd.carcompanion.adapters.VehicleInfoAdapter
 import com.dsd.carcompanion.api.datastore.JwtTokenDataStore
 import com.dsd.carcompanion.api.instance.VehicleClient
 import com.dsd.carcompanion.api.models.ComponentResponse
 import com.dsd.carcompanion.api.models.ComponentStatusUpdate
+import com.dsd.carcompanion.api.models.ComponentType
 import com.dsd.carcompanion.api.models.VehicleInfo
 import com.dsd.carcompanion.api.repository.VehicleRepository
 import com.dsd.carcompanion.api.utils.ResultOf
 import com.dsd.carcompanion.databinding.FragmentHomeBinding
-import com.dsd.carcompanion.userRegistrationAndLogin.UserStartActivity
 import com.dsd.carcompanion.utility.ImageHelper
-import com.google.android.flexbox.AlignItems
-import com.google.android.flexbox.FlexboxLayout
-import com.google.android.flexbox.JustifyContent
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.slider.Slider
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -55,7 +42,6 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private lateinit var jwtTokenDataStore: JwtTokenDataStore
-    private val vin: String = "JH4KA3140LC003233"
     private var isPeriodicFetchRunning = false
 
     private var m_qmlView: QtQuickView? = null
@@ -69,6 +55,7 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
     private var isItSnowing: Boolean = false
 
     private var _bottomSheetBehavior: BottomSheetBehavior<View>? = null
+    private var carVin: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -81,6 +68,8 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
         _bottomSheetBehavior = BottomSheetBehavior.from(binding.llHomeFragmentBottomSheet)
         jwtTokenDataStore = JwtTokenDataStore(requireContext()) // Initialize the JwtTokenDataStore
         vehicleInfoAdapter = VehicleInfoAdapter(vehicleInfoList)
+
+        carVin = arguments?.getString("vin").toString()
 
         return binding.root
     }
@@ -95,6 +84,8 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
             R.drawable.homescreend,
             blurRadius = 50f
         )
+
+        hideAllElements()
 
         val qtContainer = binding.qtContainer
         val params: ViewGroup.LayoutParams = FrameLayout.LayoutParams(
@@ -119,7 +110,20 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
                 m_qmlView?.setProperty("lightsOff", areLightsTurnedOff)
                 m_qmlView?.setProperty("areTiresTurning", isCarDriving)
                 m_qmlView?.setProperty("isItSnowing", isItSnowing)
+                m_qmlView?.setProperty("mouseAreaEnabled", true)
                 //m_qmlView?.getProperty<String>("root.view3D.scene.qt_Car_Baked_low_v2.node.testing")
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val accessToken = withContext(Dispatchers.IO) { jwtTokenDataStore.getAccessJwt() }
+                if (!accessToken.isNullOrEmpty()) {
+                    var responseData = fetchComponentsData(accessToken)
+                    setUpUiInterface(responseData)
+                }
+            } catch (e: Exception) {
+                Log.e("HomeFragment", "Error during periodic fetch: ${e.message}", e)
             }
         }
 
@@ -169,37 +173,96 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
             }
         }
 
-        binding.menuIcon.setOnClickListener {
-            val popupMenu = PopupMenu(requireContext(), binding.menuIcon)
-            popupMenu.menuInflater.inflate(R.menu.menu_main, popupMenu.menu)
-            popupMenu.setOnMenuItemClickListener { menuItem ->
-                when (menuItem.itemId) {
-                    R.id.action_settings -> {
-                        findNavController().navigate(R.id.action_HomeFragment_to_SettingsFragment)
-                        true
-                    }
-                    R.id.action_access -> {
-                        findNavController().navigate(R.id.action_HomeFragment_to_UserPermissionsFragment)
-                        true
-                    }
-                    R.id.action_add_vehicle -> {
-                        findNavController().navigate(R.id.action_HomeFragment_to_VehicleOwnershipFragment)
-                        true
-                    }
-                    R.id.action_logout -> {
-                        logoutUser();
-                        true
-                    }
-                    else -> false
-                }
-            }
-            popupMenu.show()
-        }
-
         binding.actionMakeItSnow.setOnClickListener {
             isItSnowing = !isItSnowing
             m_qmlView?.setProperty("isItSnowing", isItSnowing)
         }
+    }
+
+    private fun hideAllElements() {
+        binding.toggleDoorRight.visibility = View.GONE
+        binding.toggleDoorLeft.visibility = View.GONE
+        binding.toggleLights.visibility = View.GONE
+        binding.toggleLocks.visibility = View.GONE
+        binding.sliderTemperature.customSliderLayout.visibility = View.GONE
+        binding.switchWindowLeft.customSwitchLayout.visibility = View.GONE
+        binding.switchWindowRight.customSwitchLayout.visibility = View.GONE
+    }
+
+    private fun setUpUiInterface(responseData: List<ComponentResponse>){
+        responseData.forEach{ component ->
+            run {
+                if (component.type.name.equals("Door")) {
+                    if (component.name.equals("Right")) {
+                        binding.toggleDoorRight.visibility = View.VISIBLE
+                        if (component.status > 0) {
+                            isRightDoorOpen = true
+                            binding.toggleDoorRight.isToggled = true
+                        } else {
+                            isRightDoorOpen = false
+                            binding.toggleDoorRight.isToggled = false
+                        }
+                    } else if (component.name.equals("Left")) {
+                        binding.toggleDoorLeft.visibility = View.VISIBLE
+                        if (component.status > 0) {
+                            isLeftDoorOpen = true
+                            binding.toggleDoorLeft.isToggled = true
+                        } else {
+                            isLeftDoorOpen = false
+                            binding.toggleDoorLeft.isToggled = false
+                        }
+                    }
+                }
+                else if(component.type.name.equals("Lights")){
+                    binding.toggleLights.visibility = View.VISIBLE
+                    if (component.status > 0) {
+                        areLightsTurnedOff = false
+                        binding.toggleLights.isToggled = true
+                    } else {
+                        areLightsTurnedOff = true
+                        binding.toggleLights.isToggled = false
+                    }
+                }
+                else if(component.type.name.equals("Lock")){
+                    binding.toggleLocks.visibility = View.VISIBLE
+                    binding.toggleLocks.isToggled = false
+                }
+                else if(component.type.name.equals("Temperature")){
+                    binding.sliderTemperature.customSliderLayout.visibility = View.VISIBLE
+                    binding.sliderTemperature.customSlider.value = component.status.toFloat() * 100
+                }
+                else if (component.type.name.equals("Window")) {
+                    if (component.name.equals("Right")) {
+                        binding.switchWindowRight.customSwitchLayout.visibility = View.VISIBLE
+                        if (component.status > 0) {
+                            isRightWindowUp = false
+                            binding.switchWindowRight.customSwitch.isChecked = true
+                        } else {
+                            isRightWindowUp = true
+                            binding.switchWindowRight.customSwitch.isChecked = false
+                        }
+                    } else if (component.name.equals("Left")) {
+                        binding.switchWindowLeft.customSwitchLayout.visibility = View.VISIBLE
+                        if (component.status > 0) {
+                            isLeftWindowUp = false
+                            binding.switchWindowLeft.customSwitch.isChecked = true
+                        } else {
+                            isLeftWindowUp = true
+                            binding.switchWindowLeft.customSwitch.isChecked = false
+                        }
+                    }
+                }
+            }
+        }
+
+        m_qmlView?.setProperty("rightDoorOpen", isRightDoorOpen)
+        m_qmlView?.setProperty("leftDoorOpen", isLeftDoorOpen)
+        m_qmlView?.setProperty("rightWindowUp", isRightWindowUp)
+        m_qmlView?.setProperty("leftWindowUp", isLeftWindowUp)
+        m_qmlView?.setProperty("lightsOff", areLightsTurnedOff)
+        m_qmlView?.setProperty("areTiresTurning", isCarDriving)
+        m_qmlView?.setProperty("isItSnowing", isItSnowing)
+        m_qmlView?.setProperty("mouseAreaEnabled", true)
     }
 
     private fun showToast(message: String) {
@@ -237,10 +300,13 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
             val vehicleService = VehicleClient.getApiServiceWithToken(accessToken)
             val vehicleRepository = VehicleRepository(vehicleService, jwtTokenDataStore)
 
-            val response = vehicleRepository.getComponentsForVehicle(vin)
+            val response = vehicleRepository.getComponentsForVehicle(carVin)
 
             when (response) {
-                is ResultOf.Success -> response.data
+                is ResultOf.Success -> {
+                    Log.d("HomeFragment", "Gotten list: " + response.data.toString())
+                    response.data
+                }
                 is ResultOf.Error -> {
                     Log.e("HomeFragment", "Error fetching components: ${response.message}")
                     emptyList()
@@ -281,12 +347,12 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
             val vehicleService = VehicleClient.getApiServiceWithToken(accessToken)
             val vehicleRepository = VehicleRepository(vehicleService, jwtTokenDataStore)
 
-            val response = vehicleRepository.getComponentsForVehicle(vin)
+            val response = vehicleRepository.getComponentsForVehicle(carVin)
 
             when (response) {
                 is ResultOf.Success -> {
                     val components = response.data
-                    updateBottomSheet(components)
+                    //updateBottomSheet(components)
                 }
                 is ResultOf.Error -> {
                     //binding.tvShowApiResponse.text = "Error: ${response.message}"
@@ -298,99 +364,6 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
         } catch (e: Exception) {
             Log.e("FetchComponents", "Error: ${e.message}", e)
             Toast.makeText(context, "Error fetching vehicles: ${e.message}", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun updateBottomSheet(components: List<ComponentResponse>) {
-        val bottomSheetLayout = binding.llHomeFragmentBottomSheet
-
-        val tvTitleParams = TextView(requireContext()).apply {
-            layoutParams = ViewGroup.MarginLayoutParams(
-                MATCH_PARENT,
-                WRAP_CONTENT)
-            text = getString(R.string.bottom_sheet_title_parameters)
-            textAlignment = View.TEXT_ALIGNMENT_CENTER
-        }
-        bottomSheetLayout.addView(tvTitleParams)
-
-        val vDivider = View(requireContext()).apply {
-            layoutParams = ViewGroup.MarginLayoutParams(
-                MATCH_PARENT,
-                resources.getDimensionPixelSize(R.dimen.divider_height)
-            ).apply {
-                topMargin = resources.getDimensionPixelSize(R.dimen.divider_margin)
-                bottomMargin = resources.getDimensionPixelSize(R.dimen.divider_margin)
-            }
-            setBackgroundColor(Color.parseColor("#D3D3D3"))
-        }
-        bottomSheetLayout.addView(vDivider)
-
-        for (component in components) {
-            val flexboxLayout = FlexboxLayout(requireContext()).apply {
-                layoutParams = FlexboxLayout.LayoutParams(
-                    FlexboxLayout.LayoutParams.MATCH_PARENT,
-                    FlexboxLayout.LayoutParams.WRAP_CONTENT
-                )
-                justifyContent = JustifyContent.CENTER
-                alignItems = AlignItems.CENTER
-            }
-
-            val tvTitleComponent = TextView(requireContext()).apply {
-                layoutParams = FlexboxLayout.LayoutParams(
-                    FlexboxLayout.LayoutParams.MATCH_PARENT,
-                    FlexboxLayout.LayoutParams.WRAP_CONTENT
-                )
-                "${component.type.name} ${component.name}".also { text = it }
-                textAlignment = View.TEXT_ALIGNMENT_CENTER
-            }
-            flexboxLayout.addView(tvTitleComponent)
-
-            val llComponent = LinearLayout(requireContext()).apply {
-                layoutParams = FlexboxLayout.LayoutParams(
-                    FlexboxLayout.LayoutParams.MATCH_PARENT,
-                    FlexboxLayout.LayoutParams.WRAP_CONTENT
-                )
-                orientation = LinearLayout.HORIZONTAL
-                gravity = CENTER
-            }
-
-            val isTemperatureComponent = component.type.name == resources.getString(R.string.bottom_sheet_temperature_tv_label)
-            val sliderComponent = Slider(requireContext()).apply {
-                id = generateSliderId(component)
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    0f
-                )
-                valueFrom = 0f
-                valueTo = 1f
-                stepSize = 0.1f
-                value = component.status.toFloat()
-            }
-            llComponent.addView(sliderComponent)
-            flexboxLayout.addView(llComponent)
-
-            val tvStatusComponent = TextView(requireContext()).apply {
-                id = generateTextViewId(component)
-                layoutParams = FlexboxLayout.LayoutParams(
-                    FlexboxLayout.LayoutParams.MATCH_PARENT,
-                    FlexboxLayout.LayoutParams.WRAP_CONTENT
-                )
-                textAlignment = View.TEXT_ALIGNMENT_CENTER
-                text = if (isTemperatureComponent) (sliderComponent.value * 100f).toString() else if (sliderComponent.value > 0.5f) getString(R.string.bottom_sheet_vehicle_unlocked_tv_state) else getString(R.string.bottom_sheet_vehicle_locked_tv_state)
-            }
-            flexboxLayout.addView(tvStatusComponent)
-
-            sliderComponent.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
-                override fun onStartTrackingTouch(slider: Slider) {}
-
-                override fun onStopTrackingTouch(slider: Slider) {
-                    val value = slider.value
-                    tvStatusComponent.text = if (isTemperatureComponent) (value * 100f).toString() else if (value > 0.5f) getString(R.string.bottom_sheet_vehicle_unlocked_tv_state) else getString(R.string.bottom_sheet_vehicle_locked_tv_state)
-                    updateComponentStatus(component, value)
-                }
-            })
-            bottomSheetLayout.addView(flexboxLayout)
         }
     }
 
@@ -433,11 +406,11 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
                 val vehicleService = VehicleClient.getApiServiceWithToken(accessToken)
                 val vehicleRepository = VehicleRepository(vehicleService, jwtTokenDataStore)
 
-                val response = vehicleRepository.updateComponentStatusForVehicle(vin, component.type.name, component.name, ComponentStatusUpdate(status = newStatusDouble))
+                val response = vehicleRepository.updateComponentStatusForVehicle(carVin, component.type.name, component.name, ComponentStatusUpdate(status = newStatusDouble))
                 when (response) {
                     is ResultOf.Success -> {
                         if(response.code == 200) {
-                            showToast("Component Status has been updated")
+                            Log.d("HomeFragment","Component Status has been updated: " + response.data.toString())
                         }
                     }
                     is ResultOf.Error -> {
@@ -460,20 +433,6 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
         }
     }
 
-    fun logoutUser(){
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                jwtTokenDataStore.clearAllTokens()
-
-                val intent = Intent(requireContext(), UserStartActivity::class.java)
-                startActivity(intent)
-                requireActivity().finish()
-            } catch (e: Exception) {
-                Log.e("FirstFragment", "Error during logout: ${e.message}")
-            }
-        }
-    }
-
     // Custom switch handlers
     private fun setupCustomSwitchLeftWindow() {
         val switchLabel = binding.switchWindowLeft.tvSwitchLabel
@@ -491,7 +450,16 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
                 } else {
                     isLeftWindowUp = true
                 }
-                m_qmlView?.setProperty("rightWindowUp", isLeftWindowUp)
+                var status = if(isLeftWindowUp) 0.0f else 0.7f
+                var componentResponse: ComponentResponse = ComponentResponse(
+                    name = "Left",
+                    ComponentType(
+                        name = "Window"
+                    ),
+                    status = 0.0
+                )
+                updateComponentStatus(componentResponse, status)
+                m_qmlView?.setProperty("leftWindowUp", isLeftWindowUp)
             } else {
                 binding.switchWindowLeft.customSwitch.isChecked = false
             }
@@ -514,7 +482,16 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
                 } else {
                     isRightWindowUp = true
                 }
-                m_qmlView?.setProperty("leftWindowUp", isRightWindowUp)
+                var status = if(isRightWindowUp) 0.0f else 0.7f
+                var componentResponse: ComponentResponse = ComponentResponse(
+                    name = "Right",
+                    ComponentType(
+                        name = "Window"
+                    ),
+                    status = 0.0
+                )
+                updateComponentStatus(componentResponse, status)
+                m_qmlView?.setProperty("rightWindowUp", isRightWindowUp)
             } else {
                 binding.switchWindowRight.customSwitch.isChecked = false
             }
@@ -582,6 +559,15 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
                     binding.toggleLights.setToggleIcon(R.drawable.light)
                     areLightsTurnedOff = true
                 }
+                var status = if(areLightsTurnedOff) 0.0f else 0.7f
+                var componentResponse: ComponentResponse = ComponentResponse(
+                    name = "Interior",
+                    ComponentType(
+                        name = "Lights"
+                    ),
+                    status = 0.0
+                )
+                updateComponentStatus(componentResponse, status)
                 m_qmlView?.setProperty("lightsOff", areLightsTurnedOff)
             }
         }
@@ -604,6 +590,15 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
                 } else {
                     isRightDoorOpen = false
                 }
+                var status = if(isRightDoorOpen) 0.7f else 0.0f
+                var componentResponse: ComponentResponse = ComponentResponse(
+                    name = "Right",
+                    ComponentType(
+                        name = "Door"
+                    ),
+                    status = 0.0
+                )
+                updateComponentStatus(componentResponse, status)
                 m_qmlView?.setProperty("rightDoorOpen", isRightDoorOpen)
             }
         }
@@ -626,6 +621,15 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
                 } else {
                     isLeftDoorOpen = false
                 }
+                var status = if(isLeftDoorOpen) 0.7f else 0.0f
+                var componentResponse: ComponentResponse = ComponentResponse(
+                    name = "Left",
+                    ComponentType(
+                        name = "Door"
+                    ),
+                    status = 0.0
+                )
+                updateComponentStatus(componentResponse, status)
                 m_qmlView?.setProperty("leftDoorOpen", isLeftDoorOpen)
             }
         }
@@ -654,9 +658,29 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
         // Disable the value label on the thumb
         customSlider.setLabelFormatter(null)
 
+        customSlider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: Slider) {
+                // Optional: Do something when the user starts interacting with the slider
+            }
+
+            override fun onStopTrackingTouch(slider: Slider) {
+                // Update the value only when the user stops interacting
+                val finalValue = slider.value
+                Log.d("Slider", "Final Value: $finalValue")
+                sliderInfoLabel.text = getString(R.string.temperature_label, finalValue.toInt())
+                var componentResponse: ComponentResponse = ComponentResponse(
+                    name = "°c",
+                    ComponentType(
+                        name = "Temperature"
+                    ),
+                    status = 0.0
+                )
+                updateComponentStatus(componentResponse, finalValue)
+            }
+        })
+
         // Attach a listener to update the info label dynamically
         customSlider.addOnChangeListener { slider, value, fromUser ->
-            Log.d("Slider", "Value: $value")
             sliderInfoLabel.text = getString(R.string.temperature_label, value.toInt())
         }
     }
@@ -677,6 +701,56 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
         else binding.toggleLights.setToggleIcon(R.drawable.light)
         binding.toggleDoorLeft.isToggled = isLeftDoorOpen
         binding.toggleDoorRight.isToggled = isRightDoorOpen
+
+        var status = if(isRightDoorOpen) 0.7f else 0.0f
+        var componentResponse: ComponentResponse = ComponentResponse(
+            name = "Right",
+            ComponentType(
+                name = "Door"
+            ),
+            status = 0.0
+        )
+        updateComponentStatus(componentResponse, status)
+
+        status = if(isLeftDoorOpen) 0.7f else 0.0f
+        componentResponse = ComponentResponse(
+            name = "Left",
+            ComponentType(
+                name = "Door"
+            ),
+            status = 0.0
+        )
+        updateComponentStatus(componentResponse, status)
+
+        status = if(isRightWindowUp) 0.0f else 0.7f
+        componentResponse = ComponentResponse(
+            name = "Right",
+            ComponentType(
+                name = "Window"
+            ),
+            status = 0.0
+        )
+        updateComponentStatus(componentResponse, status)
+
+        status = if(isLeftWindowUp) 0.0f else 0.7f
+        componentResponse = ComponentResponse(
+            name = "Left",
+            ComponentType(
+                name = "Window"
+            ),
+            status = 0.0
+        )
+        updateComponentStatus(componentResponse, status)
+
+        status = if(areLightsTurnedOff) 0.0f else 0.7f
+        componentResponse = ComponentResponse(
+            name = "Interior",
+            ComponentType(
+                name = "Light"
+            ),
+            status = 0.0
+        )
+        updateComponentStatus(componentResponse, status)
     }
 
     private fun triggerLock() {
@@ -694,6 +768,51 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
         binding.toggleLights.setToggleIcon(R.drawable.light)
         binding.toggleDoorLeft.isToggled = false
         binding.toggleDoorRight.isToggled = false
+
+        var componentResponse: ComponentResponse = ComponentResponse(
+            name = "Right",
+            ComponentType(
+                name = "Door"
+            ),
+            status = 0.0
+        )
+        updateComponentStatus(componentResponse, 0.0f)
+
+        componentResponse = ComponentResponse(
+            name = "Left",
+            ComponentType(
+                name = "Door"
+            ),
+            status = 0.0
+        )
+        updateComponentStatus(componentResponse, 0.0f)
+
+        componentResponse = ComponentResponse(
+            name = "Right",
+            ComponentType(
+                name = "Window"
+            ),
+            status = 0.0
+        )
+        updateComponentStatus(componentResponse, 0.0f)
+
+        componentResponse = ComponentResponse(
+            name = "Left",
+            ComponentType(
+                name = "Window"
+            ),
+            status = 0.0
+        )
+        updateComponentStatus(componentResponse, 0.0f)
+
+        componentResponse = ComponentResponse(
+            name = "Interior",
+            ComponentType(
+                name = "Light"
+            ),
+            status = 0.0
+        )
+        updateComponentStatus(componentResponse, 0.0f)
     }
 
     override fun onStatusChanged(status: QtQmlStatus?) {
@@ -703,6 +822,7 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
     override fun onDestroyView() {
         super.onDestroyView()
         Log.d("HomeFragment", "View is destroyed")
+        m_qmlView?.setProperty("mouseAreaEnabled", false)
         m_qmlView?.removeAllViews()
         m_qmlView = null
         stopPeriodicComponentUpdates()

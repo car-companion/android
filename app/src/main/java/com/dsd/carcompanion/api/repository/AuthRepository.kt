@@ -4,6 +4,8 @@ import android.util.Log
 import com.dsd.carcompanion.api.models.CreateUserRequest
 import com.dsd.carcompanion.api.models.LoginRequest
 import com.dsd.carcompanion.api.models.TokenModel
+import com.dsd.carcompanion.api.models.UserModel
+import com.dsd.carcompanion.api.models.VehiclePreferencesResponse
 import com.dsd.carcompanion.api.utils.JwtTokenManager
 import com.dsd.carcompanion.api.utils.ResultOf
 import com.dsd.carcompanion.api.service.UserService
@@ -14,17 +16,20 @@ class AuthRepository(
     private val jwtTokenManager: JwtTokenManager
 ) {
 
-    private suspend fun <T> fetchDataFromApi(call: suspend () -> Response<T>, transform: suspend (T) -> Unit): ResultOf<Unit> {
+    private suspend fun <T, R> fetchDataFromApi(
+        call: suspend () -> Response<T>,
+        transform: suspend (T) -> R
+    ): ResultOf<R> {
         return try {
             val response = call()
             Log.d("Testing", response.toString())
             if (response.isSuccessful) {
                 response.body()?.let {
-                    transform(it) // Transform response into required result
-                    ResultOf.Success(Unit)
+                    val transformedData = transform(it) // Transform response into required result
+                    ResultOf.Success(transformedData, response.code())
                 } ?: ResultOf.Error("Empty response body")
             } else {
-                ResultOf.Error("API call failed: ${response.message()}")
+                ResultOf.Error("API call failed: ${response.message()}", response.code())
             }
         } catch (e: Exception) {
             ResultOf.Error("Network error: ${e.localizedMessage}")
@@ -46,5 +51,12 @@ class AuthRepository(
                 jwtTokenManager.saveAccessJwt(response.Access)
                 jwtTokenManager.saveRefreshJwt(response.Refresh)
             })
+    }
+
+    suspend fun getAllUsers(): ResultOf<List<UserModel>> {
+        return fetchDataFromApi(
+            call = { authService.getAllUsers() },
+            transform = { users: List<UserModel> -> users }
+        )
     }
 }
