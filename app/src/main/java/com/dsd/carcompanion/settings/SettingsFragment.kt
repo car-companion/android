@@ -2,6 +2,7 @@ package com.dsd.carcompanion.settings
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,7 +49,6 @@ class SettingsFragment : Fragment() {
     private fun setupCustomSwitchNotifications() {
         val switchLabel = binding.switchNotification.tvSwitchLabel
         val customSwitch = binding.switchNotification.customSwitch
-        val switchLabelAction = binding.switchNotification.tvSwitchLabelAction
 
         // Set title if available
         val titleTextView: TextView = binding.switchNotification.tvSwitchTitle
@@ -63,14 +63,13 @@ class SettingsFragment : Fragment() {
 
         // Set initial label text
         switchLabel.text = getString(R.string.notifications)
-        switchLabelAction.text = getString(R.string.disabled)
 
         // Handle switch toggle
         customSwitch.setOnCheckedChangeListener { _, isChecked ->
-            switchLabelAction.text = if (isChecked) {
-                getString(R.string.enabled)
+            if (isChecked) {
+                Log.d("SettingsFragment", "Notifications enabled")
             } else {
-                getString(R.string.disabled)
+                Log.d("SettingsFragment", "Notifications disabled")
             }
         }
     }

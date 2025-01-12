@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="8dp">
 
     <!-- Main Title TextView -->
     <TextView
@@ -24,7 +24,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:padding="8dp">
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="32dp">
 
         <!-- Text Label -->
         <TextView
@@ -45,14 +46,5 @@
             android:track="@drawable/switch_track"
             app:thumbTextPadding="4dp"
             android:layout_gravity="center" />
-
-        <!-- Text Label Action -->
-        <TextView
-            android:id="@+id/tv_switch_label_action"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="20sp"
-            android:textAlignment="viewEnd" />
     </LinearLayout>
 </LinearLayout>
