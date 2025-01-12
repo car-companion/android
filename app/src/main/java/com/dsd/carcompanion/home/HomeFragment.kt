@@ -4,12 +4,14 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.Gravity.CENTER
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.TextView
@@ -28,20 +30,26 @@ import com.dsd.carcompanion.api.repository.VehicleRepository
 import com.dsd.carcompanion.api.utils.ResultOf
 import com.dsd.carcompanion.databinding.FragmentHomeBinding
 import com.dsd.carcompanion.userRegistrationAndLogin.UserStartActivity
+import com.dsd.carcompanion.utility.ImageHelper
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.flexbox.JustifyContent
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.slider.Slider
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.math.RoundingMode
-import kotlin.math.log
 
-class HomeFragment : Fragment() {
+import org.qtproject.qt.android.QtQuickView
+import org.qtproject.example.my_car_companionApp.QmlModule
+import org.qtproject.qt.android.QtQmlStatus
+import org.qtproject.qt.android.QtQmlStatusChangeListener
+
+class HomeFragment : Fragment(), QtQmlStatusChangeListener {
     private lateinit var vehicleInfoAdapter: VehicleInfoAdapter
     private var vehicleInfoList: MutableList<VehicleInfo> = mutableListOf()
     private var _binding: FragmentHomeBinding? = null
@@ -49,6 +57,16 @@ class HomeFragment : Fragment() {
     private lateinit var jwtTokenDataStore: JwtTokenDataStore
     private val vin: String = "JH4KA3140LC003233"
     private var isPeriodicFetchRunning = false
+
+    private var m_qmlView: QtQuickView? = null
+    private var m_mainQmlContent: QmlModule.Main = QmlModule.Main()
+    private var isRightDoorOpen: Boolean = false
+    private var isLeftDoorOpen: Boolean = false
+    private var isRightWindowUp: Boolean = true
+    private var isLeftWindowUp: Boolean = true
+    private var areLightsTurnedOff: Boolean = false
+    private var isCarDriving: Boolean = false
+    private var isItSnowing: Boolean = false
 
     private var _bottomSheetBehavior: BottomSheetBehavior<View>? = null
 
@@ -59,6 +77,7 @@ class HomeFragment : Fragment() {
         super.onCreateView(inflater, container, savedInstanceState)
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+
         _bottomSheetBehavior = BottomSheetBehavior.from(binding.llHomeFragmentBottomSheet)
         jwtTokenDataStore = JwtTokenDataStore(requireContext()) // Initialize the JwtTokenDataStore
         vehicleInfoAdapter = VehicleInfoAdapter(vehicleInfoList)
@@ -69,10 +88,69 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val imageView = binding.imgBackground
+        ImageHelper.applyBlurToImageView(
+            imageView,
+            context,
+            R.drawable.homescreend,
+            blurRadius = 50f
+        )
+
+        val qtContainer = binding.qtContainer
+        val params: ViewGroup.LayoutParams = FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+
+        m_qmlView = QtQuickView(requireContext(), "Main.qml", "my_car_companionApp")
+
+        qtContainer.addView(m_qmlView, params)
+        m_qmlView!!.loadContent(m_mainQmlContent)
+        Log.d("Home", "After loaded")
+
+        m_qmlView?.setStatusChangeListener { status ->
+            Log.d("HomeFragment", status.toString())
+            if (status == QtQmlStatus.READY) {
+                Log.d("HomeFragment", "QtQuickView is ready")
+                m_qmlView?.setProperty("rightDoorOpen", isRightDoorOpen)
+                m_qmlView?.setProperty("leftDoorOpen", isLeftDoorOpen)
+                m_qmlView?.setProperty("rightWindowUp", isRightWindowUp)
+                m_qmlView?.setProperty("leftWindowUp", isLeftWindowUp)
+                m_qmlView?.setProperty("lightsOff", areLightsTurnedOff)
+                m_qmlView?.setProperty("areTiresTurning", isCarDriving)
+                m_qmlView?.setProperty("isItSnowing", isItSnowing)
+                //m_qmlView?.getProperty<String>("root.view3D.scene.qt_Car_Baked_low_v2.node.testing")
+            }
+        }
+
+//        bottomSheet.post {
+//            ImageHelper.applyBlurToViewBackground(requireContext(), bottomSheet, blurRadius = 25f)
+//        }
+
+        // Bottom sheet settings
         _bottomSheetBehavior?.setState(BottomSheetBehavior.STATE_COLLAPSED)
         _bottomSheetBehavior?.isDraggable = true
         _bottomSheetBehavior?.isHideable = false
-        _bottomSheetBehavior?.peekHeight = 150
+        _bottomSheetBehavior?.peekHeight = 450
+
+        // Expand bottom sheet when draggable guide is tapped
+        binding.llHomeFragmentBottomSheet.setOnClickListener {
+            _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        // Setup switch functionality
+        setupCustomSwitchLeftWindow()
+        setupCustomSwitchDrivingCar()
+        setupCustomSwitchRightWindow()
+
+        // Add toggle button setup
+        setupCustomToggleLocks()
+        setupCustomToggleLights()
+        setupCustomToggleDoorRight()
+        setupCustomToggleDoorLeft()
+
+        //Add sliders setup
+        setupCustomSliderTemperature()
 
         // Fetch and display components
         viewLifecycleOwner.lifecycleScope.launch {
@@ -117,8 +195,12 @@ class HomeFragment : Fragment() {
             }
             popupMenu.show()
         }
-    }
 
+        binding.actionMakeItSnow.setOnClickListener {
+            isItSnowing = !isItSnowing
+            m_qmlView?.setProperty("isItSnowing", isItSnowing)
+        }
+    }
 
     private fun showToast(message: String) {
         if (isAdded) {
@@ -392,8 +474,237 @@ class HomeFragment : Fragment() {
         }
     }
 
+    // Custom switch handlers
+    private fun setupCustomSwitchLeftWindow() {
+        val switchLabel = binding.switchWindowLeft.tvSwitchLabel
+        val customSwitch = binding.switchWindowLeft.customSwitch
+        val lockButton = binding.toggleLocks
+
+        // Set initial text
+        switchLabel.text = "Left window"
+        binding.switchWindowLeft.customSwitch.isChecked = !isLeftWindowUp
+
+        customSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if(!lockButton.isToggled) {
+                if (isChecked) {
+                    isLeftWindowUp = false
+                } else {
+                    isLeftWindowUp = true
+                }
+                m_qmlView?.setProperty("rightWindowUp", isLeftWindowUp)
+            } else {
+                binding.switchWindowLeft.customSwitch.isChecked = false
+            }
+        }
+    }
+
+    private fun setupCustomSwitchRightWindow() {
+        val switchLabel = binding.switchWindowRight.tvSwitchLabel
+        val customSwitch = binding.switchWindowRight.customSwitch
+        val lockButton = binding.toggleLocks
+
+        // Set initial text
+        switchLabel.text = "Right window"
+        binding.switchWindowRight.customSwitch.isChecked = !isRightWindowUp
+
+        customSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if(!lockButton.isToggled) {
+                if (isChecked) {
+                    isRightWindowUp = false
+                } else {
+                    isRightWindowUp = true
+                }
+                m_qmlView?.setProperty("leftWindowUp", isRightWindowUp)
+            } else {
+                binding.switchWindowRight.customSwitch.isChecked = false
+            }
+        }
+    }
+
+    private fun setupCustomSwitchDrivingCar() {
+        val switchLabel = binding.switchIsCarDriving.tvSwitchLabel
+        val customSwitch = binding.switchIsCarDriving.customSwitch
+        val lockButton = binding.toggleLocks
+
+        // Set initial text
+        switchLabel.text = "Driving"
+        binding.switchIsCarDriving.customSwitch.isChecked = isCarDriving
+
+        customSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if(!lockButton.isToggled) {
+                if (isChecked) {
+                    isCarDriving = true
+                } else {
+                    isCarDriving = false
+                }
+                m_qmlView?.setProperty("areTiresTurning", isCarDriving)
+            } else {
+                binding.switchIsCarDriving.customSwitch.isChecked = false
+            }
+        }
+    }
+
+    private fun setupCustomToggleLocks() {
+        val toggleButton = binding.toggleLocks
+
+        // Set initial state
+        toggleButton.setToggleIcon(R.drawable.lock) // Set your custom icon here
+        toggleButton.isToggled = false // Default state
+
+        // Set a click listener to handle toggle state changes
+        toggleButton.setOnClickListener {
+            toggleButton.isToggled = !toggleButton.isToggled
+            if (toggleButton.isToggled) {
+                triggerLock()
+            } else {
+                triggerUnlock()
+            }
+        }
+    }
+
+    private fun setupCustomToggleLights() {
+        val toggleButton = binding.toggleLights
+        var lockButton = binding.toggleLocks
+
+        // Set initial state
+        toggleButton.isToggled = !areLightsTurnedOff
+        if(toggleButton.isToggled) toggleButton.setToggleIcon(R.drawable.light_on)
+        else toggleButton.setToggleIcon(R.drawable.light)
+
+        // Set a click listener to handle toggle state changes
+        toggleButton.setOnClickListener {
+            if(!lockButton.isToggled){
+                toggleButton.isToggled = !toggleButton.isToggled
+                if (toggleButton.isToggled) {
+                    binding.toggleLights.setToggleIcon(R.drawable.light_on)
+                    areLightsTurnedOff = false
+                } else {
+                    binding.toggleLights.setToggleIcon(R.drawable.light)
+                    areLightsTurnedOff = true
+                }
+                m_qmlView?.setProperty("lightsOff", areLightsTurnedOff)
+            }
+        }
+    }
+
+    private fun setupCustomToggleDoorRight() {
+        val toggleButton = binding.toggleDoorRight
+        var lockButton = binding.toggleLocks
+
+        // Set initial state
+        toggleButton.setToggleIcon(R.drawable.door) // Set your custom icon here
+        toggleButton.isToggled = false // Default state
+
+        // Set a click listener to handle toggle state changes
+        toggleButton.setOnClickListener {
+            if(!lockButton.isToggled){
+                toggleButton.isToggled = !toggleButton.isToggled
+                if (toggleButton.isToggled) {
+                    isRightDoorOpen = true
+                } else {
+                    isRightDoorOpen = false
+                }
+                m_qmlView?.setProperty("rightDoorOpen", isRightDoorOpen)
+            }
+        }
+    }
+
+    private fun setupCustomToggleDoorLeft() {
+        val toggleButton = binding.toggleDoorLeft
+        var lockButton = binding.toggleLocks
+
+        // Set initial state
+        toggleButton.setToggleIcon(R.drawable.doorr) // Set your custom icon here
+        toggleButton.isToggled = false // Default state
+
+        // Set a click listener to handle toggle state changes
+        toggleButton.setOnClickListener {
+            if(!lockButton.isToggled) {
+                toggleButton.isToggled = !toggleButton.isToggled
+                if (toggleButton.isToggled) {
+                    isLeftDoorOpen = true
+                } else {
+                    isLeftDoorOpen = false
+                }
+                m_qmlView?.setProperty("leftDoorOpen", isLeftDoorOpen)
+            }
+        }
+    }
+
+    private fun setupCustomSliderTemperature() {
+        // Initialize UI components
+        val sliderTitle = binding.sliderTemperature.tvSliderTitle
+        val customSlider = binding.sliderTemperature.customSlider
+        val sliderInfoLabel = binding.sliderTemperature.tvSliderInfo
+
+        // Set the title text using a string resource
+        sliderTitle.text = getString(R.string.home_temperature)
+
+        // Set the initial value for slider info and slider
+        val initialTemperature = 25 // Adjust this based on your desired initial value
+        sliderInfoLabel.text = getString(R.string.temperature_label, initialTemperature)
+
+        // Set the slider custom range
+        customSlider.valueFrom = 0f
+        customSlider.valueTo = 100f
+        customSlider.stepSize = 1f
+
+        customSlider.value = initialTemperature.toFloat()
+
+        // Disable the value label on the thumb
+        customSlider.setLabelFormatter(null)
+
+        // Attach a listener to update the info label dynamically
+        customSlider.addOnChangeListener { slider, value, fromUser ->
+            Log.d("Slider", "Value: $value")
+            sliderInfoLabel.text = getString(R.string.temperature_label, value.toInt())
+        }
+    }
+
+    private fun triggerUnlock() {
+        m_qmlView?.setProperty("rightDoorOpen", isRightDoorOpen)
+        m_qmlView?.setProperty("leftDoorOpen", isLeftDoorOpen)
+        m_qmlView?.setProperty("rightWindowUp", isRightWindowUp)
+        m_qmlView?.setProperty("leftWindowUp", isLeftWindowUp)
+        m_qmlView?.setProperty("areTiresTurning", isCarDriving)
+        m_qmlView?.setProperty("lightsOff", areLightsTurnedOff)
+
+        binding.switchWindowRight.customSwitch.isChecked = !isRightWindowUp
+        binding.switchWindowLeft.customSwitch.isChecked = !isLeftWindowUp
+        binding.switchIsCarDriving.customSwitch.isChecked = isCarDriving
+        binding.toggleLights.isToggled = !areLightsTurnedOff
+        if(binding.toggleLights.isToggled) binding.toggleLights.setToggleIcon(R.drawable.light_on)
+        else binding.toggleLights.setToggleIcon(R.drawable.light)
+        binding.toggleDoorLeft.isToggled = isLeftDoorOpen
+        binding.toggleDoorRight.isToggled = isRightDoorOpen
+    }
+
+    private fun triggerLock() {
+        m_qmlView?.setProperty("rightDoorOpen", false)
+        m_qmlView?.setProperty("leftDoorOpen", false)
+        m_qmlView?.setProperty("rightWindowUp", true)
+        m_qmlView?.setProperty("leftWindowUp", true)
+        m_qmlView?.setProperty("areTiresTurning", false)
+        m_qmlView?.setProperty("lightsOff", true)
+
+        binding.switchWindowRight.customSwitch.isChecked = false
+        binding.switchWindowLeft.customSwitch.isChecked = false
+        binding.switchIsCarDriving.customSwitch.isChecked = false
+        binding.toggleLights.isToggled = false
+        binding.toggleLights.setToggleIcon(R.drawable.light)
+        binding.toggleDoorLeft.isToggled = false
+        binding.toggleDoorRight.isToggled = false
+    }
+
+    override fun onStatusChanged(status: QtQmlStatus?) {
+        Log.v("CAR_COMPANION_QT", "Status of QtQuickView: $status")
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.d("HomeFragment", "View is destroyed")
+        m_qmlView?.removeAllViews()
+        m_qmlView = null
         stopPeriodicComponentUpdates()
         _binding = null
     }

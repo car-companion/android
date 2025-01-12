@@ -1,0 +1,48 @@
+<RCC>
+    <qresource prefix="/qt/qml/Qt_Car_Baked_low_v2/">
+        <!-- Main QML File -->
+        <file>Main.qml</file>
+
+        <!-- Qt_Car_Baked_low_v2 Module -->
+        <file>Qt_Car_Baked_low_v2/Qt_Car_Baked_low_v2.qml</file>
+        <file>Qt_Car_Baked_low_v2/qmldir</file>
+        <file>Qt_Car_Baked_low_v2/_importdata.json</file>
+
+        <!-- Texture Files -->
+        <file>Qt_Car_Baked_low_v2/maps/textureData.jpg</file>
+        <file>Qt_Car_Baked_low_v2/maps/textureData72.jpg</file>
+        <file>Qt_Car_Baked_low_v2/maps/textureData81.jpg</file>
+        <file>Qt_Car_Baked_low_v2/maps/textureData8.png</file>
+        <file>Qt_Car_Baked_low_v2/maps/textureData45.jpg</file>
+        <file>Qt_Car_Baked_low_v2/maps/textureData63.jpg</file>
+        <file>Qt_Car_Baked_low_v2/maps/textureData58.jpg</file>
+        <file>Qt_Car_Baked_low_v2/maps/textureData67.jpg</file>
+        <file>Qt_Car_Baked_low_v2/maps/textureData33.jpg</file>
+        <file>Qt_Car_Baked_low_v2/maps/textureData76.jpg</file>
+        <file>Qt_Car_Baked_low_v2/maps/textureData43.jpg</file>
+        <file>Qt_Car_Baked_low_v2/maps/textureData35.png</file>
+        <file>Qt_Car_Baked_low_v2/maps/textureData13.jpg</file>
+        <file>Qt_Car_Baked_low_v2/maps/textureData83.jpg</file>
+        <file>Qt_Car_Baked_low_v2/maps/textureData6.jpg</file>
+
+        <!-- Mesh Files -->
+        <file>Qt_Car_Baked_low_v2/meshes/door_b_R_Low_mesh.mesh</file>
+        <file>Qt_Car_Baked_low_v2/meshes/doorWindow_b_L_low_mesh.mesh</file>
+        <file>Qt_Car_Baked_low_v2/meshes/headLights_low_mesh.mesh</file>
+        <file>Qt_Car_Baked_low_v2/meshes/seat_front_low_mesh.mesh</file>
+        <file>Qt_Car_Baked_low_v2/meshes/tire_FrontL_low_mesh.mesh</file>
+        <file>Qt_Car_Baked_low_v2/meshes/insideFloor_low_mesh.mesh</file>
+        <file>Qt_Car_Baked_low_v2/meshes/seat_rear_low_mesh.mesh</file>
+        <file>Qt_Car_Baked_low_v2/meshes/backR_Tire_b_Low_mesh.mesh</file>
+        <file>Qt_Car_Baked_low_v2/meshes/mainbody_b_Low_mesh.mesh</file>
+        <file>Qt_Car_Baked_low_v2/meshes/roof_b_001_mesh.mesh</file>
+        <file>Qt_Car_Baked_low_v2/meshes/backL_Tire_b_low_mesh.mesh</file>
+        <file>Qt_Car_Baked_low_v2/meshes/dash_low_mesh.mesh</file>
+        <file>Qt_Car_Baked_low_v2/meshes/doorWindow_b_R_low_mesh.mesh</file>
+        <file>Qt_Car_Baked_low_v2/meshes/frontR_Tire_b_Low_mesh.mesh</file>
+        <file>Qt_Car_Baked_low_v2/meshes/carBottom_low_mesh.mesh</file>
+        <file>Qt_Car_Baked_low_v2/meshes/door_b_L_Low_mesh.mesh</file>
+        <file>Qt_Car_Baked_low_v2/meshes/screens_low_mesh.mesh</file>
+        <file>Qt_Car_Baked_low_v2/meshes/wheel_screen_low_mesh.mesh</file>
+    </qresource>
+</RCC>

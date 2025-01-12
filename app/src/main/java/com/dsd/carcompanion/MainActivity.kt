@@ -63,9 +63,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 if (accessToken.isNullOrEmpty()) {
                     Log.d("MainActivity", "No Access JWT Token, navigating to UserStartActivity")
-//                    val intent = Intent(this@MainActivity, UserStartActivity::class.java)
-//                    startActivity(intent)
-//                    finish()
+                    val intent = Intent(this@MainActivity, UserStartActivity::class.java)
+                    startActivity(intent)
+                    finish()
                 }
             } catch (e: Exception) {
                 Log.e("MainActivity", "Error while checking JWT token: ${e.message}")

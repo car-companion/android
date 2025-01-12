@@ -65,12 +65,11 @@ class UserPermissionsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val imageView = binding.imgBackground
-        ImageHelper.applyBlurAndColorFilterToImageView(
+        ImageHelper.applyBlurToImageView(
             imageView,
             context,
             R.drawable.homescreend
         )
-
 
         // Bottom sheet settings
         _bottomSheetBehavior?.setState(BottomSheetBehavior.STATE_EXPANDED)
@@ -125,11 +124,13 @@ class UserPermissionsFragment : Fragment() {
                     val vehicleInfo = vehicles.joinToString("\n") { vehicle ->
                         "Nickname: ${vehicle.user_preferences ?: "N/A"}, VIN: ${vehicle.vin}"
                     }
+
                     //binding.tvShowApiResponse.text = vehicleInfo
+
                     updateVehicleSpinner(vehicles,accessToken)
                 }
                 is ResultOf.Error -> {
-                    binding.tvShowApiResponse.text = "Error: ${response.message}"
+//                    binding.tvShowApiResponse.text = "Error: ${response.message}"
                 }
 
                 ResultOf.Idle -> TODO()
@@ -172,6 +173,7 @@ class UserPermissionsFragment : Fragment() {
                     binding.radioGroupAccessLevel.clearCheck()
                     binding.radioFullAccess.isEnabled = false
                     binding.radioCustomAccess.isEnabled = false
+
                 } else if (vehicles.isNotEmpty() && position in 1 until vinMapping.size) {
                     val selectedVIN = vinMapping[position]
                     fetchComponentsForVIN(selectedVIN, accessToken)
@@ -183,7 +185,7 @@ class UserPermissionsFragment : Fragment() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                binding.tvShowApiResponse.text = getString(R.string.no_vehicle_selected)
+//                binding.tvShowApiResponse.text = getString(R.string.no_vehicle_selected)
             }
         }
     }
@@ -210,7 +212,7 @@ class UserPermissionsFragment : Fragment() {
                         }
                     }
                     is ResultOf.Error -> {
-                        binding.tvShowApiResponse.text = "Error: ${response.message}"
+//                        binding.tvShowApiResponse.text = "Error: ${response.message}"
                     }
                     ResultOf.Idle -> {
 //                        binding.tvShowApiResponse.text = getString(R.string.fetching_idle_state)
@@ -220,7 +222,7 @@ class UserPermissionsFragment : Fragment() {
                     }
                 }
             } catch (e: Exception) {
-                binding.tvShowApiResponse.text = "Error fetching permissions: ${e.message}"
+//                binding.tvShowApiResponse.text = "Error fetching permissions: ${e.message}"
                 Log.e("FetchPermissions", "Error fetching permissions: ${e.message}", e)
                 showToast("Error fetching permissions: ${e.message}")
             }

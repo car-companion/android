@@ -17,7 +17,6 @@ class NewPasswordFragment : Fragment() {
 
     private var _binding: FragmentNewPasswordBinding? = null
     private val binding get() = _binding!!
-    private var _bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,9 +24,6 @@ class NewPasswordFragment : Fragment() {
     ): View {
         _binding = FragmentNewPasswordBinding.inflate(inflater, container, false)
 
-        // Initialize BottomSheetBehavior
-        _bottomSheetBehavior = BottomSheetBehavior.from(binding.llNewPasswordFragmentBottomSheet)
-        _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
 
         return binding.root
     }
@@ -36,20 +32,12 @@ class NewPasswordFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val imageView = binding.imgBackground
-        ImageHelper.applyBlurAndColorFilterToImageView(
+        ImageHelper.applyBlurToImageView(
             imageView,
             context,
             R.drawable.background_colors
         )
 
-        _bottomSheetBehavior?.isDraggable = true
-        _bottomSheetBehavior?.isHideable = false
-        _bottomSheetBehavior?.peekHeight = 150
-
-        // Expand bottom sheet when draggable guide is tapped
-        binding.llNewPasswordFragmentBottomSheet.setOnClickListener {
-            _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
-        }
 
         val confirmPasswordEditText = binding.etNewPasswordConfirmPassword
 
