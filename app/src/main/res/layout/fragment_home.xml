@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -7,31 +6,89 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageView
+            android:id="@+id/img_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/homescreend" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-                android:id="@+id/fab_home_fragment_dimension"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/action_error_message"
+                android:layout_width="350dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:fontFamily="@font/roboto"
+                android:text="No car could be loaded. Please try again."
+                android:textColor="@color/white"
+                android:textSize="32sp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:text="@string/home_fragment_2d_mode_fab_dimension"
-                app:cornerRadius="100dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginTop="10dp" />
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/fgt_2D_3D_model"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+            <ImageView
+                android:id="@+id/action_charging_battery"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="20dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_battery_charging"
+                app:layout_constraintRight_toLeftOf="@id/action_outside_temperatore"
+                app:layout_constraintTop_toTopOf="@id/action_2d_3d_button" />
+
+            <TextView
+                android:id="@+id/action_outside_temperatore"
+                android:layout_width="70dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="20dp"
+                android:fontFamily="@font/roboto"
+                android:text="24°C"
+                android:textColor="@color/white"
+                android:textSize="32sp"
+                app:layout_constraintRight_toLeftOf="@id/action_2d_3d_button"
+                app:layout_constraintTop_toTopOf="@id/action_2d_3d_button" />
+
+            <TextView
+                android:id="@+id/action_2d_3d_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="30dp"
+                android:fontFamily="@font/roboto"
+                android:text="@string/action_3d"
+                android:textColor="@color/white"
+                android:textSize="32sp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/action_make_it_snow"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginTop="20dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_cloudy_snowing"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/action_2d_3d_button" />
+
+            <FrameLayout
+                android:id="@+id/qt_container"
+                android:layout_width="match_parent"
+                android:layout_height="550dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:navGraph="@navigation/nav_graph_2d_3d" />
-
+                app:layout_constraintTop_toBottomOf="@id/action_make_it_snow" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- Bottom Sheet -->
@@ -41,189 +98,107 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp"
-            android:background="@color/white"
+            android:background="@drawable/bottom_sheet_bg_glass"
             android:elevation="16dp"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+            app:behavior_peekHeight="90dp"
+            app:behavior_hideable="true"
             android:gravity="center"
-            android:maxHeight="600dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/bottom_sheet_title_parameters"
-                android:textAppearance="?attr/textAppearanceHeadline6"
-                android:textAlignment="center" />
+            android:maxHeight="600dp"
+            app:layout_constraintBottom_toTopOf="@id/custom_container">
 
             <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#D3D3D3"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp" />
+                android:id="@+id/bs_handle"
+                android:layout_width="36dp"
+                android:layout_height="5dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/bs_handle_background" />
 
-            <com.google.android.flexbox.FlexboxLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:justifyContent="center"
-                app:alignItems="center">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/bottom_sheet_vehicle_tv_label"
-                    android:textSize="20sp"
-                    android:textAlignment="center" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center">
-
-                    <com.google.android.material.materialswitch.MaterialSwitch
-                        android:id="@+id/sw_home_fragment_vehicle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp" />
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tv_home_fragment_vehicle_state"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/bottom_sheet_vehicle_locked_tv_state"
-                    android:textSize="20sp"
-                    android:textAlignment="center" />
-            </com.google.android.flexbox.FlexboxLayout>
-
-            <com.google.android.flexbox.FlexboxLayout
+            <LinearLayout
+                android:id="@+id/toggle_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:justifyContent="center"
-                app:alignItems="center">
+                android:orientation="horizontal"
+                android:layout_marginHorizontal="20dp"
+                android:gravity="center">
 
-                <TextView
-                    android:layout_width="match_parent"
+                <com.dsd.carcompanion.utility.CustomToggleButton
+                    android:id="@+id/toggle_door_right"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/bottom_sheet_windows_tv_label"
-                    android:textSize="20sp"
-                    android:textAlignment="center" />
+                    android:layout_marginVertical="8dp"
+                    android:translationZ="16dp" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <!-- Spacer between buttons -->
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <com.dsd.carcompanion.utility.CustomToggleButton
+                    android:id="@+id/toggle_locks"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center">
+                    android:layout_marginVertical="8dp"
+                    android:translationZ="16dp" />
 
-                    <com.google.android.material.materialswitch.MaterialSwitch
-                        android:id="@+id/sw_home_fragment_windows"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp" />
-                </LinearLayout>
+                <!-- Spacer between buttons -->
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
 
-                <TextView
-                    android:id="@+id/tv_home_fragment_windows_state"
-                    android:layout_width="match_parent"
+                <com.dsd.carcompanion.utility.CustomToggleButton
+                    android:id="@+id/toggle_lights"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/bottom_sheet_windows_closed_tv_state"
-                    android:textSize="20sp"
-                    android:textAlignment="center" />
-            </com.google.android.flexbox.FlexboxLayout>
+                    android:layout_marginVertical="8dp"
+                    android:translationZ="16dp" />
 
-            <com.google.android.flexbox.FlexboxLayout
+                <!-- Spacer between buttons -->
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <com.dsd.carcompanion.utility.CustomToggleButton
+                    android:id="@+id/toggle_door_left"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    android:translationZ="16dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/custom_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:justifyContent="space_around"
-                app:alignItems="center">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/bottom_sheet_lights_tv_label"
-                    android:textSize="20sp"
-                    android:textAlignment="center" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center">
-
-                    <com.google.android.material.materialswitch.MaterialSwitch
-                        android:id="@+id/sw_home_fragment_lights"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp" />
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tv_home_fragment_lights_state"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/bottom_sheet_lights_off_tv_state"
-                    android:textSize="20sp"
-                    android:textAlignment="center" />
-            </com.google.android.flexbox.FlexboxLayout>
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:justifyContent="space_around"
-                app:alignItems="center">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/bottom_sheet_temperature_tv_label"
-                    android:textSize="20sp"
-                    android:textAlignment="center" />
-
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/slider_home_fragment_temperature"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:value="25"
-                    android:valueFrom="15"
-                    android:valueTo="40"
-                    android:stepSize="1" />
-
-                <TextView
-                    android:id="@+id/tv_home_fragment_temperature"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:textAlignment="center" />
-            </com.google.android.flexbox.FlexboxLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#D3D3D3"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/bottom_sheet_title_information"
-                android:textAppearance="?attr/textAppearanceHeadline6"
-                android:textAlignment="center" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#D3D3D3"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_home_fragment_vehicle_info"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:padding="16dp"
-                tools:listitem="@layout/item_vehicle_info"
-                tools:listdata="@array/vehicle_info" />
+                android:background="@drawable/content_box"
+                android:elevation="8dp"
+                android:layout_margin="16dp">
+
+                <!-- Switch Vehicle -->
+                    <include
+                        layout="@layout/custom_switch"
+                        android:id="@+id/switch_window_left" />
+
+                <!-- Switch Windows -->
+                    <include
+                        layout="@layout/custom_switch"
+                        android:id="@+id/switch_window_right" />
+                <!-- Switch Lights -->
+                    <include
+                        layout="@layout/custom_switch"
+                        android:id="@+id/switch_is_car_driving" />
+
+                <!-- Slider Temperature -->
+                    <include
+                        layout="@layout/custom_slider"
+                        android:id="@+id/slider_temperature" />
+            </LinearLayout>
         </LinearLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

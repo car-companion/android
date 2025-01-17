@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="vehicle_3d_container" type="id" />
+    <item name="grant_access_date_picker" type="id" />
+    <item name="radio_group_full_access" type="id" />
+    <item name="radio_revoke_full_access" type="id" />
+    <item name="radio_read_full_access" type="id" />
+    <item name="radio_write_full_access" type="id" />
+    <item name="ll_grant_access_fragment_components" type="id" />
+</resources>

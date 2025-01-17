@@ -1,138 +1,302 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
-        android:id="@+id/ll_registration_fragment_form"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/ll_registration_fragment_to_login"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <EditText
-            android:id="@+id/et_registration_fragment_first_name"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:ems="10"
-            android:hint="@string/registration_fragment_hint_first_name"
-            android:importantForAutofill="no"
-            android:inputType="textCapWords" />
-
-        <EditText
-            android:id="@+id/et_registration_fragment_last_name"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:ems="10"
-            android:hint="@string/registration_fragment_hint_last_name"
-            android:importantForAutofill="no"
-            android:inputType="textCapWords" />
-
-        <EditText
-            android:id="@+id/et_registration_fragment_email"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:ems="10"
-            android:hint="@string/registration_fragment_hint_email"
-            android:importantForAutofill="no"
-            android:inputType="textEmailAddress" />
-
-        <EditText
-            android:id="@+id/et_registration_fragment_username"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:ems="10"
-            android:hint="@string/registration_fragment_hint_username"
-            android:importantForAutofill="no"
-            android:inputType="text" />
-
-        <EditText
-            android:id="@+id/et_registration_fragment_password"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:ems="10"
-            android:hint="@string/registration_fragment_hint_password"
-            android:importantForAutofill="no"
-            android:inputType="textPassword" />
-
-        <EditText
-            android:id="@+id/et_registration_fragment_confirm_password"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:ems="10"
-            android:hint="@string/registration_fragment_hint_confirm_password"
-            android:importantForAutofill="no"
-            android:inputType="textPassword" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_registration_fragment_to_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/ll_registration_fragment_submit"
-        app:layout_constraintTop_toBottomOf="@id/ll_registration_fragment_form">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/registration_fragment_textview_already_registered"/>
-
-        <Space
-            android:layout_width="4dp"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:id="@+id/textViewToLogin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/registration_fragment_link_go_to_login"
-            android:textColor="@color/link"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_registration_fragment_submit"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_registration_fragment_to_login">
+        android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/btn_registration_fragment_submit"
-            android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/img_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/background_colors" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/img_logo"
+                android:layout_width="260dp"
+                android:layout_height="160dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/logo"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <!-- Bottom Sheet -->
+        <LinearLayout
+            android:id="@+id/ll_registration_fragment_bottom_sheet"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/registration"
-            android:layout_margin="10dp"/>
+            android:orientation="vertical"
+            android:elevation="16dp"
+            app:layout_behavior="com.dsd.carcompanion.utility.CustomBottomSheetBehavior"
+            app:behavior_peekHeight="30dp"
+            app:behavior_hideable="true"
+            android:gravity="center"
+            android:background="@drawable/bottom_sheet_background"
+            android:maxHeight="600dp">
 
-        <TextView
-            android:id="@+id/textViewRegistrationInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_name" />
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ll_registration_fragment_dragable_part"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/activity_vertical_margin">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <View
+                    android:id="@+id/bs_handle"
+                    android:layout_width="36dp"
+                    android:layout_height="5dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/bs_handle_background" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"/>
+            </LinearLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="0dp"
+                android:paddingLeft="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingEnd="@dimen/activity_vertical_margin">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tv_registration_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textSize="20sp"
+                        android:layout_marginTop="@dimen/activity_vertical_half_margin"
+                        android:text="Register user" />
+                    <!-- First name -->
+                    <TextView
+                        android:id="@+id/tv_registration_firstname"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textSize="14sp"
+                        android:layout_marginTop="@dimen/activity_vertical_half_margin"
+                        android:text="@string/registration_fragment_hint_first_name" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/et_registration_fragment_first_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:background="@drawable/rounded_edittext" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <TextView
+                        android:id="@+id/tv_error_first_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/field_required"
+                        android:textColor="@color/error_message"
+                        android:visibility="gone"
+                        android:layout_marginBottom="5dp" />
+
+                    <!-- Last name -->
+                    <TextView
+                        android:id="@+id/tv_registration_lastname"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textSize="14sp"
+                        android:layout_marginTop="@dimen/activity_vertical_half_margin"
+                        android:text="@string/registration_fragment_hint_last_name" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/et_registration_fragment_last_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:background="@drawable/rounded_edittext" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <TextView
+                        android:id="@+id/tv_error_last_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/field_required"
+                        android:textColor="@color/error_message"
+                        android:visibility="gone"
+                        android:layout_marginBottom="5dp" />
+
+                    <!-- Username -->
+                    <TextView
+                        android:id="@+id/tv_registration_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textSize="14sp"
+                        android:layout_marginTop="@dimen/activity_vertical_half_margin"
+                        android:text="@string/registration_fragment_hint_username" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/et_registration_fragment_username"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:background="@drawable/rounded_edittext" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <TextView
+                        android:id="@+id/tv_error_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/field_required"
+                        android:textColor="@color/error_message"
+                        android:visibility="gone"
+                        android:layout_marginBottom="5dp" />
+
+                    <!-- Email -->
+                    <TextView
+                        android:id="@+id/tv_registration_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textSize="14sp"
+                        android:layout_marginTop="@dimen/activity_vertical_half_margin"
+                        android:text="@string/registration_fragment_hint_email" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/et_registration_fragment_email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textEmailAddress"
+                            android:background="@drawable/rounded_edittext" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <TextView
+                        android:id="@+id/tv_error_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/field_required"
+                        android:textColor="@color/error_message"
+                        android:visibility="gone"
+                        android:layout_marginBottom="5dp"/>
+
+                    <!-- Password -->
+                    <TextView
+                        android:id="@+id/tv_registration_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textSize="14sp"
+                        android:layout_marginTop="@dimen/activity_vertical_half_margin"
+                        android:text="@string/registration_fragment_hint_password" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/et_registration_fragment_password"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPassword"
+                            android:background="@drawable/rounded_edittext" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <TextView
+                        android:id="@+id/tv_error_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/field_required"
+                        android:textColor="@color/error_message"
+                        android:visibility="gone"
+                        android:layout_marginBottom="5dp"/>
+
+                    <!-- Confirm password -->
+                    <TextView
+                        android:id="@+id/tv_registration_confirm_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textSize="14sp"
+                        android:layout_marginTop="@dimen/activity_vertical_half_margin"
+                        android:text="@string/registration_fragment_hint_confirm_password" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/et_registration_fragment_confirm_password"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPassword"
+                            android:background="@drawable/rounded_edittext" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <TextView
+                        android:id="@+id/tv_error_confirm_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/field_required"
+                        android:textColor="@color/error_message"
+                        android:visibility="gone"
+                        android:layout_marginBottom="5dp" />
+
+                    <Button
+                        android:id="@+id/btn_registration_fragment_submit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="40dp"
+                        android:background="@drawable/custom_button"
+                        android:fontFamily="@font/roboto_bold"
+                        android:text="@string/registration" />
+                    <TextView
+                        android:id="@+id/tv_error_unexpcted"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/field_required"
+                        android:textColor="@color/error_message"
+                        android:visibility="gone"
+                        android:layout_marginBottom="5dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/registration_fragment_textview_already_registered"/>
+
+                    <TextView
+                        android:id="@+id/textViewToLogin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/registration_fragment_link_go_to_login"
+                        android:textColor="@color/link"/>
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

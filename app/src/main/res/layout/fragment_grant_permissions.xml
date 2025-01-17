@@ -1,139 +1,184 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Section 1: User Identifier -->
-    <EditText
-        android:id="@+id/et_user_identifier"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter User Email/Phone" />
+        android:layout_height="match_parent">
 
-    <!-- Section 2: Vehicle Selection -->
-    <Spinner
-        android:id="@+id/spinner_vehicle_selection"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/et_user_identifier"
-        android:layout_marginTop="16dp" />
+        <!-- Background Image -->
+        <ImageView
+            android:id="@+id/img_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/homescreend" />
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/spinner_vehicle_selection"
-        android:layout_marginTop="16dp"
-        android:background="?android:attr/listDivider" />
-
-    <!-- Section 3: Permission Presets -->
-    <TextView
-        android:id="@+id/tv_permission_presets"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/divider"
-        android:layout_marginTop="16dp"
-        android:text="Permission Presets"
-        android:textStyle="bold" />
-
-    <RadioGroup
-        android:id="@+id/radio_group_access_level"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_permission_presets"
-        android:layout_marginTop="8dp"
-        android:orientation="vertical">
-
-        <RadioButton
-            android:id="@+id/radio_full_access"
-            android:layout_width="wrap_content"
+        <!-- Bottom Sheet -->
+        <RelativeLayout
+            android:id="@+id/ll_permissions_access_fragment_bottom_sheet"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Full Access" />
+            android:background="@drawable/bottom_sheet_background"
+            android:elevation="16dp"
+            android:gravity="center"
+            android:padding="16dp"
+            app:behavior_hideable="true"
+            app:behavior_peekHeight="30dp"
+            android:maxHeight="500dp"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-        <RadioButton
-            android:id="@+id/radio_custom_access"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Custom Access" />
-    </RadioGroup>
+            <!-- Spacer -->
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="40dp" />
 
-    <View
-        android:id="@+id/divider2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/radio_group_access_level"
-        android:layout_marginTop="16dp"
-        android:background="?android:attr/listDivider" />
-
-    <!-- Section 4: Permissions -->
-    <TextView
-        android:id="@+id/tv_permissions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/divider2"
-        android:layout_marginTop="16dp"
-        android:text="Permissions"
-        android:textStyle="bold" />
-
-    <LinearLayout
-        android:id="@+id/permissions_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_permissions"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        android:weightSum="2">
-
-        <!-- First Column -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <CheckBox
-                android:id="@+id/checkbox_temp"
-                android:layout_width="wrap_content"
+            <!-- Scroll View for Content -->
+            <ScrollView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Manage Temperature" />
+                android:fillViewport="true">
 
-            <CheckBox
-                android:id="@+id/checkbox_locks"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Vehicle Locks" />
-        </LinearLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:layout_marginTop="24dp">
 
-        <!-- Second Column -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+                    <!-- Section 1: User Identifier -->
+                    <TextView
+                        android:id="@+id/tv_user_identifier"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/roboto"
+                        android:textSize="14sp"
+                        android:text="@string/login_fragment_hint_username" />
 
-            <CheckBox
-                android:id="@+id/checkbox_lights"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Manage Lights" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_accesses_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_user_identifier">
 
-            <CheckBox
-                android:id="@+id/checkbox_extra"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Extra Feature" />
-        </LinearLayout>
-    </LinearLayout>
+                        <EditText
+                            android:id="@+id/et_user_identifier"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/rounded_edittext"
+                            android:inputType="textPersonName"
+                            android:layout_marginTop="2dp"
+                            android:lines="1"
+                            android:maxLines="1"
+                            app:errorEnabled="true" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Section 5: Grant Access Button -->
-    <Button
-        android:id="@+id/btnGrantAccess"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/permissions_layout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:text="Update Access" />
+                    <!-- Section 2: Vehicle Selection -->
+                    <Spinner
+                        android:id="@+id/spinner_vehicle_selection"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_below="@id/til_accesses_username"
+                        android:theme="@style/CustomSpinnerStyle"
+                        android:background="@drawable/spinner_background"
+                        android:paddingHorizontal="10dp"
+                        android:layout_marginTop="16dp" />
 
-</RelativeLayout>
+                    <View
+                        android:id="@+id/divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@id/spinner_vehicle_selection"
+                        android:layout_marginTop="16dp"
+                        android:background="?android:attr/listDivider" />
+
+                    <!-- Section 3: Permission Presets -->
+                    <TextView
+                        android:id="@+id/tv_permission_presets"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/divider"
+                        android:layout_marginTop="16dp"
+                        android:fontFamily="@font/roboto"
+                        android:text="@string/permission_presets_title"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/radio_group_access_level"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_permission_presets"
+                        android:layout_marginTop="8dp"
+                        android:orientation="vertical">
+
+                        <RadioButton
+                            android:id="@+id/radio_full_access"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/full_access_option" />
+
+                        <RadioButton
+                            android:id="@+id/radio_custom_access"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/custom_access_option" />
+                    </RadioGroup>
+
+                    <View
+                        android:id="@+id/divider2"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@id/radio_group_access_level"
+                        android:layout_marginTop="16dp"
+                        android:background="?android:attr/listDivider" />
+
+                    <!-- Section 4: Permissions -->
+                    <TextView
+                        android:id="@+id/tv_permissions"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/divider2"
+                        android:layout_marginTop="16dp"
+                        android:fontFamily="@font/roboto"
+                        android:text="@string/permissions_title"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <ScrollView
+                        android:id="@+id/scroll_permissions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_permissions"
+                        android:layout_marginTop="8dp">
+
+                        <LinearLayout
+                            android:id="@+id/permissions_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                        </LinearLayout>
+                    </ScrollView>
+
+                    <!-- Section 5: Grant Access Button -->
+                    <Button
+                        android:id="@+id/btn_grant_access"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/scroll_permissions"
+                        android:layout_marginTop="24dp"
+                        android:text="@string/update_access_button" />
+
+                    <TextView
+                        android:id="@+id/tv_show_api_response"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/btn_grant_access"
+                        android:layout_marginTop="20dp"/>
+                </RelativeLayout>
+            </ScrollView>
+        </RelativeLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
