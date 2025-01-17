@@ -36,32 +36,21 @@
         android:name="com.dsd.carcompanion.userRegistrationAndLogin.ForgotPassword.EmailFragment"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_email">
-
         <action
-            android:id="@+id/action_ForgotPassword_to_CodeForgotPassword"
-            app:destination="@id/CodeForgotPasswordFragment" />
+            android:id="@+id/action_ForgotPasswordFragment_to_LoginFragment"
+            app:destination="@id/LoginFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/CodeForgotPasswordFragment"
         android:name="com.dsd.carcompanion.userRegistrationAndLogin.ForgotPassword.CodeFragment"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_code">
-
-        <action
-            android:id="@+id/action_CodeForgotPassword_to_NewPassword"
-            app:destination="@id/NewPasswordFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_code"/>
 
     <fragment
         android:id="@+id/NewPasswordFragment"
         android:name="com.dsd.carcompanion.userRegistrationAndLogin.ForgotPassword.NewPasswordFragment"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_new_password">
-
-        <action
-            android:id="@+id/action_NewPassword_to_LoginFragment"
-            app:destination="@id/LoginFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_new_password"/>
 
 </navigation>

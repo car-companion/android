@@ -16,16 +16,12 @@ class CodeFragment : Fragment() {
 
     private var _binding: FragmentCodeBinding? = null
     private val binding get() = _binding!!
-    private var _bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCodeBinding.inflate(inflater, container, false)
-        // Initialize BottomSheetBehavior
-        _bottomSheetBehavior = BottomSheetBehavior.from(binding.llCodeFragmentBottomSheet)
-        _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
 
         return binding.root
     }
@@ -34,31 +30,22 @@ class CodeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val imageView = binding.imgBackground
-        ImageHelper.applyBlurAndColorFilterToImageView(
+        ImageHelper.applyBlurToImageView(
             imageView,
             context,
             R.drawable.background_colors
         )
-
-        _bottomSheetBehavior?.isDraggable = true
-        _bottomSheetBehavior?.isHideable = false
-        _bottomSheetBehavior?.peekHeight = 150
-
-        // Expand bottom sheet when draggable guide is tapped
-        binding.llCodeFragmentBottomSheet.setOnClickListener {
-            _bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
-        }
 
         binding.btnForgotPasswordVerify.setOnClickListener {
             val codeEditText = binding.etForgotPasswordEnterCode
 
             val codeText: String = binding.etForgotPasswordEnterCode.text.toString()
 
-            if (isValidCode(codeText)) {
+            /*if (isValidCode(codeText)) {
                 findNavController().navigate(R.id.action_CodeForgotPassword_to_NewPassword)
             } else {
                 codeEditText.error = getString(R.string.forgot_pass_fragment_message_code_error)
-            }
+            }*/
         }
     }
 

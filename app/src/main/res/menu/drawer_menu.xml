@@ -1,0 +1,31 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_landing_page"
+        android:icon="@drawable/ic_home"
+        android:title="Home screen" />
+    <item
+        android:id="@+id/nav_user_access"
+        android:icon="@drawable/ic_user_access"
+        android:title="Grant access" />
+    <item
+        android:id="@+id/nav_get_ownership"
+        android:icon="@drawable/ic_get_ownership"
+        android:title="Take car ownership" />
+    <item
+        android:id="@+id/nav_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="Settings" />
+    <!-- Divider -->
+    <item
+        android:id="@+id/divider"
+        android:title=""
+        android:enabled="false" />
+
+    <!-- Logout option at the bottom -->
+    <group android:menuCategory="secondary">
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_logout"
+            android:title="Logout" />
+    </group>
+</menu>

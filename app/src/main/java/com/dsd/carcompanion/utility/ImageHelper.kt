@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 
 object ImageHelper {
 
-    fun applyBlurAndColorFilterToImageView(
+    fun applyBlurToImageView(
         imageView: ImageView,
         context: Context?,
         svgResource: Int,

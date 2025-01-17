@@ -92,13 +92,14 @@
                 app:cornerRadius="25dp"
                 app:strokeColor="@color/black"
                 app:strokeWidth="1dp"
-                android:layout_marginStart="40dp" />
+                android:layout_marginStart="5dp" />
 
             <CheckBox
                 android:id="@+id/cb_edit_vehicle_dialog_interior_metalic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginStart="5dp"
                 android:text="Metalic" />
 
         </LinearLayout>
@@ -124,13 +125,14 @@
                 app:cornerRadius="25dp"
                 app:strokeColor="@color/black"
                 app:strokeWidth="1dp"
-                android:layout_marginStart="45dp" />
+                android:layout_marginStart="10dp" />
 
             <CheckBox
                 android:id="@+id/cb_edit_vehicle_dialog_exterior_metalic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginStart="5dp"
                 android:text="Metalic" />
         </LinearLayout>
         <Button

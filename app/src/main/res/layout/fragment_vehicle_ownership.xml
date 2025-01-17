@@ -18,7 +18,7 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="500dp"
-            android:layout_marginTop="54dp"
+            android:layout_marginTop="90dp"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginLeft="@dimen/activity_horizontal_margin">
 
@@ -91,7 +91,7 @@
                     android:id="@+id/et_vehicle_ownership_fragment_model_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Model number"
+                    android:hint="@string/hint_model_number"
                     android:importantForAutofill="no"
                     android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
                     android:inputType="textCapCharacters" />
@@ -101,7 +101,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="Take ownership" />
+                    android:text="@string/vo_ownership" />
 
                 <View
                     android:id="@+id/view_vehicle_ownership_fragment_divider"
@@ -142,7 +142,7 @@
                         android:id="@+id/et_vehicle_ownership_fragment_nickname"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Nickname"
+                        android:hint="@string/hint_nickname"
                         android:importantForAutofill="no" />
 
                     <!-- Interior Color Selection -->
@@ -156,7 +156,7 @@
                             android:id="@+id/btn_vehicle_ownership_fragment_interior_color"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Interiour color" />
+                            android:text="@string/vo_interior_color" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btn_vehicle_ownership_fragment_show_interior_color"
@@ -179,7 +179,7 @@
                             android:id="@+id/btn_vehicle_ownership_fragment_exterior_color"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Exterior color" />
+                            android:text="@string/choose_an_exterior_color" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btn_vehicle_ownership_fragment_show_exterior_color"
@@ -196,7 +196,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Save preferences" />
+                        android:text="@string/save_preferences" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

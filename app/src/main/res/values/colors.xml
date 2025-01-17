@@ -5,7 +5,8 @@
     <color name="cream">#C8C5C5</color>
     <color name="main_green">#3F7D20</color>
     <color name="main_gray">#454955</color>
-    <color name="link">#0067EF</color>
+    <color name="link">#454955</color>
     <color name="link_color">#1E90FF</color>
+    <color name="semi_transparent">#20FFFFFF</color>
     <color name="error_message">#FF0000</color>
 </resources>
