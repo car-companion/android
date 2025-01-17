@@ -95,71 +95,75 @@ class LoginFragment : Fragment() {
         })
 
         binding.btnLoginFragmentSubmit.setOnClickListener {
-            binding.tvLoginFragmentErrorLogin.visibility = View.GONE
+            loginFunction()
+        }
 
-            val usernameEditText: String =
-                binding.tilLoginFragmentUsername.editText?.text.toString()
-            val passwordEditText: String =
-                binding.tilLoginFragmentPassword.editText?.text.toString()
+        binding.linkLoginFragmentForgotPassword.setTextColor(
+            ContextCompat.getColor(requireContext(), R.color.link)
+        )
+        binding.linkLoginFragmentForgotPassword.setOnClickListener {
+            findNavController().navigate(R.id.action_LoginFragment_to_ForgotPasswordFragment)
+        }
 
-            val flag = checkUserNamePasswordEmpty(usernameEditText, passwordEditText)
+        binding.linkLoginFragmentDontHaveAccount.setOnClickListener {
+            findNavController().navigate(R.id.action_LoginFragment_to_RegistrationFragment)
+        }
+    }
 
-            if (flag) {
-                binding.tvLoginFragmentErrorLogin.visibility = View.VISIBLE
-            } else {
-                val loginRequest =
-                    LoginRequest(username = usernameEditText, password = passwordEditText)
+    private fun loginFunction() {
+        binding.tvLoginFragmentErrorLogin.visibility = View.GONE
 
-                val userService = UserClient.apiService
-                val authRepository = AuthRepository(userService, jwtTokenDataStore)
+        val usernameEditText: String =
+            binding.tilLoginFragmentUsername.editText?.text.toString()
+        val passwordEditText: String =
+            binding.tilLoginFragmentPassword.editText?.text.toString()
 
-                viewLifecycleOwner.lifecycleScope.launch {
-                    try {
-                        val response = authRepository.login(loginRequest)
+        val flag = checkUserNamePasswordEmpty(usernameEditText, passwordEditText)
 
-                        withContext(Dispatchers.Main) {
-                            if (response is ResultOf.Success) {
-                                Log.d("Login Fragment", "Well done, you registred")
-                                val intent = Intent(requireActivity(), MainActivity::class.java)
-                                startActivity(intent)
+        if (flag) {
+            binding.tvLoginFragmentErrorLogin.visibility = View.VISIBLE
+        } else {
+            val loginRequest =
+                LoginRequest(username = usernameEditText, password = passwordEditText)
 
-                                requireActivity().finish()
-                            } else if (response is ResultOf.Error) {
-                                binding.tvLoginFragmentErrorLogin.text =
-                                    "Wrong username or password. Please try again."
-                                binding.tvLoginFragmentErrorLogin.visibility = View.VISIBLE
-                                Log.e("LoginFragment", "Login failed: ${response.message}")
-                            } else {
-                                binding.tvLoginFragmentErrorLogin.text =
-                                    "Something went wrong during login. Please try again."
-                                binding.tvLoginFragmentErrorLogin.visibility = View.VISIBLE
-                                Log.e("Login Fragment", "Something else")
-                            }
-                        }
-                    } catch (e: Exception) {
-                        binding.tvLoginFragmentErrorLogin.text =
-                            "Couldn't connect to the server. Please check your internet connection and try again."
-                        binding.tvLoginFragmentErrorLogin.visibility = View.VISIBLE
-                        Log.e("LoginFragment", "Error during login: ${e.message}")
+            val userService = UserClient.apiService
+            val authRepository = AuthRepository(userService, jwtTokenDataStore)
 
-                    } finally {
-                        withContext(Dispatchers.Main) {
-                            binding.btnLoginFragmentSubmit.isEnabled = true
-                            binding.btnLoginFragmentSubmit.text = getString(R.string.button_login)
+            viewLifecycleOwner.lifecycleScope.launch {
+                try {
+                    val response = authRepository.login(loginRequest)
+
+                    withContext(Dispatchers.Main) {
+                        if (response is ResultOf.Success) {
+                            Log.d("Login Fragment", "Well done, you registred")
+                            val intent = Intent(requireActivity(), MainActivity::class.java)
+                            startActivity(intent)
+
+                            requireActivity().finish()
+                        } else if (response is ResultOf.Error) {
+                            binding.tvLoginFragmentErrorLogin.text =
+                                "Wrong username or password. Please try again."
+                            binding.tvLoginFragmentErrorLogin.visibility = View.VISIBLE
+                            Log.e("LoginFragment", "Login failed: ${response.message}")
+                        } else {
+                            binding.tvLoginFragmentErrorLogin.text =
+                                "Something went wrong during login. Please try again."
+                            binding.tvLoginFragmentErrorLogin.visibility = View.VISIBLE
+                            Log.e("Login Fragment", "Something else")
                         }
                     }
+                } catch (e: Exception) {
+                    binding.tvLoginFragmentErrorLogin.text =
+                        "Couldn't connect to the server. Please check your internet connection and try again."
+                    binding.tvLoginFragmentErrorLogin.visibility = View.VISIBLE
+                    Log.e("LoginFragment", "Error during login: ${e.message}")
+
+                } finally {
+                    withContext(Dispatchers.Main) {
+                        binding.btnLoginFragmentSubmit.isEnabled = true
+                        binding.btnLoginFragmentSubmit.text = getString(R.string.button_login)
+                    }
                 }
-            }
-
-            binding.linkLoginFragmentForgotPassword.setTextColor(
-                ContextCompat.getColor(requireContext(), R.color.link)
-            )
-            binding.linkLoginFragmentForgotPassword.setOnClickListener {
-                findNavController().navigate(R.id.action_LoginFragment_to_ForgotPasswordFragment)
-            }
-
-            binding.linkLoginFragmentDontHaveAccount.setOnClickListener {
-                findNavController().navigate(R.id.action_LoginFragment_to_RegistrationFragment)
             }
         }
     }

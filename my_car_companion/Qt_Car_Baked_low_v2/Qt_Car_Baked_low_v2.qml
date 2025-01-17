@@ -15,6 +15,7 @@ Node {
     property bool leftDoorOpen: false
     property bool lightsOff: true
     property bool areTiresTurning: false
+    property string customCarColor: "#ffa9bdff" //ffa9bdff
 
     // Resources
     property url textureData: "maps/textureData.jpg"
@@ -642,7 +643,7 @@ Node {
         PrincipledMaterial {
             id: m_CarPaint_material
             objectName: "M_CarPaint"
-            baseColor: "#ffa9bdff"
+            baseColor: node.customCarColor
             metalness: 0.25
             roughness: 0.10000000149011612
             cullMode: PrincipledMaterial.NoCulling

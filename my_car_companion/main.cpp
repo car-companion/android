@@ -5,10 +5,13 @@
 #include <QQmlApplicationEngine>
 #include <QQuickView>
 #include <cstdio>
+#include <QSurfaceFormat>
+#include <QDebug>
+#include <QWindow>
 
 int main(int argc, char *argv[])
 {
-    printf("Cpp reporting");
+    qDebug() << "Cpp reporting";
 
     qputenv("QT_ENABLE_HIGHDPI_SCALING", "0");
     QGuiApplication app(argc, argv);

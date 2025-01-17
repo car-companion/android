@@ -16,24 +16,12 @@ Rectangle {
     property bool leftWindowUp: true
     property bool leftDoorOpen: false
     property bool lightsOff: false
-    property bool runningRotation: true
+    property bool runningRotation: false
     property bool areTiresTurning: false
     property bool isItSnowing: false
-    property bool mouseAreaEnabled: true
+    property bool mouseAreaEnabled: false
+    property string customCarColor: "#ffa9bdff" //ffa9bdff
     color: "#00FFFFFF"
-
-    MouseArea {
-        anchors.fill: parent
-        enabled: root.mouseAreaEnabled
-
-        OrbitCameraController {
-            anchors.fill: parent
-            origin: qt_Car_Baked_low_v2
-            camera: sceneCamera
-            xInvert: true
-            ySpeed: 0
-        }
-    }
 
     View3D {
         id: view3D
@@ -47,6 +35,15 @@ Rectangle {
             id: sceneEnvironment
             antialiasingMode: SceneEnvironment.MSAA
             antialiasingQuality: SceneEnvironment.High
+        }
+
+        OrbitCameraController {
+            anchors.fill: parent
+            origin: qt_Car_Baked_low_v2
+            camera: sceneCamera
+            xInvert: true
+            ySpeed: 0
+            enabled: root.mouseAreaEnabled
         }
 
         Node {
@@ -67,13 +64,14 @@ Rectangle {
                 leftDoorOpen: root.leftDoorOpen
                 lightsOff: root.lightsOff
                 areTiresTurning: root.areTiresTurning
+                customCarColor: root.customCarColor
 
                 x: 1000
                 y: 0
                 z: 3000
 
                 ParallelAnimation {
-                    id: driveInAnimation // Give the animation an ID
+                    id: driveInAnimation
                     NumberAnimation {
                         target: qt_Car_Baked_low_v2
                         property: "x"
@@ -98,10 +96,29 @@ Rectangle {
                         duration: 5000
                         easing.type: Easing.InOutQuad
                     }
+
+                    onFinished: {
+                        if (root.runningRotation) {
+                            carRotationAnimation.start();
+                        }
+                    }
                 }
 
+                SequentialAnimation {
+                    id: carRotationAnimation
+                    loops: Animation.Infinite
+
+                    NumberAnimation {
+                        target: qt_Car_Baked_low_v2
+                        property: "eulerRotation.y"
+                        from: 20
+                        to: 380
+                        duration: 20000
+                        easing.type: Easing.Linear
+                    }
+                }
                 Component.onCompleted: {
-                    driveInAnimation.start(); // Start the animation explicitly
+                    driveInAnimation.start();
                 }
             }
 

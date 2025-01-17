@@ -3,6 +3,7 @@ package com.dsd.carcompanion.api.repository
 import android.util.Log
 import com.dsd.carcompanion.api.models.CreateUserRequest
 import com.dsd.carcompanion.api.models.LoginRequest
+import com.dsd.carcompanion.api.models.ResetPasswordRequest
 import com.dsd.carcompanion.api.models.TokenModel
 import com.dsd.carcompanion.api.models.UserModel
 import com.dsd.carcompanion.api.models.VehiclePreferencesResponse
@@ -51,6 +52,11 @@ class AuthRepository(
                 jwtTokenManager.saveAccessJwt(response.Access)
                 jwtTokenManager.saveRefreshJwt(response.Refresh)
             })
+    }
+
+    suspend fun resetPassword(email: String): Response<Any> {
+        val request = ResetPasswordRequest(email)
+        return authService.resetPassword(request)
     }
 
     suspend fun getAllUsers(): ResultOf<List<UserModel>> {

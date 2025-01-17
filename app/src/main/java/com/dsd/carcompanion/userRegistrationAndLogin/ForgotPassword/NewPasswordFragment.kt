@@ -49,7 +49,7 @@ class NewPasswordFragment : Fragment() {
                 Toast.makeText(context, getString(R.string.forgot_pass_fragment_message_pass_change_success),
                     Toast.LENGTH_SHORT).show()
 
-                findNavController().navigate(R.id.action_NewPassword_to_LoginFragment)
+                //findNavController().navigate(R.id.action_NewPassword_to_LoginFragment)
             } else {
                 // Show error if passwords do not match or are too short
                 confirmPasswordEditText.error =

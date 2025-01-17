@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -111,7 +112,7 @@ class RegistrationFragment : Fragment() {
                         withContext(Dispatchers.Main) {
                             if (response is ResultOf.Success) {
                                 Log.d("Register Fragment", "User successfully registered")
-                                loginUser(username, password)
+                                showSuccessDialog()
                             } else if (response is ResultOf.Error) {
                                 binding.tvErrorUnexpcted.text = "Registration has failed. Please check inputted information and try again"
                                 binding.tvErrorUnexpcted.visibility = View.VISIBLE
@@ -131,9 +132,24 @@ class RegistrationFragment : Fragment() {
                 }
             }
         }
-
         binding.textViewToLogin.setOnClickListener {
-            findNavController().navigate(R.id.action_RegistrationFragment_to_LoginFragment)       }
+            findNavController().navigate(R.id.action_RegistrationFragment_to_LoginFragment)
+        }
+    }
+
+    private fun showSuccessDialog() {
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle("Account activation")
+            .setMessage("Account has been successfully created." +
+                    "To activate your account, please use link sent to your emails inbox.\n\n" +
+                    "Welcome to CarCompanion")
+            .setPositiveButton("Go to login") { dialog, _ ->
+                dialog.dismiss()
+                findNavController().navigate(R.id.action_RegistrationFragment_to_LoginFragment)
+            }
+            .create()
+
+        dialog.show()
     }
 
     fun loginUser(username: String, password: String){

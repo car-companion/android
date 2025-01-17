@@ -41,11 +41,11 @@ class CodeFragment : Fragment() {
 
             val codeText: String = binding.etForgotPasswordEnterCode.text.toString()
 
-            if (isValidCode(codeText)) {
+            /*if (isValidCode(codeText)) {
                 findNavController().navigate(R.id.action_CodeForgotPassword_to_NewPassword)
             } else {
                 codeEditText.error = getString(R.string.forgot_pass_fragment_message_code_error)
-            }
+            }*/
         }
     }
 

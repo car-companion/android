@@ -2,6 +2,7 @@ package com.dsd.carcompanion.api.service
 
 import com.dsd.carcompanion.api.models.CreateUserRequest
 import com.dsd.carcompanion.api.models.LoginRequest
+import com.dsd.carcompanion.api.models.ResetPasswordRequest
 import com.dsd.carcompanion.api.models.TokenModel
 import com.dsd.carcompanion.api.models.UserModel
 import com.dsd.carcompanion.api.models.Users
@@ -17,6 +18,9 @@ interface UserService {
 
     @POST("api/auth/users/")
     suspend fun registerUser(@Body createUserRequest: CreateUserRequest): Response<TokenModel>
+
+    @POST("/api/auth/users/reset_password/")
+    suspend fun resetPassword(@Body request: ResetPasswordRequest): Response<Any>
 
     @GET("/api/auth/users/")
     suspend fun getAllUsers(): Response<List<UserModel>>

@@ -43,9 +43,6 @@ class LandingPage: Fragment(), QtQmlStatusChangeListener {
 
     private lateinit var jwtTokenDataStore: JwtTokenDataStore
 
-    private var m_qmlView: QtQuickView? = null
-    private var m_mainQmlContent: QmlModule.Main = QmlModule.Main()
-
     private fun displayToastMessage(text: String) {
         Toast.makeText(this.context, text, Toast.LENGTH_SHORT).show()
     }
@@ -74,12 +71,6 @@ class LandingPage: Fragment(), QtQmlStatusChangeListener {
 
         Log.d("LandingPage", "Resuming...")
         getCurrentVehicles(requireContext())
-    }
-
-    override fun onPause() {
-        super.onPause()
-        m_qmlView?.removeAllViews()
-        m_qmlView = null
     }
 
     private fun getCurrentVehicles(context: Context) {
@@ -174,17 +165,32 @@ class LandingPage: Fragment(), QtQmlStatusChangeListener {
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
 
+            var m_qmlView: QtQuickView? = null
+            var m_mainQmlContent: QmlModule.Main = QmlModule.Main()
+
+            var color = ""
+            if(vehicle.user_preferences != null){
+                color = vehicle.user_preferences.exterior_color?.hex_code ?: ""
+            } else {
+                color = vehicle.default_exterior_color.hex_code
+            }
+
             m_qmlView = QtQuickView(requireContext(), "Main.qml", "my_car_companionApp")
 
             vehicle3DVehicleContainer.addView(m_qmlView, params)
-            m_qmlView!!.loadContent(m_mainQmlContent)
-            Log.d("Home", "After loaded")
+            m_qmlView.loadContent(m_mainQmlContent)
+            Log.d("LandingPage", "After loaded")
 
-            m_qmlView?.setStatusChangeListener { status ->
-                Log.d("HomeFragment", status.toString())
+            m_qmlView.setStatusChangeListener { status ->
+                Log.d("LandingPage", status.toString())
                 if (status == QtQmlStatus.READY) {
-                    Log.d("HomeFragment", "QtQuickView is ready")
-                    m_qmlView?.setProperty("mouseAreaEnabled", true)
+                    Log.d("LandingPage", "QtQuickView is ready")
+                    m_qmlView?.setProperty("mouseAreaEnabled", false)
+                    m_qmlView?.setProperty("runningRotation", true)
+
+                    if(color.isNotEmpty()){
+                        m_qmlView?.setProperty("customCarColor", color)
+                    }
                 }
             }
 
@@ -204,6 +210,7 @@ class LandingPage: Fragment(), QtQmlStatusChangeListener {
                     m_qmlView = null
                     val bundle = Bundle().apply {
                         putString("vin", vin)
+                        putString("color", color)
                     }
                     findNavController().navigate(R.id.action_nav_LandingPage_to_nav_HomeFragment, bundle)
                 }
@@ -275,9 +282,8 @@ class LandingPage: Fragment(), QtQmlStatusChangeListener {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d("HomeFragment", "View is destroyed")
-        m_qmlView?.removeAllViews()
-        m_qmlView = null
+        Log.d("LandingPage", "View is destroyed")
+        binding.llLandingFragmentVehicleList.removeAllViews()
         _binding = null
     }
 }

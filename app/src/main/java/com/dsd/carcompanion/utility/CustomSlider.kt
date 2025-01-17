@@ -18,6 +18,11 @@ class CustomSlider @JvmOverloads constructor(
         // Disable the label formatter
         setLabelFormatter(null)
 
+        valueFrom = 16f
+        valueTo = 30f
+        value = 24f
+        stepSize = 0.5f
+
         // Set custom thumb drawable and track colors
         setCustomThumbDrawable()
         setCustomTrackColors()
