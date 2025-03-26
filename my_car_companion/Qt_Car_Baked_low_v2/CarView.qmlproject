@@ -1,0 +1,40 @@
+// prop: json-converted
+// prop: auto-generated
+
+import QmlProject
+
+Project {
+    mainFile: "Qt_Car_Baked_low_v2.qml"
+    mainUiFile: "Qt_Car_Baked_low_v2.qml"
+    // targetDirectory: "/opt/CarView"
+    // enableCMakeGeneration: false
+    // enablePythonGeneration: false
+    // widgetApp: true
+    importPaths: [ "imports","asset_imports" ]
+
+    qdsVersion: "4.4"
+    quickVersion: "6.5"
+    qt6Project: true
+    qtForMCUs: false
+
+    // multilanguageSupport: true
+    // primaryLanguage: "en"
+    // supportedLanguages: [ "en" ]
+
+    Environment {
+        QML_COMPAT_RESOLVE_URLS_ON_ASSIGNMENT: "1"
+        QT_AUTO_SCREEN_SCALE_FACTOR: "1"
+        QT_ENABLE_HIGHDPI_SCALING: "0"
+        QT_LOGGING_RULES: "qt.qml.connections=false"
+        QT_QUICK_CONTROLS_CONF: "qtquickcontrols2.conf"
+    }
+
+    ImageFiles {
+        directory: "maps"
+    }
+
+    Files {
+        directory: "meshes"
+        filter: "*.mesh"
+    }
+}
