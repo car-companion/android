@@ -50,6 +50,9 @@ Rectangle {
             id: scene
             DirectionalLight {
                 id: directionalLight
+                castsShadow: true
+                shadowMapQuality: Light.ShadowMapQualityHigh
+                shadowBias: 0.1
                 eulerRotation.z: -0.00002
                 eulerRotation.y: -90
                 eulerRotation.x: -50
@@ -136,19 +139,6 @@ Rectangle {
                 eulerRotation.x: -10
                 z: 0
             }
-
-            /*Model {
-                id: plane
-                x: 0
-                y: 0
-                z: 0
-                source: "#Rectangle"
-                scale.z: 1
-                scale.y: 60
-                scale.x: 40
-                eulerRotation.x: -90
-                materials: defaultMaterial
-            }*/
         }
 
         ParticleSystem3D {

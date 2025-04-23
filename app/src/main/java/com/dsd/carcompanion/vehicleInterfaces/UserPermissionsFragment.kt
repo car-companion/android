@@ -1,11 +1,8 @@
 package com.dsd.carcompanion.vehicleInterfaces
 
 import android.app.DatePickerDialog
-import android.content.Intent
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -13,7 +10,6 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.RadioButton
@@ -22,7 +18,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.dsd.carcompanion.MainActivity
 import com.dsd.carcompanion.R
 import com.dsd.carcompanion.api.datastore.JwtTokenDataStore
 import com.dsd.carcompanion.api.instance.UserClient
@@ -33,12 +28,8 @@ import kotlinx.coroutines.withContext
 import com.dsd.carcompanion.api.instance.VehicleClient
 import com.dsd.carcompanion.api.models.ComponentResponse
 import com.dsd.carcompanion.api.models.GrantPermissionRequest
-import com.dsd.carcompanion.api.models.GrantedPermissions
 import com.dsd.carcompanion.api.models.PermissionResponse
-import com.dsd.carcompanion.api.models.PermissionsResponse
-import com.dsd.carcompanion.api.models.RevokedPermissions
 import com.dsd.carcompanion.api.models.VehiclePreferencesResponse
-import com.dsd.carcompanion.api.models.VehicleResponse
 import com.dsd.carcompanion.api.repository.AuthRepository
 import com.dsd.carcompanion.utility.ImageHelper
 import com.dsd.carcompanion.api.repository.VehicleRepository
@@ -449,7 +440,14 @@ class UserPermissionsFragment : Fragment() {
     }
 
     private fun handleGrantAccessClick() {
-        val userIdentifier = binding.etUserIdentifier.text.toString()
+        val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
+        builder
+            .setTitle("Notice")
+            .setMessage("For presentation purposes, automatically generated accounts cannot change permissions on existing cars. Thank you for understanding")
+            .setPositiveButton("Close") { dialog, _ -> dialog.dismiss() }
+            .show();
+
+        /*val userIdentifier = binding.etUserIdentifier.text.toString()
         val selectedVehicle = binding.spinnerVehicleSelection.selectedItemPosition
         val selectedAccessLevel = when (binding.radioGroupAccessLevel.checkedRadioButtonId) {
             R.id.radio_full_access -> "Full Access"
@@ -470,7 +468,7 @@ class UserPermissionsFragment : Fragment() {
             }
         } else {
             showToast("Please fill out all fields")
-        }
+        }*/
     }
 
     private fun giveFullAccess() {

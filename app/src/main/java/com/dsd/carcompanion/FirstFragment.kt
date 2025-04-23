@@ -11,8 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dsd.carcompanion.api.datastore.JwtTokenDataStore
 import com.dsd.carcompanion.databinding.FragmentFirstBinding
-import com.dsd.carcompanion.userRegistrationAndLogin.LoginFragment
-import com.dsd.carcompanion.userRegistrationAndLogin.UserStartActivity
+import com.dsd.carcompanion.welcmeScreen.WelcomeScreen
 import kotlinx.coroutines.launch
 
 /**
@@ -60,7 +59,7 @@ class FirstFragment : Fragment() {
 
 //                binding.textviewToken.text = "Logged out, token was removed"
 
-                val intent = Intent(requireContext(), UserStartActivity::class.java)
+                val intent = Intent(requireContext(), WelcomeScreen::class.java)
                 startActivity(intent)
 
                 requireActivity().finish()

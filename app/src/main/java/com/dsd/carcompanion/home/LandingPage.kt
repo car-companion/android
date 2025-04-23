@@ -53,7 +53,7 @@ class LandingPage: Fragment(), QtQmlStatusChangeListener {
     ): View {
         _binding = FragmentLandingPageBinding.inflate(inflater, container, false)
 
-        jwtTokenDataStore = JwtTokenDataStore(requireContext())
+        jwtTokenDataStore = JwtTokenDataStore(requireContext());
 
         return binding.root
     }
@@ -131,6 +131,8 @@ class LandingPage: Fragment(), QtQmlStatusChangeListener {
         val linearLayout = binding.llLandingFragmentVehicleList
         val themedContext = ContextThemeWrapper(context, R.style.Base_Theme_CarCompanion)
 
+        val sharedPref = context.getSharedPreferences("vehicle_colors", Context.MODE_PRIVATE)
+
         for (vehicle in vehicleList){
             Log.d("LandingPage", vehicle.toString())
 
@@ -173,6 +175,19 @@ class LandingPage: Fragment(), QtQmlStatusChangeListener {
                 color = vehicle.user_preferences.exterior_color?.hex_code ?: ""
             } else {
                 color = vehicle.default_exterior_color.hex_code
+            }
+
+            val defaultColor = sharedPref.getString(vin, "");
+            if(defaultColor.isNullOrEmpty()){
+                if(color.isNotEmpty() && vin.isNotEmpty()){
+                    sharedPref.edit()
+                        .putString(vin, color)
+                        .apply()
+                } else {
+                    color = "#000000"
+                }
+            } else {
+                color = defaultColor;
             }
 
             m_qmlView = QtQuickView(requireContext(), "Main.qml", "my_car_companionApp")

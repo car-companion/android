@@ -1,5 +1,6 @@
 package com.dsd.carcompanion.home
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -7,33 +8,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.dsd.carcompanion.MainActivity
 import com.dsd.carcompanion.R
 import com.dsd.carcompanion.adapters.VehicleInfoAdapter
 import com.dsd.carcompanion.api.datastore.JwtTokenDataStore
 import com.dsd.carcompanion.api.instance.VehicleClient
 import com.dsd.carcompanion.api.models.ComponentResponse
-import com.dsd.carcompanion.api.models.ComponentStatusUpdate
 import com.dsd.carcompanion.api.models.ComponentType
 import com.dsd.carcompanion.api.models.UIVehicleStats
 import com.dsd.carcompanion.api.models.VehicleInfo
 import com.dsd.carcompanion.api.repository.VehicleRepository
 import com.dsd.carcompanion.api.utils.ResultOf
 import com.dsd.carcompanion.databinding.FragmentHomeBinding
-import com.dsd.carcompanion.userRegistrationAndLogin.UserStartActivity
 import com.dsd.carcompanion.utility.ImageHelper
+import com.dsd.carcompanion.welcmeScreen.WelcomeScreen
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.slider.Slider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.math.BigDecimal
-import java.math.RoundingMode
 
 import org.qtproject.qt.android.QtQuickView
 import org.qtproject.example.my_car_companionApp.QmlModule
@@ -68,8 +64,21 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
         jwtTokenDataStore = JwtTokenDataStore(requireContext()) // Initialize the JwtTokenDataStore
         vehicleInfoAdapter = VehicleInfoAdapter(vehicleInfoList)
 
-        carModel.carVin = arguments?.getString("vin").toString()
-        carModel.carColor = arguments?.getString("color").toString()
+        val vin = arguments?.getString("vin").toString();
+        var color = arguments?.getString("color").toString()
+        carModel.carVin = vin;
+        val sharedPref = context?.getSharedPreferences("vehicle_colors", Context.MODE_PRIVATE);
+        val defaultColor = sharedPref?.getString(vin, "");
+        if(defaultColor.isNullOrEmpty()){
+            if(color.isNotEmpty() && vin.isNotEmpty()){
+                sharedPref?.edit()?.putString(vin, color)?.apply()
+            } else {
+                color = "#000000"
+            }
+        } else {
+            color = defaultColor;
+        }
+        carModel.carColor = color;
 
         return binding.root
     }
@@ -98,7 +107,7 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
                     binding.actionErrorMessage.visibility = View.GONE
                     setUpUiInterface(responseData, true)
                 } else {
-                    val intent = Intent(requireActivity(), UserStartActivity::class.java)
+                    val intent = Intent(requireActivity(), WelcomeScreen::class.java)
                     startActivity(intent)
                     requireActivity().finish()
                 }
@@ -125,7 +134,7 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
                     val accessToken = withContext(Dispatchers.IO) { jwtTokenDataStore.getAccessJwt() }
 
                     if (!accessToken.isNullOrEmpty()) {
-                        startPeriodicComponentUpdates(5000L) // Fetch every 5 seconds
+                        //startPeriodicComponentUpdates(5000L) // Fetch every 5 seconds
                     } else {
                         showToast("No Access JWT Token found")
                     }
@@ -186,6 +195,7 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
             }
         }
 
+        var lightInitialized = false;
         responseData.forEach{ component ->
             run {
                 if (component.type.name.equals("Door")) {
@@ -220,6 +230,7 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
                     carModel.batteryStatus = component.status.toFloat()
                 }
                 else if(component.type.name.equals("Lights")){
+                    lightInitialized = true;
                     carModel.enabledLights = true
                     carModel.lightsValue = component.status.toFloat()
                     if (component.status > 0) {
@@ -262,7 +273,11 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
         m_qmlView?.setProperty("leftDoorOpen", carModel.isLeftDoorOpen)
         m_qmlView?.setProperty("rightWindowUp", carModel.isRightWindowUp)
         m_qmlView?.setProperty("leftWindowUp", carModel.isLeftWindowUp)
-        m_qmlView?.setProperty("lightsOff", carModel.areLightsTurnedOff)
+        if(!lightInitialized) {
+            m_qmlView?.setProperty("lightsOff", true)
+        } else {
+            m_qmlView?.setProperty("lightsOff", carModel.areLightsTurnedOff)
+        }
         m_qmlView?.setProperty("areTiresTurning", carModel.isCarDriving)
         m_qmlView?.setProperty("isItSnowing", carModel.isItSnowing)
 
@@ -297,7 +312,6 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
                     if (!accessToken.isNullOrEmpty()) {
                         val components = fetchComponentsData(accessToken)
                         withContext(Dispatchers.Main) {
-                            Log.d("HomeFragment", "HELLOOOOOOOOOOOOOOOOOOOOOO")
                             checkIncomingValues(components)
                         }
                     }
@@ -525,102 +539,6 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
         }
     }
 
-    private suspend fun updateComponentsStatus(component: ComponentResponse, newStatus: Float, isStartingAgain: Boolean) {
-        val newStatusDouble = BigDecimal(newStatus.toDouble())
-            .setScale(2, RoundingMode.HALF_UP) // Round to 2 decimal places to keep the slider value intact
-            .toDouble()
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                val accessToken = withContext(Dispatchers.IO) { jwtTokenDataStore.getAccessJwt() }
-
-                if(accessToken.isNullOrEmpty()) {
-                    showToast("Access token not found")
-                    return@launch
-                }
-
-                val vehicleService = VehicleClient.getApiServiceWithToken(accessToken)
-                val vehicleRepository = VehicleRepository(vehicleService, jwtTokenDataStore)
-
-                val response = vehicleRepository.updateComponentStatusForVehicle(carModel.carVin, component.type.name, component.name, ComponentStatusUpdate(status = newStatusDouble))
-                when (response) {
-                    is ResultOf.Success -> {
-                        if(response.code == 200) {
-                            Log.d("HomeFragment","Component Status has been updated: " + response.data.toString())
-                            if(isStartingAgain && !isPeriodicFetchRunning) {
-                                isPeriodicFetchRunning = true
-                                //startPeriodicComponentUpdates(5000L)
-                            }
-                        }
-                    }
-                    is ResultOf.Error -> {
-                        val errorMessage = when (response.code) {
-                            400 -> "Invalid request."
-                            403 -> "Insufficient write permissions."
-                            404 -> "Vehicle or component not found."
-                            else -> "Unexpected error: ${response.message}"
-                        }
-                        showToast(errorMessage)
-                        Log.e("VehicleOwnership", errorMessage)
-                    }
-                    ResultOf.Idle -> showToast("Idle state")
-                    ResultOf.Loading -> showToast("Processing...")
-                }
-            } catch (e: Exception) {
-                Log.e("VehicleOwnership", "Error: ${e.message}", e)
-                showToast("Error processing request: ${e.message}")
-            }
-        }
-    }
-
-    private fun updateComponentStatus(component: ComponentResponse, newStatus: Float, isStartingAgain: Boolean) {
-        val newStatusDouble = BigDecimal(newStatus.toDouble())
-            .setScale(2, RoundingMode.HALF_UP) // Round to 2 decimal places to keep the slider value intact
-            .toDouble()
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                val accessToken = withContext(Dispatchers.IO) { jwtTokenDataStore.getAccessJwt() }
-
-                if(accessToken.isNullOrEmpty()) {
-                    showToast("Access token not found")
-                    return@launch
-                }
-
-                val vehicleService = VehicleClient.getApiServiceWithToken(accessToken)
-                val vehicleRepository = VehicleRepository(vehicleService, jwtTokenDataStore)
-
-                val response = vehicleRepository.updateComponentStatusForVehicle(carModel.carVin, component.type.name, component.name, ComponentStatusUpdate(status = newStatusDouble))
-                when (response) {
-                    is ResultOf.Success -> {
-                        if(response.code == 200) {
-                            Log.d("HomeFragment","Component Status has been updated: " + response.data.toString())
-                            if(isStartingAgain && !isPeriodicFetchRunning) {
-                                isPeriodicFetchRunning = true
-                                //startPeriodicComponentUpdates(5000L)
-                            }
-                        }
-                    }
-                    is ResultOf.Error -> {
-                        val errorMessage = when (response.code) {
-                            400 -> "Invalid request."
-                            403 -> "Insufficient write permissions."
-                            404 -> "Vehicle or component not found."
-                            else -> "Unexpected error: ${response.message}"
-                        }
-                        showToast(errorMessage)
-                        Log.e("VehicleOwnership", errorMessage)
-                    }
-                    ResultOf.Idle -> showToast("Idle state")
-                    ResultOf.Loading -> showToast("Processing...")
-                }
-            } catch (e: Exception) {
-                Log.e("VehicleOwnership", "Error: ${e.message}", e)
-                showToast("Error processing request: ${e.message}")
-            }
-        }
-    }
-
     // Custom switch handlers
     private fun setUpCustomBatteryStatus(){
         var iconBattery = binding.actionChargingBattery
@@ -673,7 +591,7 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
                         ),
                         status = 0.0
                     )
-                    updateComponentStatus(componentResponse, carModel.leftWindowValue, true)
+                    //updateComponentStatus(componentResponse, carModel.leftWindowValue, true)
                     m_qmlView?.setProperty("leftWindowUp", carModel.isLeftWindowUp)
                 } else {
                     binding.switchWindowLeft.customSwitch.isChecked = false
@@ -711,7 +629,7 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
                         ),
                         status = 0.0
                     )
-                    updateComponentStatus(componentResponse, carModel.rightWindowValue, true)
+                    //updateComponentStatus(componentResponse, carModel.rightWindowValue, true)
                     m_qmlView?.setProperty("rightWindowUp", carModel.isRightWindowUp)
                 } else {
                     binding.switchWindowRight.customSwitch.isChecked = false
@@ -802,7 +720,7 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
                         ),
                         status = 0.0
                     )
-                    updateComponentStatus(componentResponse, carModel.lightsValue, true)
+                    //updateComponentStatus(componentResponse, carModel.lightsValue, true)
                     m_qmlView?.setProperty("lightsOff", carModel.areLightsTurnedOff)
                 }
             }
@@ -838,7 +756,7 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
                         ),
                         status = 0.0
                     )
-                    updateComponentStatus(componentResponse, carModel.rightDoorValue, true)
+                    //updateComponentStatus(componentResponse, carModel.rightDoorValue, true)
                     m_qmlView?.setProperty("rightDoorOpen", carModel.isRightDoorOpen)
                 }
             }
@@ -875,7 +793,7 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
                         ),
                         status = 0.0
                     )
-                    updateComponentStatus(componentResponse, carModel.leftDoorValue, true)
+                    //updateComponentStatus(componentResponse, carModel.leftDoorValue, true)
                     m_qmlView?.setProperty("leftDoorOpen", carModel.isLeftDoorOpen)
                 }
             }
@@ -923,7 +841,7 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
                         ),
                         status = 0.0
                     )
-                    updateComponentStatus(componentResponse, finalValue/100, true)
+                    //updateComponentStatus(componentResponse, finalValue/100, true)
                 }
             })
 
@@ -989,7 +907,7 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
 
             for ((component, newValue) in componentsToUpdate) {
                 val isStartingAgain = component.name == "Interior"
-                updateComponentsStatus(component, newValue, isStartingAgain)
+                //updateComponentsStatus(component, newValue, isStartingAgain)
             }
         }
     }
@@ -1027,7 +945,7 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
 
             for ((component, newValue) in componentsToUpdate) {
                 val isStartingAgain = component.name == "Interior"
-                updateComponentsStatus(component, newValue, isStartingAgain)
+                //updateComponentsStatus(component, newValue, isStartingAgain)
             }
         }
     }

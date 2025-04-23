@@ -20,12 +20,4 @@
         android:id="@+id/divider"
         android:title=""
         android:enabled="false" />
-
-    <!-- Logout option at the bottom -->
-    <group android:menuCategory="secondary">
-        <item
-            android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_logout"
-            android:title="Logout" />
-    </group>
 </menu>
