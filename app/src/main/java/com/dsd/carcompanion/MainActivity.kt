@@ -23,12 +23,15 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import com.dsd.carcompanion.api.datastore.JwtTokenDataStore
+import com.dsd.carcompanion.api.instance.UserClient
 import com.dsd.carcompanion.api.instance.VehicleClient
 import com.dsd.carcompanion.api.models.ComponentStatusUpdate
+import com.dsd.carcompanion.api.models.LoginRequest
+import com.dsd.carcompanion.api.repository.AuthRepository
 import com.dsd.carcompanion.api.repository.VehicleRepository
 import com.dsd.carcompanion.api.utils.ResultOf
 import com.dsd.carcompanion.databinding.ActivityMainBinding
-import com.dsd.carcompanion.userRegistrationAndLogin.UserStartActivity
+import com.dsd.carcompanion.welcmeScreen.WelcomeScreen
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -78,9 +81,6 @@ class MainActivity : AppCompatActivity() {
                         }
                         R.id.nav_settings -> {
                             navController.navigate(R.id.nav_SettingsFragment)
-                        }
-                        R.id.nav_logout -> {
-                            logoutUser()
                         }
                     }
                     drawerLayout.closeDrawers()
@@ -136,7 +136,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
-        jwtTokenDataStore = JwtTokenDataStore(context)
+        jwtTokenDataStore = JwtTokenDataStore(context);
+
 
         lifecycleScope.launch {
             try {
@@ -145,9 +146,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 if (accessToken.isNullOrEmpty()) {
                     Log.d("MainActivity", "No Access JWT Token, navigating to UserStartActivity")
-                    val intent = Intent(this@MainActivity, UserStartActivity::class.java)
-                    startActivity(intent)
-                    finish()
+                    loginTestUser();
                 }
             } catch (e: Exception) {
                 Log.e("MainActivity", "Error while checking JWT token: ${e.message}")
@@ -161,11 +160,41 @@ class MainActivity : AppCompatActivity() {
             try {
                 jwtTokenDataStore.clearAllTokens()
 
-                val intent = Intent(this@MainActivity, UserStartActivity::class.java)
+                val intent = Intent(this@MainActivity, WelcomeScreen::class.java)
                 startActivity(intent)
                 this@MainActivity.finish()
             } catch (e: Exception) {
                 Log.e("FirstFragment", "Error during logout: ${e.message}")
+            }
+        }
+    }
+
+    private fun loginTestUser() {
+        val userName = "presentationUser"
+        val password = "MojaIzmisljenaSigurnaLozinka12345"
+
+        val loginRequest = LoginRequest(username = userName, password = password)
+        val userService = UserClient.apiService
+        val authRepository = AuthRepository(userService, jwtTokenDataStore)
+
+        lifecycleScope.launch {
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    authRepository.login(loginRequest)
+                }
+
+                if (response is ResultOf.Success) {
+                    Log.d("LoginFragment", "Login successful")
+                    // Navigate to the main screen or update UI here
+                } else if (response is ResultOf.Error) {
+                    Log.e("LoginFragment", "Login failed: ${response.message}")
+                    // Show error to user
+                } else {
+                    Log.e("LoginFragment", "Unexpected login result")
+                }
+            } catch (e: Exception) {
+                Log.e("LoginFragment", "Error during login: ${e.message}")
+                // Show error to user
             }
         }
     }

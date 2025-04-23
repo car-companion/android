@@ -71,13 +71,21 @@ class VehicleOwnershipFragment : Fragment() {
         }
 
         binding.btnVehicleOwnershipFragmentTake.setOnClickListener{
-            val vin = binding.etVehicleOwnershipFragmentModelNumber.text.toString().trim()
+            val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            builder
+                .setTitle("Notice")
+                .setMessage("For presentation purposes, automatically generated accounts cannot add " +
+                        "new cars to their account. Thank you for understanding")
+                .setPositiveButton("Close") { dialog, _ -> dialog.dismiss() }
+                .show();
+
+            /*val vin = binding.etVehicleOwnershipFragmentModelNumber.text.toString().trim()
 
             if (vin.isNotEmpty()) {
                 takeVehicleOwnership(vin)
             } else {
                 displayToastMessage("VIN cannot be empty")
-            }
+            }*/
         }
     }
 
@@ -177,22 +185,8 @@ class VehicleOwnershipFragment : Fragment() {
                 )
                 gravity = android.view.Gravity.START
             }
-            //Close button imageview
-            val closeButton = ImageView(themedContext).apply {
-                setImageDrawable(ContextCompat.getDrawable(themedContext, R.drawable.ic_close))
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply {
-                    gravity = android.view.Gravity.END
-                }
-                setPadding(4, 4, 4, 4) // Padding for the icon
-                setOnClickListener {
-                    removeVehicle(vin, context)
-                }
-            }
+
             itemTitleContainer.addView(vehicleTextViewModelName)
-            itemTitleContainer.addView(closeButton)
 
             //Back to the parent container
             //Manufacturer text view
@@ -258,44 +252,6 @@ class VehicleOwnershipFragment : Fragment() {
         }
 
         binding.pbVehicleOwnershipVehicleList.visibility = GONE
-    }
-
-    private fun removeVehicle(vin: String, context: Context) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                val accessToken = withContext(Dispatchers.IO) { jwtTokenDataStore.getAccessJwt() }
-
-                if(accessToken.isNullOrEmpty()) {
-                    displayToastMessage("Access token not found")
-                    return@launch
-                }
-
-                val vehicleService = VehicleClient.getApiServiceWithToken(accessToken)
-                val vehicleRepository = VehicleRepository(vehicleService, jwtTokenDataStore)
-
-                when (val response = vehicleRepository.removeOwnedVehicleForUser(vin)) {
-                    is ResultOf.Success -> {
-                        displayToastMessage("Vehicle: $vin successfully removed.")
-                        getCurrentVehicles(context)
-                    }
-                    is ResultOf.Error -> {
-                        val errorMessage = when (response.code) {
-                            400 -> "Invalid request. Check the VIN."
-                            403 -> "Unauthorized access."
-                            404 -> "Vehicle not found."
-                            else -> "Unexpected error: ${response.message}"
-                        }
-                        displayToastMessage(errorMessage)
-                        Log.e("VehicleOwnership", "Error: " + errorMessage)
-                    }
-                    ResultOf.Idle -> displayToastMessage("Idle state")
-                    ResultOf.Loading -> displayToastMessage("Processing...")
-                }
-            } catch (e: Exception) {
-                Log.e("VehicleOwnership", "Error: ${e.message}", e)
-                displayToastMessage("Error processing request: ${e.message}")
-            }
-        }
     }
 
     private fun takeVehicleOwnership(vin: String) {

@@ -1,5 +1,6 @@
 package com.dsd.carcompanion.vehicleOwnership
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -108,8 +109,8 @@ class EditVehicleDialog : DialogFragment() {
     private suspend fun addDataToUIElements(vehicle: VehiclePreferencesResponse) {
         binding.tvEditVehicleDialogModel.text = vehicle.model.name
         binding.tvEditVehicleDialogVin.text = "VIN: " + vehicle.vin
-        binding.tvEditVehicleDialogManufacturer.text = vehicle.model.manufacturer
-        binding.tvEditVehicleDialogYearBuilt.text = vehicle.year_built.toString()
+        binding.tvEditVehicleDialogManufacturer.text = "Manufacturer: " + vehicle.model.manufacturer
+        binding.tvEditVehicleDialogYearBuilt.text = "Year built: " + vehicle.year_built.toString()
 
         val colorResponses: List<ColorResponse> = getAvailableColors()
         val colors: List<String> = colorResponses.map { color -> color.hex_code }
@@ -117,7 +118,9 @@ class EditVehicleDialog : DialogFragment() {
         var selectedExteriorColorIndex: Int = 0
 
         if(vehicle.user_preferences != null){
-            binding.etEditVehicleDialogNickname.setText(vehicle.user_preferences.nickname?: "")
+            binding.etEditVehicleDialogNickname.setText(
+                ("Nickname: " + vehicle.user_preferences.nickname) ?: "Nickname: none"
+            )
             binding.cbEditVehicleDialogInteriorMetalic.isChecked =
                 vehicle.user_preferences.interior_color?.is_metallic ?: false
             binding.cbEditVehicleDialogExteriorMetalic.isChecked =
@@ -129,13 +132,23 @@ class EditVehicleDialog : DialogFragment() {
                 } else {
                     findCurrentColorPosition(colorResponses, vehicle.user_preferences.interior_color)
                 }
-            binding.btnEditVehicleDialogShowInteriorColor.setBackgroundColor(Color.parseColor(colors[selectedInteriorColorIndex]))
+            binding.btnEditVehicleDialogShowInteriorColor.setBackgroundColor(Color.parseColor(colors[selectedInteriorColorIndex]));
+
+            val sharedPref = context?.getSharedPreferences("vehicle_colors", Context.MODE_PRIVATE);
+            val defaultColor = sharedPref?.getString(vin, "");
             selectedExteriorColorIndex =
-                if(vehicle.user_preferences.exterior_color == null){
-                    findCurrentColorPosition(colorResponses, vehicle.default_exterior_color)
-                } else{
-                    findCurrentColorPosition(colorResponses, vehicle.user_preferences.exterior_color)
+                if(defaultColor.isNullOrEmpty()){
+                    if(vehicle.user_preferences.exterior_color == null){
+                        findCurrentColorPosition(colorResponses, vehicle.default_exterior_color)
+                    } else{
+                        findCurrentColorPosition(colorResponses, vehicle.user_preferences.exterior_color)
+                    }
+                } else {
+                    val tempPreference = vehicle.default_exterior_color;
+                    tempPreference.hex_code = defaultColor;
+                    findCurrentColorPosition(colorResponses, tempPreference)
                 }
+
             binding.btnEditVehicleDialogShowExteriorColor.setBackgroundColor(Color.parseColor(colors[selectedExteriorColorIndex]))
         } else {
             binding.cbEditVehicleDialogInteriorMetalic.isChecked =
@@ -143,10 +156,19 @@ class EditVehicleDialog : DialogFragment() {
             binding.cbEditVehicleDialogExteriorMetalic.isChecked =
                 vehicle.default_exterior_color.is_metallic
 
+            val sharedPref = context?.getSharedPreferences("vehicle_colors", Context.MODE_PRIVATE);
+            val defaultColor = sharedPref?.getString(vin, "");
+
             selectedInteriorColorIndex = findCurrentColorPosition(colorResponses, vehicle.default_interior_color)
             binding.btnEditVehicleDialogShowInteriorColor.setBackgroundColor(Color.parseColor(colors[selectedInteriorColorIndex]))
 
-            selectedExteriorColorIndex = findCurrentColorPosition(colorResponses, vehicle.default_exterior_color)
+            selectedExteriorColorIndex = if(defaultColor.isNullOrEmpty()){
+                findCurrentColorPosition(colorResponses, vehicle.default_exterior_color)
+            } else {
+                val tempPreference = vehicle.default_exterior_color;
+                tempPreference.hex_code = defaultColor;
+                findCurrentColorPosition(colorResponses, tempPreference)
+            }
             binding.btnEditVehicleDialogShowExteriorColor.setBackgroundColor(Color.parseColor(colors[selectedExteriorColorIndex]))
         }
 
@@ -191,7 +213,14 @@ class EditVehicleDialog : DialogFragment() {
         }
 
         binding.btnEditVehicleDialogSave.setOnClickListener {
-            if (!binding.etEditVehicleDialogNickname.text.toString().matches("^[a-zA-Z0-9\\s\\-]+$".toRegex())) {
+            val sharedPref = context?.getSharedPreferences("vehicle_colors", Context.MODE_PRIVATE);
+            sharedPref?.edit()?.putString(vin, colorResponses[selectedExteriorColorIndex].hex_code)
+                ?.apply();
+
+            displayToastMessage("Vehicle has been successfully updated!");
+            dismiss();
+
+            /*if (!binding.etEditVehicleDialogNickname.text.toString().matches("^[a-zA-Z0-9\\s\\-]+$".toRegex())) {
                 displayToastMessage("Nickname can only contain letters, numbers, spaces, and hyphens.")
             } else {
                 val prefsData = PreferencesResponse(
@@ -199,9 +228,9 @@ class EditVehicleDialog : DialogFragment() {
                     interior_color = colorResponses[selectedInteriorColorIndex],
                     exterior_color = colorResponses[selectedExteriorColorIndex])
 
-                Log.d("EditVehiceDialog", "Daving preferences: " + prefsData.toString())
+                Log.d("EditVehiceDialog", "Saving preferences: " + prefsData.toString())
                 updatePreferences(vehicle.vin, prefsData)
-            }
+            }*/
         }
     }
 
