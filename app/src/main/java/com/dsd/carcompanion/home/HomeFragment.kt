@@ -3,6 +3,8 @@ package com.dsd.carcompanion.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -105,7 +107,7 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
                 if (!accessToken.isNullOrEmpty()) {
                     var responseData = fetchComponentsData(accessToken)
                     binding.actionErrorMessage.visibility = View.GONE
-                    setUpUiInterface(responseData, true)
+                    setUpUiInterface(responseData, true, 0)
                 } else {
                     val intent = Intent(requireActivity(), WelcomeScreen::class.java)
                     startActivity(intent)
@@ -157,7 +159,11 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
         binding.switchWindowRight.customSwitchLayout.visibility = View.GONE
     }
 
-    private fun setUpUiInterface(responseData: List<ComponentResponse>, iFirstTime: Boolean){
+    private fun setUpUiInterface(responseData: List<ComponentResponse>, iFirstTime: Boolean, numberOfPassing: Int){
+        if (numberOfPassing >= 5) {
+            Log.w("HomeFragment", "Initialization failed after 3 attempts")
+            return
+        }
         if(iFirstTime){
             val qtContainer = binding.qtContainer
             val params: ViewGroup.LayoutParams = FrameLayout.LayoutParams(
@@ -193,6 +199,14 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
                 carModel.isItSnowing = !carModel.isItSnowing
                 m_qmlView?.setProperty("isItSnowing", carModel.isItSnowing)
             }
+        }
+
+        if (m_qmlView?.status.toString() != "READY") {
+            Log.d("HomeFragment", "QML view not initialized - retrying in 1s (attempt ${numberOfPassing + 1})")
+            Handler(Looper.getMainLooper()).postDelayed({
+                setUpUiInterface(responseData, false, numberOfPassing + 1)
+            }, 1000)
+            return
         }
 
         var lightInitialized = false;
@@ -273,8 +287,10 @@ class HomeFragment : Fragment(), QtQmlStatusChangeListener {
         m_qmlView?.setProperty("leftDoorOpen", carModel.isLeftDoorOpen)
         m_qmlView?.setProperty("rightWindowUp", carModel.isRightWindowUp)
         m_qmlView?.setProperty("leftWindowUp", carModel.isLeftWindowUp)
+        Log.w("Look at this", carModel.toString())
         if(!lightInitialized) {
-            m_qmlView?.setProperty("lightsOff", true)
+            Log.w("Look at this", "Initializing")
+            m_qmlView?.setProperty("lightsOff", false)
         } else {
             m_qmlView?.setProperty("lightsOff", carModel.areLightsTurnedOff)
         }

@@ -302,13 +302,13 @@ Node {
             NumberAnimation on eulerRotation.z {
                 from: 2160
                 to: 0
-                duration: 3000
+                duration: 5000
                 easing.type: Easing.Linear
             }
             NumberAnimation on eulerRotation.y {
-                from: 40
+                from: 30
                 to: 0
-                duration: 3000
+                duration: 5000
                 easing.type: Easing.Linear
             }
             NumberAnimation on eulerRotation.z {
@@ -335,7 +335,7 @@ Node {
             NumberAnimation on eulerRotation.z {
                 from: 2160
                 to: 0
-                duration: 3000
+                duration: 5000
                 easing.type: Easing.Linear
             }
             NumberAnimation on eulerRotation.z {
@@ -363,7 +363,13 @@ Node {
             NumberAnimation on eulerRotation.z {
                 from: 2160
                 to: 0
-                duration: 3000
+                duration: 5000
+                easing.type: Easing.Linear
+            }
+            NumberAnimation on eulerRotation.y {
+                from: 210
+                to: 180
+                duration: 5000
                 easing.type: Easing.Linear
             }
 
@@ -392,7 +398,7 @@ Node {
             NumberAnimation on eulerRotation.z {
                 from: 2160
                 to: 0
-                duration: 3000
+                duration: 5000
                 easing.type: Easing.Linear
             }
 
