@@ -300,7 +300,7 @@ Node {
                 m_CarPaint_material
             ]
             NumberAnimation on eulerRotation.z {
-                from: 2160
+                from: -2160
                 to: 0
                 duration: 5000
                 easing.type: Easing.Linear
@@ -312,7 +312,7 @@ Node {
                 easing.type: Easing.Linear
             }
             NumberAnimation on eulerRotation.z {
-                from: 2160
+                from: -2160
                 to: 0
                 duration: 3000
                 easing.type: Easing.Linear
@@ -333,13 +333,13 @@ Node {
                 m_CarPaint_material
             ]
             NumberAnimation on eulerRotation.z {
-                from: 2160
+                from: -2160
                 to: 0
                 duration: 5000
                 easing.type: Easing.Linear
             }
             NumberAnimation on eulerRotation.z {
-                from: 2160
+                from: -2160
                 to: 0
                 duration: 3000
                 easing.type: Easing.Linear
